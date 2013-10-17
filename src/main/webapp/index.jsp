@@ -37,24 +37,14 @@
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Project name</a>
+				<a class="navbar-brand" href="#">d20 Web Tools</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#about">About</a></li>
-					<li><a href="#contact">Contact</a></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
-							<li class="divider"></li>
-							<li class="dropdown-header">Nav header</li>
-							<li><a href="#">Separated link</a></li>
-							<li><a href="#">One more separated link</a></li>
-						</ul></li>
+					<li><a href="about.html">About</a></li>
+					<li><a href="contact.html">Contact</a></li>
+					<li><a href="new-room.jsp">New Room</a></li>
 				</ul>
 				<form class="navbar-form navbar-right">
 					<div class="form-group">
@@ -73,13 +63,10 @@
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	<div class="jumbotron">
 		<div class="container">
-			<h1>Hello, world!</h1>
-			<p>This is a template for a simple marketing or informational
-				website. It includes a large callout called the hero unit and three
-				supporting pieces of content. Use it as a starting point to create
-				something more unique.</p>
+			<h1>Welcome to d20 Web Tools!</h1>
+			<p>This site acts as a web tool for the d20 RPG system, when played as pen &amp; paper.</p>
 			<p>
-				<a class="btn btn-primary btn-lg">Learn more &raquo;</a>
+				<a class="btn btn-primary btn-lg" href="learn-more.html">Learn more &raquo;</a>
 			</p>
 		</div>
 	</div>
@@ -121,9 +108,9 @@
 
 		<hr />
 
-			<footer>
-			<p>&copy; Company 2013</p>
-			</footer>
+		<footer>
+		<p>&copy; Company 2013</p>
+		</footer>
 	</div>
 	<!-- /container -->
 
