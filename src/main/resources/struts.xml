@@ -23,5 +23,17 @@
 			<result name="error">/pages/index.jsp</result>
 			<result name="login">/pages/login.jsp</result>
 		</action>
+		<action name="logout" class="it.d4nguard.d20webtools.controller.SignIn" method="logout">
+			<result>/pages/index.jsp</result>
+		</action>
+		<action name="join-room-init">
+			<result>/pages/join-room.jsp</result>
+		</action>
+		<action name="new-room" class="it.d4nguard.d20webtools.controller.RoomManager" method="newRoom">
+			<result>/pages/room.jsp</result>
+		</action>
+		<action name="join-room" class="it.d4nguard.d20webtools.controller.RoomManager" method="joinRoom">
+			<result>/pages/room.jsp</result>
+		</action>
 	</package>
 </struts>

@@ -2,6 +2,10 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Credential;
 
+import java.util.Date;
+import java.util.Map;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Session extends ActionSupport
@@ -29,6 +33,19 @@ public class Session extends ActionSupport
 	public void setLogged(boolean logged)
 	{
 		this.logged = logged;
-		if (!isLogged()) setCredential(null);
+		Map<String, Object> session = ActionContext.getContext().getSession();
+		if (isLogged())
+		{
+			session.put("logged", "true");
+			session.put("context", new Date());
+			session.put("credential", credential);
+		}
+		else
+		{
+			session.remove("logged");
+			session.remove("context");
+			session.remove("credential");
+			setCredential(null);
+		}
 	}
 }

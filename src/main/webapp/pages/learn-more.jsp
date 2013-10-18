@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:jumbotron>
+<t:layout>
 	<jsp:attribute name="title">d20 Web Tools - Learn more</jsp:attribute>
 	<jsp:attribute name="header_title">
 		<h1>Learn more about d20 Web Tools</h1>
@@ -15,4 +15,4 @@
 	<jsp:attribute name="row2">&nbsp;</jsp:attribute>
 	<jsp:attribute name="row3">&nbsp;</jsp:attribute>
 	<jsp:attribute name="footer">&nbsp;</jsp:attribute>
-</t:jumbotron>
+</t:layout>

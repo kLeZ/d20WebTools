@@ -29,4 +29,10 @@ public class SignIn extends Session
 		}
 		return ret;
 	}
+
+	public String logout() throws Exception
+	{
+		setLogged(false);
+		return SUCCESS;
+	}
 }
