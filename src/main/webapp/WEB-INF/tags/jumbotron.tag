@@ -1,6 +1,21 @@
+<%@ tag description="Jumbotron Bootstrap Responsive Layout"
+	language="java" pageEncoding="UTF-8"%>
+<%@attribute name="title" fragment="true"%>
+<%@attribute name="header_title" fragment="true"%>
+<%@attribute name="header_description" fragment="true"%>
+<%@attribute name="row1" fragment="true"%>
+<%@attribute name="row2" fragment="true"%>
+<%@attribute name="row3" fragment="true"%>
+<%@attribute name="footer" fragment="true"%>
+
+<%
+	String uri = request.getRequestURI();
+	String pageName = uri.substring(uri.lastIndexOf("/") + 1);
+	pageName = pageName.subSequence(0, pageName.lastIndexOf('.'))
+			.toString();
+%>
+
 <?xml version="1.0" encoding="UTF-8" ?>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -9,23 +24,23 @@
 <meta name="description" content="" />
 <meta name="author" content="" />
 
-<title>d20 Web Tools</title>
+<title><jsp:invoke fragment="title" /></title>
 
-<link rel="shortcut icon" href="ico/favicon.png" />
+<link rel="shortcut icon" href="../images/favicon.png" />
 
-<link href="bootstrap/themes/jumbotron.css" rel="stylesheet" />
+<link href="../bootstrap/themes/jumbotron.css" rel="stylesheet" />
 
 <!-- Start - Bootstrap inclusions -->
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
 
 <!-- Optional theme -->
-<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css" />
 <!-- End - Bootstrap inclusions -->
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
-	<script src="../../assets/js/html5shiv.js"></script>
-	<script src="../../assets/js/respond.min.js"></script>
+	<script src="js/html5shiv.js"></script>
+	<script src="js/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
@@ -41,11 +56,17 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="index.jsp">Home</a></li>
-					<li><a href="about.html">About</a></li>
-					<li><a href="contact.html">Contact</a></li>
+					<li<%if (pageName.contentEquals("index")) {%> class="active"<%}%>>
+						<a href="index">Home</a>
+					</li>
+					<li<%if (pageName.contentEquals("about")) {%> class="active"<%}%>>
+						<a href="about">About</a>
+					</li>
+					<li<%if (pageName.contentEquals("contact")) {%> class="active"<%}%>>
+						<a href="contact">Contact</a>
+					</li>
 				</ul>
-				<form class="navbar-form navbar-right">
+				<form class="navbar-form navbar-right" action="sign-in">
 					<div class="form-group">
 						<input type="text" placeholder="Email" class="form-control" />
 					</div>
@@ -62,10 +83,11 @@
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	<div class="jumbotron">
 		<div class="container">
-			<h1>Welcome to d20 Web Tools!</h1>
-			<p>This site acts as a web tool for the d20 RPG system, when played as pen &amp; paper.</p>
+			<jsp:invoke fragment="header_title" />
+			<jsp:invoke fragment="header_description" />
 			<p>
-				<a class="btn btn-primary btn-lg" href="learn-more.html">Learn more &raquo;</a>
+				<a class="btn btn-primary btn-lg" href="learn-more">Learn more
+					&raquo;</a>
 			</p>
 		</div>
 	</div>
@@ -74,40 +96,19 @@
 		<!-- Example row of columns -->
 		<div class="row">
 			<div class="col-lg-4">
-				<h2>Heading</h2>
-				<p>Donec id elit non mi porta gravida at eget metus. Fusce
-					dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-					ut fermentum massa justo sit amet risus. Etiam porta sem malesuada
-					magna mollis euismod. Donec sed odio dui.</p>
-				<p>
-					<a class="btn btn-default" href="#">View details &raquo;</a>
-				</p>
+				<jsp:invoke fragment="row1" />
 			</div>
 			<div class="col-lg-4">
-				<h2>Heading</h2>
-				<p>Donec id elit non mi porta gravida at eget metus. Fusce
-					dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-					ut fermentum massa justo sit amet risus. Etiam porta sem malesuada
-					magna mollis euismod. Donec sed odio dui.</p>
-				<p>
-					<a class="btn btn-default" href="#">View details &raquo;</a>
-				</p>
+				<jsp:invoke fragment="row2" />
 			</div>
 			<div class="col-lg-4">
-				<h2>Heading</h2>
-				<p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in,
-					egestas eget quam. Vestibulum id ligula porta felis euismod semper.
-					Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum
-					nibh, ut fermentum massa justo sit amet risus.</p>
-				<p>
-					<a class="btn btn-default" href="#">View details &raquo;</a>
-				</p>
+				<jsp:invoke fragment="row3" />
 			</div>
 		</div>
 
 		<hr />
 
-		<footer>
+		<footer> <jsp:invoke fragment="footer" />
 		<p>&copy; D4nGuARd 2013</p>
 		</footer>
 	</div>
@@ -116,7 +117,7 @@
 	<!-- Bootstrap core JavaScript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="bootstrap/js/bootstrap.min.js" />
-	<script src="jquery/jquery-1.10.2.min.js" />
+	<script src="../bootstrap/js/bootstrap.min.js" />
+	<script src="../jquery/jquery-1.10.2.min.js" />
 </body>
 </html>
