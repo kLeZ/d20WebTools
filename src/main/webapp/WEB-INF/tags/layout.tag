@@ -133,7 +133,7 @@
 	<!-- /container -->
 	<t:session>
 		<jsp:attribute name="logged">
-			<div id="NewRoom" class="modal hide">
+			<div id="NewRoom" class="modal hide fade in" style=" width:auto;" tabindex="-1" role="dialog" aria-labelledby="newRoomLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button data-dismiss="modal" class="close">&times;</button>
 					<h3>Create new room</h3>
