@@ -28,6 +28,7 @@
 <!-- Start - Bootstrap inclusions -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />
 <!-- End - Bootstrap inclusions -->
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -40,9 +41,6 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-				</button>
 				<a class="navbar-brand" href="#">d20 Web Tools</a>
 			</div>
 			<div class="navbar-collapse collapse">
@@ -66,7 +64,7 @@
 								</a>
 								<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 									<li>
-										<a href="#NewRoom" role="button" data-toggle="modal">Create new room</a>
+										<a href="#NewRoom" data-toggle="modal">Create new room</a>
 									</li>
 									<li>
 										<a href="join-room-init">Join existent room</a>
@@ -135,7 +133,7 @@
 	<!-- /container -->
 	<t:session>
 		<jsp:attribute name="logged">
-			<div id="NewRoom" class="modal hide fade">
+			<div id="NewRoom" class="modal hide">
 				<div class="modal-header">
 					<button data-dismiss="modal" class="close">&times;</button>
 					<h3>Create new room</h3>
