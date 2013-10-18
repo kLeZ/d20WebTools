@@ -117,6 +117,6 @@
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="bootstrap/js/bootstrap.min.js" />
-	<script src="http://code.jquery.com/jquery.js" />
+	<script src="jquery/jquery-1.10.2.min.js" />
 </body>
 </html>
