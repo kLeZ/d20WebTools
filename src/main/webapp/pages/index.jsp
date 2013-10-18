@@ -10,6 +10,7 @@
 	<jsp:attribute name="header_description">
 		<p>This site acts as a web tool for the d20 RPG system, when played as pen &amp; paper.</p>
 	</jsp:attribute>
+	<jsp:attribute name="body">&nbsp;</jsp:attribute>
 	<jsp:attribute name="row1">&nbsp;</jsp:attribute>
 	<jsp:attribute name="row2">&nbsp;</jsp:attribute>
 	<jsp:attribute name="row3">&nbsp;</jsp:attribute>

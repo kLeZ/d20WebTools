@@ -1,8 +1,10 @@
 <%@ tag description="Jumbotron Bootstrap Responsive Layout"
 	language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@attribute name="title" fragment="true"%>
 <%@attribute name="header_title" fragment="true"%>
 <%@attribute name="header_description" fragment="true"%>
+<%@attribute name="body" fragment="true"%>
 <%@attribute name="row1" fragment="true"%>
 <%@attribute name="row2" fragment="true"%>
 <%@attribute name="row3" fragment="true"%>
@@ -11,8 +13,7 @@
 <%
 	String uri = request.getRequestURI();
 	String pageName = uri.substring(uri.lastIndexOf("/") + 1);
-	pageName = pageName.subSequence(0, pageName.lastIndexOf('.'))
-			.toString();
+	pageName = pageName.subSequence(0, pageName.lastIndexOf('.')).toString();
 %>
 
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -56,30 +57,60 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li<%if (pageName.contentEquals("index")) {%> class="active"<%}%>>
+					<li <%if (pageName.contentEquals("index")){%>class="active"<%}%>>
 						<a href="index">Home</a>
 					</li>
-					<li<%if (pageName.contentEquals("about")) {%> class="active"<%}%>>
+					<li <%if (pageName.contentEquals("about")){%>class="active"<%}%>>
 						<a href="about">About</a>
 					</li>
-					<li<%if (pageName.contentEquals("contact")) {%> class="active"<%}%>>
+					<li <%if (pageName.contentEquals("contact")){%>class="active"<%}%>>
 						<a href="contact">Contact</a>
 					</li>
 				</ul>
-				<form class="navbar-form navbar-right" action="sign-in">
-					<div class="form-group">
-						<input type="text" placeholder="Email" class="form-control" />
+				<s:if test="logged == true">
+					<div class="navbar-right" style="vertical-align: middle; height: 100%;">
+						<p style="color: white; vertical-align: middle; height: 100%;">You're logged in as <s:property value="credential.email"/></p>
 					</div>
-					<div class="form-group">
-						<input type="password" placeholder="Password" class="form-control" />
-					</div>
-					<button type="submit" class="btn btn-success">Sign in</button>
-				</form>
+				</s:if>
+				<s:else>
+					<form class="navbar-form navbar-right" action="sign-in" method="post" class="class java.util.HashMap">
+						<div class="form-group">
+							<input type="text" name="credential.email" placeholder="Email"
+								class="form-control" />
+						</div>
+						<div class="form-group">
+							<input type="password" name="credential.password"
+								placeholder="Password" class="form-control" />
+						</div>
+						<button type="submit" class="btn btn-success">Sign in</button>
+					</form>
+				</s:else>
 			</div>
 			<!--/.navbar-collapse -->
 		</div>
 	</div>
-
+	<s:if test="hasActionErrors()">
+		<!-- Modal -->
+		<div class="modal show fade in" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					</div>
+					<div class="modal-body">
+						<s:actionerror />
+					</div>
+					<div class="modal-footer">
+						<a href="#" onclick="$('#myModal').css('display', 'none');">boo!</a>
+						<button type="button" onclick="$('#myModal').css('display', 'none');alert('boo!')" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</s:if>
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	<div class="jumbotron">
 		<div class="container">
@@ -93,6 +124,7 @@
 	</div>
 
 	<div class="container">
+		<jsp:invoke fragment="body" />
 		<!-- Example row of columns -->
 		<div class="row">
 			<div class="col-lg-4">

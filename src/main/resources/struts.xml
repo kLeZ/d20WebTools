@@ -18,8 +18,10 @@
 		<action name="learn-more">
 			<result>/pages/learn-more.jsp</result>
 		</action>
-		<action name="sign-in">
-			<result>/pages/index.jsp</result>
+		<action name="sign-in" class="it.d4nguard.d20webtools.controller.SignIn">
+			<result name="success">/pages/index.jsp</result>
+			<result name="error">/pages/index.jsp</result>
+			<result name="login">/pages/login.jsp</result>
 		</action>
 	</package>
 </struts>
