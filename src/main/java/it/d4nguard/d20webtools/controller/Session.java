@@ -14,9 +14,11 @@ public class Session extends ActionSupport
 
 	private boolean logged;
 	private Credential credential;
+	protected Map<String, Object> _session = ActionContext.getContext().getSession();
 
 	public Credential getCredential()
 	{
+		if (credential == null) credential = (Credential) _session.get("credential");
 		return credential;
 	}
 
@@ -27,24 +29,24 @@ public class Session extends ActionSupport
 
 	public boolean isLogged()
 	{
+		if (!logged) logged = _session.containsKey("logged") && _session.get("logged") == "true";
 		return logged;
 	}
 
 	public void setLogged(boolean logged)
 	{
 		this.logged = logged;
-		Map<String, Object> session = ActionContext.getContext().getSession();
 		if (isLogged())
 		{
-			session.put("logged", "true");
-			session.put("context", new Date());
-			session.put("credential", credential);
+			_session.put("logged", "true");
+			_session.put("context", new Date());
+			_session.put("credential", credential);
 		}
 		else
 		{
-			session.remove("logged");
-			session.remove("context");
-			session.remove("credential");
+			_session.remove("logged");
+			_session.remove("context");
+			_session.remove("credential");
 			setCredential(null);
 		}
 	}

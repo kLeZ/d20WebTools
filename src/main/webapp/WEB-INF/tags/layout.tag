@@ -27,9 +27,9 @@
 <link href="../bootstrap/themes/jumbotron/theme.css" rel="stylesheet" />
 <!-- Start - Bootstrap inclusions -->
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
-<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css" />
-<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css">
 <!-- End - Bootstrap inclusions -->
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -64,7 +64,7 @@
 								</a>
 								<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 									<li>
-										<a href="#NewRoom" data-toggle="modal">Create new room</a>
+										<a href="#NewRoom" data-toggle="modal" data-target="#NewRoom">Create new room</a>
 									</li>
 									<li>
 										<a href="join-room-init">Join existent room</a>
@@ -100,14 +100,33 @@
 			<!--/.navbar-collapse -->
 		</div>
 	</div>
+	<t:session>
+		<jsp:attribute name="logged">
+			<div id="NewRoom" class="modal fade in" style="background-color: white; width: auto; display: none;" tabindex="-1" role="dialog" aria-labelledby="NewRoomLabel" aria-hidden="true">
+				<form action="new-room" method="post" class="class java.util.HashMap">
+					<div class="modal-header">
+						<button data-dismiss="modal" class="close">&times;</button>
+						<h3>Create new room</h3>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							Please insert room's name: 
+							<input type="text" name="room.name" placeholder="Name" class="form-control" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Create</button>
+						<a data-dismiss="modal" class="btn" href="#">Cancel</a>
+					</div>
+				</form>
+			</div>
+		</jsp:attribute>
+	</t:session>
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	<div class="jumbotron">
 		<div class="container">
 			<jsp:invoke fragment="header_title" />
 			<jsp:invoke fragment="header_description" />
-			<p>
-				<a class="btn btn-primary btn-lg" href="learn-more">Learn more &raquo;</a>
-			</p>
 		</div>
 	</div>
 	<div class="container">
@@ -131,28 +150,6 @@
 		</footer>
 	</div>
 	<!-- /container -->
-	<t:session>
-		<jsp:attribute name="logged">
-			<div id="NewRoom" class="modal hide fade in" style=" width:auto;" tabindex="-1" role="dialog" aria-labelledby="newRoomLabel" aria-hidden="true">
-				<div class="modal-header">
-					<button data-dismiss="modal" class="close">&times;</button>
-					<h3>Create new room</h3>
-				</div>
-				<div class="modal-body">
-					<form action="new-room" method="post" class="class java.util.HashMap">
-						<div class="form-group">
-							Please insert room's name: 
-							<input type="text" name="room.name" placeholder="RoomName" class="form-control" />
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Create</button>
-					<a data-dismiss="modal" class="btn" href="#">Cancel</a>
-				</div>
-			</div>
-		</jsp:attribute>
-	</t:session>
 	<!-- Bootstrap core JavaScript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
