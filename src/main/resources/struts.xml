@@ -34,6 +34,11 @@
 			<result name="error">/pages/index.jsp</result>
 		</action>
 		<action name="join-room" class="it.d4nguard.d20webtools.controller.RoomManager" method="joinRoom">
+			<result type="redirectAction">
+				<param name="actionName">pages/chat</param>
+			</result>
+		</action>
+		<action name="chat" class="it.d4nguard.d20webtools.controller.Chat">
 			<result>/pages/room.jsp</result>
 		</action>
 	</package>

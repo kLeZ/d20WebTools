@@ -1,7 +1,11 @@
 package it.d4nguard.d20webtools.model;
 
-public class Account
+import java.io.Serializable;
+
+public class Account implements Serializable
 {
+	private static final long serialVersionUID = 4109094925530070042L;
+
 	private String email;
 	private String password;
 

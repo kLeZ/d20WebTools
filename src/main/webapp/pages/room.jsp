@@ -58,16 +58,24 @@
 	<jsp:attribute name="title">d20WebTools - Room <s:property value="room.name" />
 	</jsp:attribute>
 	<jsp:attribute name="header_title">
-		<h2>Room {<s:property value="room.name" />}</h2>
-		<p>Master: &lt;<s:property value="room.master.webEmail" />&gt;</p>
+		<h1><s:property value="room.name" /></h1>
+		<p style="font-size: x-small;">by <s:property value="room.master.webEmail" /></p>
 	</jsp:attribute>
 	<jsp:attribute name="header_description">&nbsp;</jsp:attribute>
 	<jsp:attribute name="body">&nbsp;</jsp:attribute>
 	<jsp:attribute name="row1">
-		<div id="chatbox"></div>
-		<form name="message" action="chat" method="post" role="form" class="form-inline">
+		<div id="chatbox" class="row">
+			<s:iterator value="room.messages" status="msg">
+				<div>
+					[<s:property value="time"/>]
+					<strong><s:property value="user.account.webEmail"/></strong>:
+					<s:property value="text"/>
+				</div>
+			</s:iterator>
+		</div>
+		<form action="chat" method="post" role="form" class="form-inline">
 			<div class="input-group" style="width: 100%;">
-				<input name="room.messages" type="text" class="form-control" />
+				<input name="message" type="text" class="form-control" />
 				<span class="input-group-btn">
 					<button id="send" type="submit" class="btn btn-primary">Send</button>
 				</span>
