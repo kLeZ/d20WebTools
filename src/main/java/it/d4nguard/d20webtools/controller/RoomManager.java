@@ -3,7 +3,7 @@ package it.d4nguard.d20webtools.controller;
 import it.d4nguard.d20webtools.model.Credential;
 import it.d4nguard.d20webtools.model.Room;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class RoomManager extends Session
 {
@@ -16,7 +16,7 @@ public class RoomManager extends Session
 		if (getRoom().getName().contentEquals("Nebula"))
 		{
 			getRoom().setMaster(getCredential());
-			getRoom().setMembers(new HashSet<Credential>());
+			getRoom().setMembers(new LinkedHashSet<Credential>());
 			getRoom().getMembers().add(new Credential("root@d4nguard.org", ""));
 			getRoom().getMembers().add(new Credential("piero@cicciamica.info", ""));
 			getRoom().getMembers().add(new Credential("kiki@otaku4eva.net", ""));
