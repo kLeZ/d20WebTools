@@ -1,15 +1,15 @@
 package it.d4nguard.d20webtools.model;
 
-public class Credential
+public class Account
 {
 	private String email;
 	private String password;
 
-	public Credential()
+	public Account()
 	{
 	}
 
-	public Credential(String email, String password)
+	public Account(String email, String password)
 	{
 		super();
 		this.email = email;

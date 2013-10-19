@@ -31,6 +31,7 @@
 <link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css">
 <!-- End - Bootstrap inclusions -->
+<link rel="stylesheet" href="../css/custom.css">
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
 	<script src="../js/html5shiv.js"></script>
@@ -79,7 +80,7 @@
 					<jsp:attribute name="logged">
 					<div class="navbar-right" style="vertical-align: middle; height: 100%;">
 						<span class="nav" style="color: white; vertical-align: middle; height: 100%;">
-							You're logged in as <s:property value="#session.credential.webEmail" default="root@d20webtools.org" escape="false" escapeHtml="false"
+							You're logged in as <s:property value="#session.account.webEmail" default="root@d20webtools.org" escape="false" escapeHtml="false"
 									escapeCsv="false" escapeJavaScript="false" escapeXml="false" />
 						</span> <a href="logout">Logout</a>
 					</div>
@@ -87,10 +88,10 @@
 					<jsp:attribute name="notlogged">
 					<form class="navbar-form navbar-right" action="sign-in" method="post" class="class java.util.HashMap">
 						<div class="form-group">
-							<input type="text" name="credential.email" placeholder="Email" class="form-control" />
+							<input type="text" name="account.email" placeholder="Email" class="form-control" />
 						</div>
 						<div class="form-group">
-							<input type="password" name="credential.password" placeholder="Password" class="form-control" />
+							<input type="password" name="account.password" placeholder="Password" class="form-control" />
 						</div>
 						<button type="submit" class="btn btn-success">Sign in</button>
 					</form>
@@ -100,6 +101,12 @@
 			<!--/.navbar-collapse -->
 		</div>
 	</div>
+	<s:if test="hasActionErrors()">
+		<div id="error-box" class="alert alert-error">
+			<a class="close" data-dismiss="alert" href="#error-box">&times;</a>
+			<strong><s:actionerror /></strong>
+		</div>
+	</s:if>
 	<t:session>
 		<jsp:attribute name="logged">
 			<div id="NewRoom" class="modal fade in" style="background-color: white; width: auto; display: none;" tabindex="-1" role="dialog" aria-labelledby="NewRoomLabel" aria-hidden="true">
@@ -123,7 +130,7 @@
 		</jsp:attribute>
 	</t:session>
 	<!-- Main jumbotron for a primary marketing message or call to action -->
-	<div class="jumbotron">
+	<div id="jumbo_header" class="jumbotron">
 		<div class="container">
 			<jsp:invoke fragment="header_title" />
 			<jsp:invoke fragment="header_description" />
@@ -133,13 +140,13 @@
 		<jsp:invoke fragment="body" />
 		<!-- Example row of columns -->
 		<div class="row">
-			<div class="col-lg-4">
+			<div id="row1" class="col-lg-4">
 				<jsp:invoke fragment="row1" />
 			</div>
-			<div class="col-lg-4">
+			<div id="row2" class="col-lg-4">
 				<jsp:invoke fragment="row2" />
 			</div>
-			<div class="col-lg-4">
+			<div id="row3" class="col-lg-4">
 				<jsp:invoke fragment="row3" />
 			</div>
 		</div>

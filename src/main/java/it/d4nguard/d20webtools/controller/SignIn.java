@@ -8,9 +8,9 @@ public class SignIn extends Session
 	public String execute() throws Exception
 	{
 		String ret = "";
-		if (getCredential() != null)
+		if (getAccount() != null)
 		{
-			if (getCredential().getEmail().contentEquals("julius8774@gmail.com") && getCredential().getPassword().contentEquals("klez-hack87"))
+			if (getAccount().getEmail().contentEquals("julius8774@gmail.com") && getAccount().getPassword().contentEquals("klez-hack87"))
 			{
 				setLogged(true);
 				ret = SUCCESS;

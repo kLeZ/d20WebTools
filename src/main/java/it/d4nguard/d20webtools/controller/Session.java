@@ -1,6 +1,6 @@
 package it.d4nguard.d20webtools.controller;
 
-import it.d4nguard.d20webtools.model.Credential;
+import it.d4nguard.d20webtools.model.Account;
 
 import java.util.Date;
 import java.util.Map;
@@ -13,18 +13,18 @@ public class Session extends ActionSupport
 	private static final long serialVersionUID = 6686337047561791387L;
 
 	private boolean logged;
-	private Credential credential;
+	private Account account;
 	protected Map<String, Object> _session = ActionContext.getContext().getSession();
 
-	public Credential getCredential()
+	public Account getAccount()
 	{
-		if (credential == null) credential = (Credential) _session.get("credential");
-		return credential;
+		if (account == null) account = (Account) _session.get("account");
+		return account;
 	}
 
-	public void setCredential(Credential credential)
+	public void setAccount(Account account)
 	{
-		this.credential = credential;
+		this.account = account;
 	}
 
 	public boolean isLogged()
@@ -36,18 +36,18 @@ public class Session extends ActionSupport
 	public void setLogged(boolean logged)
 	{
 		this.logged = logged;
-		if (isLogged())
+		if (logged)
 		{
 			_session.put("logged", "true");
 			_session.put("context", new Date());
-			_session.put("credential", credential);
+			_session.put("account", account);
 		}
 		else
 		{
 			_session.remove("logged");
 			_session.remove("context");
-			_session.remove("credential");
-			setCredential(null);
+			_session.remove("account");
+			setAccount(null);
 		}
 	}
 }
