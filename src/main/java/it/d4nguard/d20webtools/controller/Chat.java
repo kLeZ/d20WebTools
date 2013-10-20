@@ -3,7 +3,6 @@ package it.d4nguard.d20webtools.controller;
 import it.d4nguard.d20webtools.engine.Evaluator;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
-import it.d4nguard.d20webtools.model.User;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -32,7 +31,7 @@ public class Chat extends Session implements ModelDriven<Room>
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
-				Message msg = new Message(now(), new User(getAccount()), eval.eval(message));
+				Message msg = new Message(now(), getUser(), eval.eval(message));
 				getRoom().getMessages().add(msg);
 				RoomManager.ROOMS.put(getRoom().getId(), getRoom());
 			}

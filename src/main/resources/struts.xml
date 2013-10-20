@@ -21,7 +21,11 @@
 		<action name="sign-in" class="it.d4nguard.d20webtools.controller.SignIn">
 			<result name="success">/pages/index.jsp</result>
 			<result name="error">/pages/index.jsp</result>
-			<result name="login">/pages/login.jsp</result>
+			<result name="login">/pages/sign-up.jsp</result>
+		</action>
+		<action name="sign-up" class="it.d4nguard.d20webtools.controller.SignUp">
+			<result name="input">/pages/sign-up.jsp</result>
+			<result name="success">/pages/index.jsp</result>
 		</action>
 		<action name="logout" class="it.d4nguard.d20webtools.controller.SignIn" method="logout">
 			<result>/pages/index.jsp</result>
@@ -39,7 +43,7 @@
 			</result>
 		</action>
 		<action name="chat" class="it.d4nguard.d20webtools.controller.Chat">
-			<result>/pages/room.jsp</result>
+			<result name="success">/pages/room.jsp</result>
 		</action>
 	</package>
 </struts>

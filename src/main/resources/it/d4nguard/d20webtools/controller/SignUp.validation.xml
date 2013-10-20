@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC
+		"-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+		"http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+	<field name="user.name">
+		<field-validator type="requiredstring">
+			<message>Username is required </message>
+		</field-validator>
+	</field>
+	<field name="user.password">
+		<field-validator type="requiredstring">
+			<message>Password is required </message>
+		</field-validator>
+
+		<field-validator type="regex">
+			<param name="expression"><![CDATA[^.*(?=.{6,})(?=.*[a-z])(?=.*[\d\W]).*$]]></param>
+			<message>Password must be at least 6 characters long, with at least one lower case and at least one uppercase letter and at least one digit or one symbol. E.g.: Password1</message>
+		</field-validator>
+	</field>
+	<field name="user.email">
+		<field-validator type="email">
+			<message>Email address is not valid</message>
+		</field-validator>
+		<field-validator type="requiredstring">
+			<message>Email address is required!</message>
+		</field-validator>
+	</field>
+	<validator type="expression">
+		<param name="expression">user.password == confirmPassword</param>
+		<message>Password and confirm password do not match!</message>
+	</validator>
+</validators>

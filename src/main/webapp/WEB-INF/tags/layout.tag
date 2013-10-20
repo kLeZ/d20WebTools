@@ -1,6 +1,7 @@
 <%@ tag description="Jumbotron Bootstrap Responsive Layout" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@attribute name="head" fragment="true"%>
 <%@attribute name="title" fragment="true"%>
 <%@attribute name="header_title" fragment="true"%>
 <%@attribute name="header_description" fragment="true"%>
@@ -26,12 +27,16 @@
 <link rel="shortcut icon" href="../images/favicon.png" />
 <link href="../bootstrap/themes/jumbotron/theme.css" rel="stylesheet" />
 <!-- Start - Bootstrap inclusions -->
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css">
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />
 <!-- End - Bootstrap inclusions -->
-<link rel="stylesheet" href="../css/custom.css">
+<link href="../css/custom.css" rel="stylesheet" />
+
+<!-- JavaScript -->
+<script src="../jquery/jquery-1.10.2.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
 	<script src="../js/html5shiv.js"></script>
@@ -80,7 +85,7 @@
 					<jsp:attribute name="logged">
 					<div class="navbar-right" style="vertical-align: middle; height: 100%;">
 						<span class="nav" style="color: white; vertical-align: middle; height: 100%;">
-							You're logged in as <s:property value="#session.account.webEmail" default="root@d20webtools.org" escape="false" escapeHtml="false"
+							You're logged in as <s:property value="#session.user.webEmail" default="root@d20webtools.org" escape="false" escapeHtml="false"
 									escapeCsv="false" escapeJavaScript="false" escapeXml="false" />
 						</span> <a href="logout">Logout</a>
 					</div>
@@ -88,10 +93,10 @@
 					<jsp:attribute name="notlogged">
 					<form class="navbar-form navbar-right" action="sign-in" method="post" class="class java.util.HashMap">
 						<div class="form-group">
-							<input type="text" name="account.email" placeholder="Email" class="form-control" />
+							<input type="text" name="user.email" placeholder="Email" class="form-control" value="test@d20webtools.org" />
 						</div>
 						<div class="form-group">
-							<input type="password" name="account.password" placeholder="Password" class="form-control" />
+							<input type="password" name="user.password" placeholder="Password" class="form-control" value="test" />
 						</div>
 						<button type="submit" class="btn btn-success">Sign in</button>
 					</form>
@@ -109,7 +114,8 @@
 	</s:if>
 	<t:session>
 		<jsp:attribute name="logged">
-			<div id="NewRoom" class="modal fade in" style="background-color: white; width: auto; display: none;" tabindex="-1" role="dialog" aria-labelledby="NewRoomLabel" aria-hidden="true">
+			<div id="NewRoom" class="modal fade in" style="background-color: white; width: auto; display: none;" tabindex="-1" role="dialog"
+				aria-labelledby="NewRoomLabel" aria-hidden="true">
 				<form action="new-room" method="post" class="class java.util.HashMap">
 					<div class="modal-header">
 						<button data-dismiss="modal" class="close">&times;</button>
@@ -157,10 +163,5 @@
 		</footer>
 	</div>
 	<!-- /container -->
-	<!-- Bootstrap core JavaScript
-    ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="../jquery/jquery-1.10.2.min.js"></script>
-	<script src="../bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

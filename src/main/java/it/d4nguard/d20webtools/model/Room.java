@@ -9,8 +9,8 @@ public class Room implements Serializable
 
 	private int id;
 	private String name;
-	private Account master;
-	private LinkedHashSet<Account> members = new LinkedHashSet<Account>();
+	private User master;
+	private LinkedHashSet<User> members = new LinkedHashSet<User>();
 	private LinkedHashSet<Message> messages = new LinkedHashSet<Message>();
 
 	public Room()
@@ -21,7 +21,7 @@ public class Room implements Serializable
 	{
 		setId(id);
 		setName(name);
-		setMaster(new Account(master, ""));
+		setMaster(new User(master, master, ""));
 	}
 
 	public int getId()
@@ -44,22 +44,22 @@ public class Room implements Serializable
 		this.name = name;
 	}
 
-	public Account getMaster()
+	public User getMaster()
 	{
 		return master;
 	}
 
-	public void setMaster(Account master)
+	public void setMaster(User master)
 	{
 		this.master = master;
 	}
 
-	public LinkedHashSet<Account> getMembers()
+	public LinkedHashSet<User> getMembers()
 	{
 		return members;
 	}
 
-	public void setMembers(LinkedHashSet<Account> members)
+	public void setMembers(LinkedHashSet<User> members)
 	{
 		this.members = members;
 	}

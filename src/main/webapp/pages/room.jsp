@@ -1,7 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@taglib prefix="s" uri="/struts-tags"%>
-<style>
+<t:layout>
+	<jsp:attribute name="head">
+		<link href="../css/tablecloth.css" rel="stylesheet" />
+		<link href="../css/prettify.css" rel="stylesheet" />
+		<script src="../js/jquery.metadata.js"></script>
+		<script src="../js/jquery.tablesorter.min.js"></script>
+		<script src="../js/jquery.tablecloth.js"></script>
+	</jsp:attribute>
+	<jsp:attribute name="title">d20WebTools - Room <s:property value="room.name" />
+	</jsp:attribute>
+	<jsp:attribute name="header_title">
+		<h1>
+			<s:property value="room.name" />
+		</h1>
+		<p style="font-size: x-small;">by <s:property value="room.master.webEmail" />
+		</p>
+	</jsp:attribute>
+	<jsp:attribute name="header_description">&nbsp;</jsp:attribute>
+	<jsp:attribute name="body">
+		<style type="text/css">
 <!--
 #jumbo_header {
 	padding: 0;
@@ -15,7 +34,8 @@
 #chatbox {
 	text-align: left;
 	margin: 0 auto;
-	margin-top: 25px; margin-bottom : 25px;
+	margin-top: 25px;
+	margin-bottom: 25px;
 	padding: 10px;
 	background: #fff;
 	height: 230px;
@@ -35,24 +55,33 @@
 }
 -->
 </style>
-<t:layout>
-	<jsp:attribute name="title">d20WebTools - Room <s:property value="room.name" />
 	</jsp:attribute>
-	<jsp:attribute name="header_title">
-		<h1>
-			<s:property value="room.name" />
-		</h1>
-		<p style="font-size: x-small;">by <s:property value="room.master.webEmail" />
-		</p>
-	</jsp:attribute>
-	<jsp:attribute name="header_description">&nbsp;</jsp:attribute>
-	<jsp:attribute name="body">&nbsp;</jsp:attribute>
 	<jsp:attribute name="row1">
+		<script type="text/javascript">
+			function scrollLog(animate) {
+				if (animate) {
+					$("#chatbox").animate({
+						scrollTop : $('#chatbox')[0].scrollHeight
+					}, 'normal');
+				} else {
+					$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+				}
+			}
+
+			$(document).ready(function() {
+				scrollLog(false);
+				$('input[name="message"]').focus();
+			});
+
+			$('#send').click(function() {
+				scrollLog(false);
+			});
+		</script>
 		<div id="chatbox" class="row">
 			<s:iterator value="room.messages" status="msg">
 				<div>
 					[<s:date name="time" format="dd/MM/yyyy hh:mm:ss" />]
-					<strong><s:property value="user.account.webEmail" /></strong>:
+					<strong><s:property value="user.webEmail" /></strong>:
 					<s:property value="text" />
 				</div>
 			</s:iterator>
@@ -67,39 +96,17 @@
 		</form>
 	</jsp:attribute>
 	<jsp:attribute name="row3">
+		<script type="text/javascript">
+			$("table").tablecloth();
+		</script>
 		<h4>Logged members</h4>
 		<table class="table table-striped table-condensed">
 		<s:iterator value="room.members" status="member">
 			<tr>
-				<s:if test="#member.even == true">
-					<td class="even"><s:property value="webEmail" /></td>
-				</s:if>
-				<s:else>
 					<td><s:property value="webEmail" /></td>
-				</s:else>
-			</tr>
+				</tr>
 		</s:iterator>
 		</table>
 	</jsp:attribute>
 	<jsp:attribute name="footer">&nbsp;</jsp:attribute>
 </t:layout>
-<script type="text/javascript">
-	function scrollLog(animate) {
-		if (animate) {
-			$("#chatbox").animate({
-				scrollTop : $('#chatbox')[0].scrollHeight
-			}, 'normal');
-		} else {
-			$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
-		}
-	}
-
-	$(document).ready(function() {
-		scrollLog(false);
-		$('input[name="message"]').focus();
-	});
-
-	$('#send').click(function() {
-		scrollLog(false);
-	});
-</script>

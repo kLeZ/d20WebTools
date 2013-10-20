@@ -1,7 +1,7 @@
 package it.d4nguard.d20webtools.controller;
 
-import it.d4nguard.d20webtools.model.Account;
 import it.d4nguard.d20webtools.model.Room;
+import it.d4nguard.d20webtools.model.User;
 
 import java.util.LinkedHashMap;
 
@@ -14,10 +14,10 @@ public class RoomManager extends Session
 	static
 	{
 		Room r = new Room(1, "Nebula", "julius8774@gmail.com");
-		r.getMembers().add(new Account("root@d4nguard.org", ""));
-		r.getMembers().add(new Account("piero@cicciamica.info", ""));
-		r.getMembers().add(new Account("kiki@otaku4eva.net", ""));
-		r.getMembers().add(new Account("greg@google.com", ""));
+		r.getMembers().add(new User("Root", "root@d4nguard.org", ""));
+		r.getMembers().add(new User("Piero", "piero@cicciamica.info", ""));
+		r.getMembers().add(new User("Kiki", "kiki@otaku4eva.net", ""));
+		r.getMembers().add(new User("Greg", "greg@google.com", ""));
 		ROOMS.put(1, r);
 		ROOMS.put(2, new Room(2, "Stralis", "root@d4nguard.org"));
 		ROOMS.put(3, new Room(3, "Ankiku", "piero@cicciamica.info"));
@@ -38,7 +38,7 @@ public class RoomManager extends Session
 			if (getRoom().getName().contentEquals("Nebula"))
 			{
 				setRoom(ROOMS.get(1));
-				getRoom().setMaster(getAccount());
+				getRoom().setMaster(getUser());
 				setRoom(getRoom());
 			}
 			else
