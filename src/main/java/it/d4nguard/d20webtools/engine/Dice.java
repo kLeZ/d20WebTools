@@ -1,12 +1,19 @@
 package it.d4nguard.d20webtools.engine;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class Dice
 {
 	public static final char OPENED_DICE = '(';
 	public static final char CLOSED_DICE = ')';
 	public static final char DICE_TOKEN = 'D';
+	public static final char OPENED_DICE_RESULTS = '{';
+	public static final char CLOSED_DICE_RESULTS = '}';
 	public static final String DICE_TOKEN_S = String.valueOf(DICE_TOKEN);
 
 	private static final MersenneTwister random = new MersenneTwister(299792458);
@@ -15,13 +22,11 @@ public class Dice
 	private final int nFaces;
 	private final OperatorType modifierOperator;
 	private final int modifier;
+	private final LinkedList<Integer> diceResults;
 
 	public Dice(int nThrows, int nFaces)
 	{
-		this.nThrows = nThrows;
-		this.nFaces = nFaces;
-		modifierOperator = null;
-		modifier = Integer.MIN_VALUE;
+		this(nThrows, nFaces, null, Integer.MIN_VALUE);
 	}
 
 	public Dice(int nThrows, int nFaces, OperatorType modifierOperator, int modifier)
@@ -30,6 +35,7 @@ public class Dice
 		this.nFaces = nFaces;
 		this.modifierOperator = modifierOperator;
 		this.modifier = modifier;
+		diceResults = new LinkedList<Integer>();
 	}
 
 	/**
@@ -72,9 +78,19 @@ public class Dice
 		return (modifierOperator != null) && (modifier != Integer.MIN_VALUE);
 	}
 
+	public LinkedList<Integer> getDiceResults()
+	{
+		return diceResults;
+	}
+
 	public static boolean isDice(String dt)
 	{
 		return parse(dt) != null;
+	}
+
+	public static boolean isManyDice(String dt)
+	{
+		return !parseMany(dt).isEmpty();
 	}
 
 	public static LinkedHashMap<Dice, OperatorType> parseMany(String dts)
@@ -114,7 +130,7 @@ public class Dice
 				{
 					ot = OperatorType.getOperator(part2);
 				}
-				ret.put(dt, ot);
+				if (dt != null) ret.put(dt, ot);
 				dt = null;
 			}
 			ot = null;
@@ -183,33 +199,36 @@ public class Dice
 
 	public static String rollShowResults(String diceExpression)
 	{
-		LinkedHashMap<Dice, OperatorType> dice = parseMany(diceExpression);
 		StringBuilder sb = new StringBuilder();
-		Iterator<Map.Entry<Dice, OperatorType>> it = dice.entrySet().iterator();
-		OperatorType op = null;
-		Integer res = 0, roll = 0;
-		sb.append("{");
-		while (it.hasNext())
+		if (isManyDice(diceExpression))
 		{
-			Map.Entry<Dice, OperatorType> current = it.next();
-			if (op != null)
+			LinkedHashMap<Dice, OperatorType> dice = parseMany(diceExpression);
+			Iterator<Map.Entry<Dice, OperatorType>> it = dice.entrySet().iterator();
+			OperatorType op = null;
+			Integer res = 0, roll = 0;
+			sb.append("{");
+			while (it.hasNext())
 			{
-				roll = current.getKey().roll();
-				res = op.doOperation(res, roll);
+				Map.Entry<Dice, OperatorType> current = it.next();
+				if (op != null)
+				{
+					roll = current.getKey().roll();
+					res = op.doOperation(res, roll);
+				}
+				else
+				{
+					// First roll
+					res = current.getKey().roll();
+				}
+				op = current.getValue();
+				sb.append(current.getKey());
+				if (op != null)
+				{
+					sb.append(op.toString());
+				}
 			}
-			else
-			{
-				// First roll
-				res = current.getKey().roll();
-			}
-			op = current.getValue();
-			sb.append("[").append(roll).append(":").append(res).append("]");
-			if (op != null)
-			{
-				sb.append(op.toString());
-			}
+			sb.append("} = ").append(res);
 		}
-		sb.append("} = ").append(res);
 		return sb.toString();
 	}
 
@@ -266,7 +285,8 @@ public class Dice
 		int ret = 0;
 		for (int i = 0; i < getnThrows(); i++)
 		{
-			ret += random.next(1, getnFaces());
+			diceResults.add(random.next(1, getnFaces()));
+			ret += diceResults.getLast();
 		}
 		if (hasModifier())
 		{
@@ -304,11 +324,23 @@ public class Dice
 		{
 			sb.append(modifierOperator).append(modifier);
 		}
+		if (diceResults.size() > 0)
+		{
+			sb.append('=').append(OPENED_DICE_RESULTS);
+
+			int i = 0;
+			for (Integer result : diceResults)
+			{
+				sb.append(result);
+				if (diceResults.size() > ++i) sb.append("::");
+			}
+			sb.append(CLOSED_DICE_RESULTS);
+		}
 		return sb.toString();
 	}
 
 	public String toEnclosedString()
 	{
-		return String.format("%s%s%s", OPENED_DICE, toString(), CLOSED_DICE);
+		return String.format("%s%s%s", OPENED_DICE, this, CLOSED_DICE);
 	}
 }

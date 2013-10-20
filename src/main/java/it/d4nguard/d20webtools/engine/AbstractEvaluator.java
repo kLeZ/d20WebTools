@@ -2,12 +2,28 @@ package it.d4nguard.d20webtools.engine;
 
 public abstract class AbstractEvaluator
 {
-	AbstractEvaluator next = null;
+	private AbstractEvaluator next;
 
-	public void setNext(AbstractEvaluator next)
+	public AbstractEvaluator getNext()
 	{
-		this.next = next;
+		return next;
 	}
 
-	public abstract String eval(String message);
+	public AbstractEvaluator setNext(AbstractEvaluator next)
+	{
+		this.next = next;
+		return this;
+	}
+
+	public abstract boolean canManage(String message);
+
+	protected abstract String manage(String message);
+
+	public String eval(String message)
+	{
+		if (canManage(message)) return manage(message);
+		else if (getNext() != null) return getNext().eval(message);
+		else return message;
+	}
+
 }

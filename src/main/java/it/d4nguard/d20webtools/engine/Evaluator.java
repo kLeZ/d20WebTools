@@ -1,16 +1,21 @@
 package it.d4nguard.d20webtools.engine;
 
-public class DiceExpressionEvaluator extends AbstractEvaluator
+public class Evaluator extends AbstractEvaluator
 {
+	public Evaluator()
+	{
+		setNext(new DiceExpressionEvaluator());
+	}
+
 	@Override
 	public boolean canManage(String message)
 	{
-		return Dice.isManyDice(message);
+		return false;
 	}
 
 	@Override
 	protected String manage(String message)
 	{
-		return Dice.rollShowResults(message);
+		return message;
 	}
 }
