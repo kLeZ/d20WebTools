@@ -15,14 +15,14 @@
 #chatbox {
 	text-align: left;
 	margin: 0 auto;
-	margin-top: 25px;
-	margin-bottom: 25px;
+	margin-top: 25px; margin-bottom : 25px;
 	padding: 10px;
 	background: #fff;
 	height: 230px;
 	width: auto;
 	border: 1px solid #ACD8F0;
 	overflow: auto;
+	margin-bottom: 25px;
 }
 
 .form-group,.form-group button,.form-group input {
@@ -35,31 +35,15 @@
 }
 -->
 </style>
-<script>
-	function scrollLog() {
-		//Auto-scroll			
-		var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height after the request
-		if (newscrollHeight > oldscrollHeight) {
-			$("#chatbox").animate({
-				scrollTop : newscrollHeight
-			}, 'normal'); //Autoscroll to bottom of div
-		}
-	}
-
-	$(document).ready(function() {
-		scrollLog();
-	});
-
-	$('#send').click(function() {
-		scrollLog();
-	});
-</script>
 <t:layout>
 	<jsp:attribute name="title">d20WebTools - Room <s:property value="room.name" />
 	</jsp:attribute>
 	<jsp:attribute name="header_title">
-		<h1><s:property value="room.name" /></h1>
-		<p style="font-size: x-small;">by <s:property value="room.master.webEmail" /></p>
+		<h1>
+			<s:property value="room.name" />
+		</h1>
+		<p style="font-size: x-small;">by <s:property value="room.master.webEmail" />
+		</p>
 	</jsp:attribute>
 	<jsp:attribute name="header_description">&nbsp;</jsp:attribute>
 	<jsp:attribute name="body">&nbsp;</jsp:attribute>
@@ -67,9 +51,9 @@
 		<div id="chatbox" class="row">
 			<s:iterator value="room.messages" status="msg">
 				<div>
-					[<s:property value="time"/>]
-					<strong><s:property value="user.account.webEmail"/></strong>:
-					<s:property value="text"/>
+					[<s:date name="time" format="dd/MM/yyyy hh:mm:ss" />]
+					<strong><s:property value="user.account.webEmail" /></strong>:
+					<s:property value="text" />
 				</div>
 			</s:iterator>
 		</div>
@@ -99,3 +83,23 @@
 	</jsp:attribute>
 	<jsp:attribute name="footer">&nbsp;</jsp:attribute>
 </t:layout>
+<script type="text/javascript">
+	function scrollLog(animate) {
+		if (animate) {
+			$("#chatbox").animate({
+				scrollTop : $('#chatbox')[0].scrollHeight
+			}, 'normal');
+		} else {
+			$('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+		}
+	}
+
+	$(document).ready(function() {
+		scrollLog(false);
+		$('input[name="message"]').focus();
+	});
+
+	$('#send').click(function() {
+		scrollLog(false);
+	});
+</script>
