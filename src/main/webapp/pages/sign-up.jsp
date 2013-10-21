@@ -7,20 +7,22 @@
 		<h3>Sign Up</h3>
 	</jsp:attribute>
 	<jsp:attribute name="body">
-		<form action="sign-up" method="post">
-			<div class="form-group">
-				Name: <input type="text" name="user.name" class="form-control" />
+		<style type="text/css">
+			table{width: 100%;}.wwFormTable label{color:#000000;}
+			ul.errorMessage{margin-bottom:0;}
+		</style>
+		<s:if test="hasFieldErrors()">
+			<div class="alert alert-danger">
+				<a class="close" data-dismiss="alert" href="#error-box">&times;</a>
+				<strong><s:fielderror /></strong>
 			</div>
-			<div class="form-group">
-				Email: <input type="text" name="user.email" class="form-control" />
-			</div>
-			<div class="form-group">
-				Password: <input type="password" name="user.password" class="form-control" />
-			</div>
-			<div class="form-group">
-				Confirm: <input type="password" name="confirmPassword" class="form-control" />
-			</div>
-			<button type="submit" class="btn btn-primary">Sign Up</button>
-		</form>
+		</s:if>
+		<s:form id="the_form" action="sign-up" namespace="/pages">
+			<s:textfield name="user.name" label="Name" errorPosition="bottom" cssClass="form-control" />
+			<s:textfield name="user.email" label="Email" errorPosition="bottom" cssClass="form-control" />
+			<s:password name="user.password" label="Password" errorPosition="bottom" cssClass="form-control" />
+			<s:password name="confirmPassword" label="Confirm" errorPosition="bottom" cssClass="form-control" />
+			<s:submit cssClass="btn btn-primary" />
+		</s:form>
 	</jsp:attribute>
 </t:layout>

@@ -68,24 +68,26 @@
 				}
 			}
 
+			function ReloadPage() {
+				//window.location = location.href;
+				$('#chatbox').load('chatbox');
+			};
+			//var refreshId;
 			$(document).ready(function() {
 				scrollLog(false);
 				$('input[name="message"]').focus();
+				setTimeout("ReloadPage()", 1000);
+				//refreshId = setInterval(ReloadPage(), 1000);
+				$.ajaxSetup({
+					cache : false
+				});
 			});
 
 			$('#send').click(function() {
 				scrollLog(false);
 			});
 		</script>
-		<div id="chatbox" class="row">
-			<s:iterator value="room.messages" status="msg">
-				<div>
-					[<s:date name="time" format="dd/MM/yyyy hh:mm:ss" />]
-					<strong><s:property value="user.webEmail" /></strong>:
-					<s:property value="text" />
-				</div>
-			</s:iterator>
-		</div>
+		<div id="chatbox" class="row"></div>
 		<form action="chat" method="post" role="form" class="form-inline">
 			<div class="input-group" style="width: 100%;">
 				<input name="message" type="text" class="form-control" />

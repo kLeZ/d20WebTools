@@ -107,7 +107,7 @@
 		</div>
 	</div>
 	<s:if test="hasActionErrors()">
-		<div id="error-box" class="alert alert-error">
+		<div id="error-box" class="alert alert-danger">
 			<a class="close" data-dismiss="alert" href="#error-box">&times;</a>
 			<strong><s:actionerror /></strong>
 		</div>

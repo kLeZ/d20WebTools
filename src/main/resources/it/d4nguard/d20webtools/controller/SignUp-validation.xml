@@ -15,7 +15,7 @@
 
 		<field-validator type="regex">
 			<param name="expression"><![CDATA[^.*(?=.{6,})(?=.*[a-z])(?=.*[\d\W]).*$]]></param>
-			<message>Password must be at least 6 characters long, with at least one lower case and at least one uppercase letter and at least one digit or one symbol. E.g.: Password1</message>
+			<message>Password must be at least 6 characters long, with at least one lower case letter and at least one digit or one symbol. E.g.: passw0rd</message>
 		</field-validator>
 	</field>
 	<field name="user.email">
@@ -27,7 +27,7 @@
 		</field-validator>
 	</field>
 	<validator type="expression">
-		<param name="expression">user.password == confirmPassword</param>
+		<param name="expression">user.password eq confirmPassword</param>
 		<message>Password and confirm password do not match!</message>
 	</validator>
 </validators>

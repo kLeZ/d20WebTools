@@ -4,6 +4,10 @@ import it.d4nguard.d20webtools.engine.Evaluator;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,6 +19,7 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	private Room room;
 	private String message;
+	private InputStream chatboxContent;
 
 	public Date now()
 	{
@@ -28,6 +33,7 @@ public class Chat extends Session implements ModelDriven<Room>
 		synchronized (_session)
 		{
 			setRoom(RoomManager.ROOMS.get(_session.get(RoomManager.ROOM_ID)));
+			messages();
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
@@ -37,6 +43,37 @@ public class Chat extends Session implements ModelDriven<Room>
 			}
 		}
 		return ret;
+	}
+
+	public String messages() throws Exception
+	{
+		try
+		{
+			StringBuilder sb = new StringBuilder();
+			if (getRoom() != null)
+			{
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+				sb.append("<div>");
+				for (Message msg : getRoom().getMessages())
+				{
+					sb.append('[').append(sdf.format(msg.getTime())).append(']');
+					sb.append(" <strong>").append(msg.getUser().getEmail()).append("</strong>: ");
+					sb.append(msg.getText());
+				}
+				sb.append("</div>");
+			}
+			chatboxContent = new ByteArrayInputStream(sb.toString().getBytes("UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		return SUCCESS;
+	}
+
+	public InputStream getChatboxContent()
+	{
+		return chatboxContent;
 	}
 
 	public Room getRoom()
