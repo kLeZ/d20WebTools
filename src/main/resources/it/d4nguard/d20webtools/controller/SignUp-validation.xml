@@ -5,17 +5,20 @@
 <validators>
 	<field name="user.name">
 		<field-validator type="requiredstring">
-			<message>Username is required </message>
+			<message>Username is required</message>
 		</field-validator>
 	</field>
 	<field name="user.password">
 		<field-validator type="requiredstring">
-			<message>Password is required </message>
+			<message>Password is required</message>
 		</field-validator>
-
-		<field-validator type="regex">
-			<param name="expression"><![CDATA[^.*(?=.{6,})(?=.*[a-z])(?=.*[\d\W]).*$]]></param>
-			<message>Password must be at least 6 characters long, with at least one lower case letter and at least one digit or one symbol. E.g.: passw0rd</message>
+		<field-validator type="stringlength">
+			<param name="minLength">6</param>
+			<message>password length must be at least of ${minLength} characters</message>
+		</field-validator>
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[user.password == confirmPassword]]></param>
+			<message>Passwords must match</message>
 		</field-validator>
 	</field>
 	<field name="user.email">
@@ -23,11 +26,7 @@
 			<message>Email address is not valid</message>
 		</field-validator>
 		<field-validator type="requiredstring">
-			<message>Email address is required!</message>
+			<message>Email address is required</message>
 		</field-validator>
 	</field>
-	<validator type="expression">
-		<param name="expression">user.password eq confirmPassword</param>
-		<message>Password and confirm password do not match!</message>
-	</validator>
 </validators>

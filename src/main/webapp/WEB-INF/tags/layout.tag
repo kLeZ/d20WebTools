@@ -99,6 +99,9 @@
 							<input type="password" name="user.password" placeholder="Password" class="form-control" value="test" />
 						</div>
 						<button type="submit" class="btn btn-success">Sign in</button>
+						<div class="form-group">
+							<a class="btn btn-primary" href="sign-up_input">Sign up</a>
+						</div>
 					</form>
 				</jsp:attribute>
 				</t:session>

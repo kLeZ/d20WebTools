@@ -72,14 +72,12 @@
 				//window.location = location.href;
 				$('#chatbox').load('chatbox');
 			};
-			//var refreshId;
 			$(document).ready(function() {
 				scrollLog(false);
 				$('input[name="message"]').focus();
-				setTimeout("ReloadPage()", 1000);
-				//refreshId = setInterval(ReloadPage(), 1000);
+				setInterval('ReloadPage()', 100);
 				$.ajaxSetup({
-					cache : false
+					cache : true
 				});
 			});
 
@@ -88,6 +86,7 @@
 			});
 		</script>
 		<div id="chatbox" class="row"></div>
+		<a onclick="ReloadPage()">Load</a>
 		<form action="chat" method="post" role="form" class="form-inline">
 			<div class="input-group" style="width: 100%;">
 				<input name="message" type="text" class="form-control" />
@@ -104,11 +103,8 @@
 		<h4>Logged members</h4>
 		<table class="table table-striped table-condensed">
 		<s:iterator value="room.members" status="member">
-			<tr>
-					<td><s:property value="webEmail" /></td>
-				</tr>
+			<tr><td><s:property value="webEmail" /></td></tr>
 		</s:iterator>
 		</table>
 	</jsp:attribute>
-	<jsp:attribute name="footer">&nbsp;</jsp:attribute>
 </t:layout>
