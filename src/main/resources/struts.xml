@@ -31,14 +31,14 @@
 		<action name="logout" class="it.d4nguard.d20webtools.controller.SignIn" method="logout">
 			<result>/pages/index.jsp</result>
 		</action>
-		<action name="join-room-init" class="it.d4nguard.d20webtools.controller.RoomManager">
+		<action name="join-room-init" class="it.d4nguard.d20webtools.controller.Rooms">
 			<result>/pages/join-room.jsp</result>
 		</action>
-		<action name="new-room" class="it.d4nguard.d20webtools.controller.RoomManager" method="newRoom">
+		<action name="new-room" class="it.d4nguard.d20webtools.controller.Rooms" method="newRoom">
 			<result name="success">/pages/room.jsp</result>
 			<result name="error">/pages/index.jsp</result>
 		</action>
-		<action name="join-room" class="it.d4nguard.d20webtools.controller.RoomManager" method="joinRoom">
+		<action name="join-room" class="it.d4nguard.d20webtools.controller.Rooms" method="joinRoom">
 			<result type="redirectAction">
 				<param name="actionName">pages/chat</param>
 			</result>

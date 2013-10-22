@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 22-ott-2013 14.47.11 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+	<class name="it.d4nguard.d20webtools.model.Room" table="ROOMS">
+		<id name="id" type="int">
+			<column name="ID" />
+			<generator class="assigned" />
+		</id>
+		<property name="name" type="java.lang.String">
+			<column name="NAME" />
+		</property>
+		<many-to-one name="master" class="it.d4nguard.d20webtools.model.User"
+			fetch="join">
+			<column name="MASTER" />
+		</many-to-one>
+		<set name="members" table="USER" inverse="false" lazy="true">
+			<key>
+				<column name="ID" />
+			</key>
+			<one-to-many class="it.d4nguard.d20webtools.model.User" />
+		</set>
+		<set name="messages" table="MESSAGE" inverse="false" lazy="true">
+			<key>
+				<column name="ID" />
+			</key>
+			<one-to-many class="it.d4nguard.d20webtools.model.Message" />
+		</set>
+	</class>
+</hibernate-mapping>

@@ -27,13 +27,13 @@ public class Chat extends Session implements ModelDriven<Room>
 		String ret = SUCCESS;
 		synchronized (_session)
 		{
-			setRoom(RoomManager.ROOMS.get(_session.get(RoomManager.ROOM_ID)));
+			setRoom(Rooms.ROOMS.get(_session.get(Rooms.ROOM_ID)));
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
-				Message msg = new Message(now(), getUser(), eval.eval(message));
+				Message msg = new Message(now(), getUser(), eval.eval(message), getRoom());
 				getRoom().getMessages().add(msg);
-				RoomManager.ROOMS.put(getRoom().getId(), getRoom());
+				Rooms.ROOMS.put(getRoom().getId(), getRoom());
 			}
 		}
 		return ret;

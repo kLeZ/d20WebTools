@@ -22,7 +22,7 @@ public class ChatBox extends Session
 	{
 		synchronized (_session)
 		{
-			setRoom(RoomManager.ROOMS.get(_session.get(RoomManager.ROOM_ID)));
+			setRoom(Rooms.ROOMS.get(_session.get(Rooms.ROOM_ID)));
 			StringBuilder sb = new StringBuilder();
 			if (getRoom() != null)
 			{

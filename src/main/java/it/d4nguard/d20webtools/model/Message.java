@@ -10,12 +10,15 @@ public class Message implements Serializable
 	private Date time;
 	private User user;
 	private String text;
+	private Room room;
 
-	public Message(Date time, User user, String text)
+	public Message(Date time, User user, String text, Room room)
 	{
+		super();
 		this.time = time;
 		this.user = user;
 		this.text = text;
+		this.room = room;
 	}
 
 	public Date getTime()
@@ -46,5 +49,15 @@ public class Message implements Serializable
 	public void setText(String text)
 	{
 		this.text = text;
+	}
+
+	public Room getRoom()
+	{
+		return room;
+	}
+
+	public void setRoom(Room room)
+	{
+		this.room = room;
 	}
 }

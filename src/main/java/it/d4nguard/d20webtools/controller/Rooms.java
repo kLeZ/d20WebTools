@@ -5,7 +5,7 @@ import it.d4nguard.d20webtools.model.User;
 
 import java.util.LinkedHashMap;
 
-public class RoomManager extends Session
+public class Rooms extends Session
 {
 	public static final String ROOM_ID = "roomId";
 	private static final long serialVersionUID = -2654452895755002089L;
