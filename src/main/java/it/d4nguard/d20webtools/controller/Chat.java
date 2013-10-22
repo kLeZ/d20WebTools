@@ -1,6 +1,6 @@
 package it.d4nguard.d20webtools.controller;
 
-import it.d4nguard.d20webtools.engine.Evaluator;
+import it.d4nguard.d20webtools.common.Evaluator;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
 

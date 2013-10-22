@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.engine;
+package it.d4nguard.d20webtools.common;
 
 public enum OperatorType
 {
