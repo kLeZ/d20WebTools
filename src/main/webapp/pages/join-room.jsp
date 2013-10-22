@@ -18,7 +18,7 @@
 	<jsp:attribute name="body">
 		<script type="text/javascript">$("table").tablecloth();</script>
 		<h4>Available rooms</h4>
-		<form action="join-room" method="post" class="class java.util.HashMap">
+		<form action="join-room" method="post">
 			<table class="table table-striped table-condensed">
 			<s:iterator value="rooms.values()" status="room">
 				<tr>

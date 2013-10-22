@@ -72,14 +72,14 @@ public class Rooms extends Session
 		else _session.remove(SESSION_ROOM_NAME);
 	}
 
-	public LinkedHashMap<Integer, Room> getRooms()
+	public LinkedHashMap<Long, Room> getRooms()
 	{
 		return getRoomsImpl();
 	}
 
-	public static LinkedHashMap<Integer, Room> getRoomsImpl()
+	public static LinkedHashMap<Long, Room> getRoomsImpl()
 	{
-		LinkedHashMap<Integer, Room> ret = new LinkedHashMap<Integer, Room>();
+		LinkedHashMap<Long, Room> ret = new LinkedHashMap<Long, Room>();
 		Persistor<Room> db = new Persistor<Room>();
 		List<Room> rooms = db.findAll(Room.class);
 		for (Room r : rooms)

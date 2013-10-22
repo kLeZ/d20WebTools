@@ -7,6 +7,7 @@ public class Message implements Serializable
 {
 	private static final long serialVersionUID = 1349171258128457798L;
 
+	private Long id;
 	private Date time;
 	private User user;
 	private String text;
@@ -19,6 +20,16 @@ public class Message implements Serializable
 		this.user = user;
 		this.text = text;
 		this.room = room;
+	}
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
 	}
 
 	public Date getTime()

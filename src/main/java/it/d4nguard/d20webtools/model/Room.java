@@ -7,7 +7,7 @@ public class Room implements Serializable
 {
 	private static final long serialVersionUID = -1448219697531699908L;
 
-	private int id;
+	private Long id;
 	private String name;
 	private User master;
 	private LinkedHashSet<User> members = new LinkedHashSet<User>();
@@ -17,19 +17,19 @@ public class Room implements Serializable
 	{
 	}
 
-	public Room(int id, String name, String master)
+	public Room(Long id, String name, String master)
 	{
 		setId(id);
 		setName(name);
 		setMaster(new User(master, master, ""));
 	}
 
-	public int getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

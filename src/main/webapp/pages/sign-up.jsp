@@ -20,7 +20,7 @@
 				<strong><s:fielderror /></strong>
 			</div>
 		</s:if>
-		<s:form id="the_form" action="sign-up" method="execute" namespace="/pages">
+		<s:form id="the_form" action="sign-up" method="post" namespace="/pages">
 			<s:textfield name="user.name" label="Name" errorPosition="bottom" cssClass="form-control" />
 			<s:textfield name="user.email" label="Email" errorPosition="bottom" cssClass="form-control" />
 			<s:password name="user.password" label="Password" errorPosition="bottom" cssClass="form-control" />

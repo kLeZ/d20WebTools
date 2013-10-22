@@ -91,12 +91,12 @@
 					</div>
 					</jsp:attribute>
 					<jsp:attribute name="notlogged">
-					<form class="navbar-form navbar-right" action="sign-in" method="post" class="class java.util.HashMap">
+					<form class="navbar-form navbar-right" action="sign-in" method="post">
 						<div class="form-group">
-							<input type="text" name="user.email" placeholder="Email" class="form-control" value="test@d20webtools.org" />
+							<input type="text" name="user.email" placeholder="Email" class="form-control" />
 						</div>
 						<div class="form-group">
-							<input type="password" name="user.password" placeholder="Password" class="form-control" value="test" />
+							<input type="password" name="user.password" placeholder="Password" class="form-control" />
 						</div>
 						<button type="submit" class="btn btn-success">Sign in</button>
 						<div class="form-group">
@@ -119,7 +119,7 @@
 		<jsp:attribute name="logged">
 			<div id="NewRoom" class="modal fade in" style="background-color: white; width: auto; display: none;" tabindex="-1" role="dialog"
 				aria-labelledby="NewRoomLabel" aria-hidden="true">
-				<form action="new-room" method="post" class="class java.util.HashMap">
+				<form action="new-room" method="post">
 					<div class="modal-header">
 						<button data-dismiss="modal" class="close">&times;</button>
 						<h3>Create new room</h3>

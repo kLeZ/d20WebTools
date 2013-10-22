@@ -6,10 +6,15 @@ public class User implements Serializable
 {
 	private static final long serialVersionUID = 4109094925530070042L;
 
+	private Long id;
 	private String name;
 	private String email;
 	private String password;
 
+	/**
+	 * Needed for struts2 to instantiate then populate, which is the default
+	 * behavior of the framework.
+	 */
 	public User()
 	{
 	}
@@ -18,6 +23,16 @@ public class User implements Serializable
 	{
 		this.email = email;
 		this.password = password;
+	}
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
 	}
 
 	public String getName()
