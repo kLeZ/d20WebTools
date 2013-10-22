@@ -3,6 +3,7 @@ package it.d4nguard.d20webtools.controller;
 import it.d4nguard.d20webtools.common.Evaluator;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
+import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -27,13 +28,14 @@ public class Chat extends Session implements ModelDriven<Room>
 		String ret = SUCCESS;
 		synchronized (_session)
 		{
-			setRoom(Rooms.ROOMS.get(_session.get(Rooms.ROOM_ID)));
+			setRoom(Rooms.getRoomsImpl().get(_session.get(Rooms.ROOM_ID)));
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
 				Message msg = new Message(now(), getUser(), eval.eval(message), getRoom());
 				getRoom().getMessages().add(msg);
-				Rooms.ROOMS.put(getRoom().getId(), getRoom());
+				Persistor<Room> db = new Persistor<Room>();
+				db.saveOrUpdate(getRoom());
 			}
 		}
 		return ret;

@@ -1,28 +1,18 @@
 package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Room;
-import it.d4nguard.d20webtools.model.User;
+import it.d4nguard.d20webtools.persistence.Persistor;
+import it.d4nguard.d20webtools.persistence.PersistorException;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Rooms extends Session
 {
+	public static final String SESSION_ROOM_NAME = "room";
 	public static final String ROOM_ID = "roomId";
 	private static final long serialVersionUID = -2654452895755002089L;
 	private Room room;
-	public static final LinkedHashMap<Integer, Room> ROOMS = new LinkedHashMap<Integer, Room>();
-	static
-	{
-		Room r = new Room(1, "Nebula", "julius8774@gmail.com");
-		r.getMembers().add(new User("Root", "root@d4nguard.org", ""));
-		r.getMembers().add(new User("Piero", "piero@cicciamica.info", ""));
-		r.getMembers().add(new User("Kiki", "kiki@otaku4eva.net", ""));
-		r.getMembers().add(new User("Greg", "greg@google.com", ""));
-		ROOMS.put(1, r);
-		ROOMS.put(2, new Room(2, "Stralis", "root@d4nguard.org"));
-		ROOMS.put(3, new Room(3, "Ankiku", "piero@cicciamica.info"));
-		ROOMS.put(4, new Room(4, "Mueller", "greg@google.com"));
-	}
 
 	@Override
 	public String execute() throws Exception
@@ -35,14 +25,17 @@ public class Rooms extends Session
 		String ret = SUCCESS;
 		synchronized (_session)
 		{
-			if (getRoom().getName().contentEquals("Nebula"))
+			Persistor<Room> db = new Persistor<Room>();
+			try
 			{
-				setRoom(ROOMS.get(1));
 				getRoom().setMaster(getUser());
 				setRoom(getRoom());
+				db.save(getRoom());
 			}
-			else
+			catch (PersistorException e)
 			{
+				addActionError(e.getLocalizedMessage());
+				addActionError("Room is already present. Please join the room, instead.");
 				ret = ERROR;
 			}
 		}
@@ -52,26 +45,45 @@ public class Rooms extends Session
 	public String joinRoom() throws Exception
 	{
 		String ret = SUCCESS;
-		setRoom(ROOMS.get(getRoom().getId()));
-		_session.put(ROOM_ID, getRoom().getId());
+		Persistor<Room> db = new Persistor<Room>();
+		try
+		{
+			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
+			_session.put(ROOM_ID, getRoom().getId());
+		}
+		catch (PersistorException e)
+		{
+			addActionError(e.getLocalizedMessage());
+			ret = ERROR;
+		}
 		return ret;
 	}
 
 	public Room getRoom()
 	{
-		if (room == null) room = (Room) _session.get("room");
+		if (room == null) room = (Room) _session.get(SESSION_ROOM_NAME);
 		return room;
 	}
 
 	public void setRoom(Room room)
 	{
 		this.room = room;
-		if (room != null) _session.put("room", room);
-		else _session.remove("room");
+		if (room != null) _session.put(SESSION_ROOM_NAME, room);
+		else _session.remove(SESSION_ROOM_NAME);
 	}
 
 	public LinkedHashMap<Integer, Room> getRooms()
 	{
-		return ROOMS;
+		return getRoomsImpl();
+	}
+
+	public static LinkedHashMap<Integer, Room> getRoomsImpl()
+	{
+		LinkedHashMap<Integer, Room> ret = new LinkedHashMap<Integer, Room>();
+		Persistor<Room> db = new Persistor<Room>();
+		List<Room> rooms = db.findAll(Room.class);
+		for (Room r : rooms)
+			ret.put(r.getId(), r);
+		return ret;
 	}
 }
