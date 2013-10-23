@@ -8,9 +8,9 @@
 		<property name="hibernate.connection.username">d20webtools</property>
 		<property name="hibernate.connection.password">d20WebTools001</property>
 		<property name="hibernate.default_schema">d20webtools</property>
-		<property name="hibernate.format_sql">false</property>
-		<property name="hibernate.show_sql">false</property>
-		<property name="hibernate.hbm2ddl.auto">create</property>
+		<property name="hibernate.format_sql">true</property>
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.hbm2ddl.auto">validate</property>
 
 		<mapping resource="Message.hbm.xml" />
 		<mapping resource="Room.hbm.xml" />

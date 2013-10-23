@@ -18,6 +18,7 @@ public class SignUp extends Session
 		try
 		{
 			db.save(getUser());
+			addActionMessage("User registered successfully!");
 		}
 		catch (PersistorException e)
 		{

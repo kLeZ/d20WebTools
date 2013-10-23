@@ -115,6 +115,12 @@
 			<strong><s:actionerror /></strong>
 		</div>
 	</s:if>
+	<s:if test="hasActionMessages()">
+		<div id="info-box" class="alert alert-success">
+			<a class="close" data-dismiss="alert" href="#info-box">&times;</a>
+			<strong><s:actionmessage /></strong>
+		</div>
+	</s:if>
 	<t:session>
 		<jsp:attribute name="logged">
 			<div id="NewRoom" class="modal fade in" style="background-color: white; width: auto; display: none;" tabindex="-1" role="dialog"

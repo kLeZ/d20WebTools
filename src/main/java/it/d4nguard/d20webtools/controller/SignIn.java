@@ -20,7 +20,7 @@ public class SignIn extends Session
 			{
 				Persistor<User> db = new Persistor<User>();
 				List<User> users = db.findByEqField(User.class, "email", getUser().getEmail());
-				if (users.size() == 1)
+				if (users.size() == 1 && users.get(0).getPassword().contentEquals(getUser().getPassword()))
 				{
 					setUser(users.get(0));
 					setLogged(true);

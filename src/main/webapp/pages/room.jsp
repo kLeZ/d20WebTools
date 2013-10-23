@@ -87,7 +87,6 @@
 			});
 		</script>
 		<div id="chatbox" class="row"></div>
-		<a onclick="ReloadPage()">Load</a>
 		<form action="chat" method="post" role="form" class="form-inline">
 			<div class="input-group" style="width: 100%;">
 				<input name="message" type="text" class="form-control" />

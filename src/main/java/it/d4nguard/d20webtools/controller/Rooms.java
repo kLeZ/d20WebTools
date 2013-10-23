@@ -47,14 +47,12 @@ public class Rooms extends Session
 	{
 		String ret = SUCCESS;
 		Persistor<Room> db = new Persistor<Room>();
+		Persistor<Member> db_m = new Persistor<Member>();
 		try
 		{
 			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
-			Member m = new Member();
-			m.setRoom(getRoom());
-			m.setUser(getUser());
-			getRoom().getMembers().add(m);
-			db.save(getRoom());
+			Member m = new Member(getUser(), getRoom());
+			db_m.saveOrUpdate(m);
 			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
 			_session.put(ROOM_ID, getRoom().getId());
 		}

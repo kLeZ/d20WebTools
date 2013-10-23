@@ -1,5 +1,6 @@
 package it.d4nguard.d20webtools.model;
 
+
 public class Member
 {
 	private Long id;
@@ -10,10 +11,8 @@ public class Member
 	{
 	}
 
-	public Member(Long id, User user, Room room)
+	public Member(User user, Room room)
 	{
-		super();
-		this.id = id;
 		this.user = user;
 		this.room = room;
 	}

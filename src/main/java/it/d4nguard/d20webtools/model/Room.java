@@ -2,6 +2,7 @@ package it.d4nguard.d20webtools.model;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class Room implements Serializable
 {
@@ -10,8 +11,8 @@ public class Room implements Serializable
 	private Long id;
 	private String name;
 	private User master;
-	private LinkedHashSet<Member> members = new LinkedHashSet<Member>();
-	private LinkedHashSet<Message> messages = new LinkedHashSet<Message>();
+	private Set<Member> members = new LinkedHashSet<Member>();
+	private Set<Message> messages = new LinkedHashSet<Message>();
 
 	public Room()
 	{
@@ -54,22 +55,22 @@ public class Room implements Serializable
 		this.master = master;
 	}
 
-	public LinkedHashSet<Member> getMembers()
+	public Set<Member> getMembers()
 	{
 		return members;
 	}
 
-	public void setMembers(LinkedHashSet<Member> members)
+	public void setMembers(Set<Member> members)
 	{
 		this.members = members;
 	}
 
-	public LinkedHashSet<Message> getMessages()
+	public Set<Message> getMessages()
 	{
 		return messages;
 	}
 
-	public void setMessages(LinkedHashSet<Message> messages)
+	public void setMessages(Set<Message> messages)
 	{
 		this.messages = messages;
 	}
