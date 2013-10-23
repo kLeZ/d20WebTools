@@ -15,5 +15,6 @@
 		<mapping resource="Message.hbm.xml" />
 		<mapping resource="Room.hbm.xml" />
 		<mapping resource="User.hbm.xml" />
+		<mapping resource="Member.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>
