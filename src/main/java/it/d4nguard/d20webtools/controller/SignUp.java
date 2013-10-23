@@ -4,9 +4,7 @@ import it.d4nguard.d20webtools.model.User;
 import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
 
-import com.opensymphony.xwork2.ActionSupport;
-
-public class SignUp extends ActionSupport
+public class SignUp extends Session
 {
 	private static final long serialVersionUID = -337136923511329022L;
 	private String confirmPassword;
@@ -25,7 +23,7 @@ public class SignUp extends ActionSupport
 		{
 			addActionError(e.getLocalizedMessage());
 			addActionError(String.format("User %s is already registered!", getUser().getEmail()));
-			ret = ERROR;
+			ret = EXCEPTION;
 		}
 		return ret;
 	}

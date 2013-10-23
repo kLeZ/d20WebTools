@@ -25,14 +25,18 @@ public class SignIn extends Session
 					setUser(users.get(0));
 					setLogged(true);
 				}
-				else throw new PersistorException();
+				else
+				{
+					addActionError("User not registered. Please register!");
+					setLogged(false);
+					ret = ERROR;
+				}
 			}
 			catch (PersistorException e)
 			{
 				addActionError(e.getLocalizedMessage());
-				addActionError("User not registered. Please register!");
 				setLogged(false);
-				ret = ERROR;
+				ret = EXCEPTION;
 			}
 		}
 		else

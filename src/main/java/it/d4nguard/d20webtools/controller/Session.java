@@ -1,5 +1,6 @@
 package it.d4nguard.d20webtools.controller;
 
+import it.d4nguard.d20webtools.common.Constants;
 import it.d4nguard.d20webtools.model.User;
 
 import java.util.Date;
@@ -8,7 +9,7 @@ import java.util.Map;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class Session extends ActionSupport
+public class Session extends ActionSupport implements Constants
 {
 	private static final long serialVersionUID = 6686337047561791387L;
 

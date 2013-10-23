@@ -7,6 +7,13 @@
 	<constant name="struts.action.extension" value="" />
 
 	<package name="d20webtools" extends="struts-default">
+		<global-results>
+			<result name="Exception">/pages/error.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Throwable"
+				result="Exception" />
+		</global-exception-mappings>
 		<action name="index">
 			<result>/pages/index.jsp</result>
 		</action>
@@ -24,21 +31,25 @@
 			<result name="error">/pages/index.jsp</result>
 			<result name="login">/pages/sign-up.jsp</result>
 		</action>
-		<action name="sign-up_*" class="it.d4nguard.d20webtools.controller.SignUp" method="{1}">
+		<action name="sign-up_*" class="it.d4nguard.d20webtools.controller.SignUp"
+			method="{1}">
 			<result name="input">/pages/sign-up.jsp</result>
 			<result name="success">/pages/index.jsp</result>
 		</action>
-		<action name="logout" class="it.d4nguard.d20webtools.controller.SignIn" method="logout">
+		<action name="logout" class="it.d4nguard.d20webtools.controller.SignIn"
+			method="logout">
 			<result>/pages/index.jsp</result>
 		</action>
 		<action name="join-room-init" class="it.d4nguard.d20webtools.controller.Rooms">
 			<result>/pages/join-room.jsp</result>
 		</action>
-		<action name="new-room" class="it.d4nguard.d20webtools.controller.Rooms" method="newRoom">
+		<action name="new-room" class="it.d4nguard.d20webtools.controller.Rooms"
+			method="newRoom">
 			<result name="success">/pages/room.jsp</result>
 			<result name="error">/pages/index.jsp</result>
 		</action>
-		<action name="join-room" class="it.d4nguard.d20webtools.controller.Rooms" method="joinRoom">
+		<action name="join-room" class="it.d4nguard.d20webtools.controller.Rooms"
+			method="joinRoom">
 			<result type="redirectAction">
 				<param name="actionName">pages/chat</param>
 			</result>
