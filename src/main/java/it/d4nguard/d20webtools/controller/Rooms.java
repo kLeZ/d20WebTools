@@ -1,5 +1,6 @@
 package it.d4nguard.d20webtools.controller;
 
+import it.d4nguard.d20webtools.model.Member;
 import it.d4nguard.d20webtools.model.Room;
 import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
@@ -48,6 +49,12 @@ public class Rooms extends Session
 		Persistor<Room> db = new Persistor<Room>();
 		try
 		{
+			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
+			Member m = new Member();
+			m.setRoom(getRoom());
+			m.setUser(getUser());
+			getRoom().getMembers().add(m);
+			db.save(getRoom());
 			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
 			_session.put(ROOM_ID, getRoom().getId());
 		}

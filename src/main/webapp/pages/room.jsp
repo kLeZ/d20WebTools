@@ -103,7 +103,7 @@
 		<h4>Logged members</h4>
 		<table class="table table-striped table-condensed">
 		<s:iterator value="room.members" status="member">
-			<tr><td><s:property value="webEmail" /></td></tr>
+			<tr><td><s:property value="user.webEmail" /></td></tr>
 		</s:iterator>
 		</table>
 	</jsp:attribute>

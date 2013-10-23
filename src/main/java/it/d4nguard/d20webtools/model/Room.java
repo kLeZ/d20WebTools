@@ -10,7 +10,7 @@ public class Room implements Serializable
 	private Long id;
 	private String name;
 	private User master;
-	private LinkedHashSet<User> members = new LinkedHashSet<User>();
+	private LinkedHashSet<Member> members = new LinkedHashSet<Member>();
 	private LinkedHashSet<Message> messages = new LinkedHashSet<Message>();
 
 	public Room()
@@ -54,12 +54,12 @@ public class Room implements Serializable
 		this.master = master;
 	}
 
-	public LinkedHashSet<User> getMembers()
+	public LinkedHashSet<Member> getMembers()
 	{
 		return members;
 	}
 
-	public void setMembers(LinkedHashSet<User> members)
+	public void setMembers(LinkedHashSet<Member> members)
 	{
 		this.members = members;
 	}
