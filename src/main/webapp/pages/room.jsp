@@ -59,8 +59,10 @@
 	</jsp:attribute>
 	<jsp:attribute name="row1">
 		<script type="text/javascript">
-			function scrollLog(animate) {
-				if (animate) {
+			var animateScroll = true;
+
+			function scrollLog() {
+				if (animateScroll) {
 					$("#chatbox").animate({
 						scrollTop : $('#chatbox')[0].scrollHeight
 					}, 'normal');
@@ -71,9 +73,10 @@
 
 			function ReloadPage() {
 				$('#chatbox').load('chatbox');
+				scrollLog();
 			};
 			$(document).ready(function() {
-				scrollLog(false);
+				scrollLog();
 				$('input[name="message"]').focus();
 				setInterval('ReloadPage()', 100);
 				$.ajaxSetup({
@@ -82,7 +85,7 @@
 			});
 
 			$('#send').click(function() {
-				scrollLog(false);
+				scrollLog();
 			});
 		</script>
 		<div id="chatbox" class="row"></div>

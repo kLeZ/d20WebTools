@@ -29,24 +29,24 @@ public class Persistor
 		this.factory = factory;
 	}
 
-	public void close()
+	public synchronized void close()
 	{
 		factory.close(session);
 		session = null;
 	}
 
-	public void destroy()
+	public synchronized void destroy()
 	{
 		close();
 		factory.closeFactory();
 	}
 
-	public boolean contains(Object object)
+	public synchronized boolean contains(Object object)
 	{
 		return session != null && session.contains(object);
 	}
 
-	public void save(final Object obj)
+	public synchronized void save(final Object obj)
 	{
 		try
 		{
@@ -60,7 +60,7 @@ public class Persistor
 		}
 	}
 
-	public void update(final Object obj)
+	public synchronized void update(final Object obj)
 	{
 		try
 		{
@@ -74,7 +74,7 @@ public class Persistor
 		}
 	}
 
-	public void saveOrUpdate(final Object obj)
+	public synchronized void saveOrUpdate(final Object obj)
 	{
 		try
 		{
@@ -88,7 +88,7 @@ public class Persistor
 		}
 	}
 
-	public void saveAll(final Collection<Object> list)
+	public synchronized void saveAll(final Collection<Object> list)
 	{
 		try
 		{
@@ -111,7 +111,7 @@ public class Persistor
 		}
 	}
 
-	public void updateAll(final Collection<Object> list)
+	public synchronized void updateAll(final Collection<Object> list)
 	{
 		try
 		{
@@ -134,7 +134,7 @@ public class Persistor
 		}
 	}
 
-	public void saveOrUpdateAll(final Collection<Object> list)
+	public synchronized void saveOrUpdateAll(final Collection<Object> list)
 	{
 		try
 		{
@@ -157,7 +157,7 @@ public class Persistor
 		}
 	}
 
-	public void delete(final Object obj)
+	public synchronized void delete(final Object obj)
 	{
 		try
 		{
@@ -172,7 +172,7 @@ public class Persistor
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E> E findById(final Class<E> clazz, final Long id)
+	public synchronized <E> E findById(final Class<E> clazz, final Long id)
 	{
 		E obj = null;
 		try
@@ -188,19 +188,19 @@ public class Persistor
 		return obj;
 	}
 
-	public <E> List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
+	public synchronized <E> List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
 	{
 		return findByCriterion(clazz, new HibernateRestriction(BooleanOperatorType.eq, fieldName, fieldValue));
 	}
 
-	public <E> List<E> findByCriterion(final Class<E> clazz, final HibernateRestriction... restrictions)
+	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, final HibernateRestriction... restrictions)
 	{
 		Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> res = guessAliases(restrictions);
 		return findByCriterion(clazz, res.getValue(), res.getKey().toArray(new HibernateRestriction[] {}));
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E> List<E> findByCriterion(final Class<E> clazz, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
+	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
 	{
 		List<E> objs = null;
 		try
@@ -227,7 +227,7 @@ public class Persistor
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E> List<E> findAll(final Class<E> clazz)
+	public synchronized <E> List<E> findAll(final Class<E> clazz)
 	{
 		List<E> objects = null;
 		try
@@ -244,7 +244,7 @@ public class Persistor
 		return objects;
 	}
 
-	public boolean execute(final String sql)
+	public synchronized boolean execute(final String sql)
 	{
 		boolean ret = false;
 		try
@@ -266,7 +266,7 @@ public class Persistor
 		return ret;
 	}
 
-	protected void handleException(final Throwable e) throws PersistorException
+	protected synchronized void handleException(final Throwable e) throws PersistorException
 	{
 		log.error(e, e);
 		factory.rollback(tx);
@@ -275,13 +275,16 @@ public class Persistor
 		throw new PersistorException(e);
 	}
 
-	protected void startOperation() throws HibernateException
+	protected synchronized void startOperation() throws HibernateException
 	{
 		if (session == null || (!session.isConnected() || session.isDirty() || !session.isOpen())) session = factory.openSession();
-		tx = session.beginTransaction();
+		synchronized (session)
+		{
+			tx = session.beginTransaction();
+		}
 	}
 
-	public Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> guessAliases(HibernateRestriction... restrictions)
+	private static Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> guessAliases(HibernateRestriction... restrictions)
 	{
 		HashMap<String, String> aliases = new HashMap<String, String>();
 		ArrayList<HibernateRestriction> res = new ArrayList<HibernateRestriction>();
@@ -298,7 +301,7 @@ public class Persistor
 		return new Pair<ArrayList<HibernateRestriction>, HashMap<String, String>>(res, aliases);
 	}
 
-	private Entry<String, Entry<String, String>> guessAlias(String param, final HashMap<String, String> aliases)
+	private static Entry<String, Entry<String, String>> guessAlias(String param, final HashMap<String, String> aliases)
 	{
 		Pair<String, String> alias = null;
 		final String field;

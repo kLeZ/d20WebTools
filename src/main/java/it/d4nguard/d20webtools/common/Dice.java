@@ -145,7 +145,7 @@ public class Dice
 		{
 			dt = dt.toUpperCase();
 			String[] diceparts = dt.split(DICE_TOKEN_S);
-			if (diceparts.length == 2)
+			if (diceparts.length == 2 && Utils.isInteger(diceparts[0]))
 			{
 				int nThrows = Integer.valueOf(diceparts[0]), nFaces = 0, modifier = 0;
 				String nFacesBld = "";
