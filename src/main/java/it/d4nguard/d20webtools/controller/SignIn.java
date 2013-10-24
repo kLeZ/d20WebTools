@@ -18,7 +18,7 @@ public class SignIn extends Session
 		{
 			try
 			{
-				Persistor<User> db = new Persistor<User>();
+				Persistor<User> db = new Persistor<User>(getHibernateFactory());
 				List<User> users = db.findByEqField(User.class, "email", getUser().getEmail());
 				if (users.size() == 1 && users.get(0).getPassword().contentEquals(getUser().getPassword()))
 				{

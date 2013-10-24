@@ -14,7 +14,7 @@ public class SignUp extends Session
 	public String execute() throws Exception
 	{
 		String ret = SUCCESS;
-		Persistor<User> db = new Persistor<User>();
+		Persistor<User> db = new Persistor<User>(getHibernateFactory());
 		try
 		{
 			db.save(getUser());

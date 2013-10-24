@@ -100,7 +100,7 @@
 						</div>
 						<button type="submit" class="btn btn-success">Sign in</button>
 						<div class="form-group">
-							<a class="btn btn-primary" href="sign-up_input">Sign up</a>
+							<a class="btn btn-primary" href="sign-up-input">Sign up</a>
 						</div>
 					</form>
 				</jsp:attribute>

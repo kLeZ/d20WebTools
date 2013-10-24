@@ -40,4 +40,19 @@ public class HibernateRestriction
 		}
 		return crit;
 	}
+
+	public BooleanOperatorType getOperator()
+	{
+		return operator;
+	}
+
+	public String getField()
+	{
+		return field;
+	}
+
+	public Object getValue()
+	{
+		return value;
+	}
 }

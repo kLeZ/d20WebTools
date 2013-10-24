@@ -10,9 +10,7 @@ import it.d4nguard.d20webtools.persistence.Persistor;
 import java.util.Date;
 import java.util.List;
 
-import com.opensymphony.xwork2.ModelDriven;
-
-public class Chat extends Session implements ModelDriven<Room>
+public class Chat extends Session
 {
 	private static final long serialVersionUID = 7405836330868983108L;
 
@@ -27,14 +25,15 @@ public class Chat extends Session implements ModelDriven<Room>
 		{
 			removeSleepingMembers();
 
-			setRoom(Rooms.getRoomsImpl().get(_session.get(Rooms.ROOM_ID)));
+			Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
+			setRoom(db.findById(Room.class, (Long) _session.get(ROOM_ID)));
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
 				Message msg = new Message(TimeSpan.now(), getUser(), eval.eval(message), getRoom());
-				getRoom().getMessages().add(msg);
-				Persistor<Room> db = new Persistor<Room>();
-				db.saveOrUpdate(getRoom());
+				Persistor<Message> db_m = new Persistor<Message>(getHibernateFactory());
+				db_m.save(msg);
+				setRoom(db.findById(Room.class, getRoom().getId()));
 			}
 		}
 		return ret;
@@ -42,7 +41,7 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	private void removeSleepingMembers()
 	{
-		Persistor<Message> db_m = new Persistor<Message>();
+		Persistor<Message> db_m = new Persistor<Message>(getHibernateFactory());
 
 		List<Message> messages = db_m.findByEqField(Message.class, "user.email", getUser().getEmail());
 		Date d = null;
@@ -53,7 +52,7 @@ public class Chat extends Session implements ModelDriven<Room>
 		}
 		if (new TimeSpan(d).diff().getMinutes() > 30L)
 		{
-			Persistor<Member> db = new Persistor<Member>();
+			Persistor<Member> db = new Persistor<Member>(getHibernateFactory());
 			Member m = new Member(getUser(), getRoom());
 			db.delete(m);
 		}
@@ -61,6 +60,11 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	public Room getRoom()
 	{
+		if (room == null)
+		{
+			Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
+			setRoom(db.findById(Room.class, (Long) _session.get(ROOM_ID)));
+		}
 		return room;
 	}
 
@@ -77,11 +81,5 @@ public class Chat extends Session implements ModelDriven<Room>
 	public void setMessage(String message)
 	{
 		this.message = message;
-	}
-
-	@Override
-	public Room getModel()
-	{
-		return room;
 	}
 }

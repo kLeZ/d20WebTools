@@ -1,10 +1,10 @@
 package it.d4nguard.d20webtools.persistence;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -12,7 +12,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.w3c.dom.Document;
 
 public class Persistor<E>
 {
@@ -20,71 +19,11 @@ public class Persistor<E>
 
 	private Session session;
 	private Transaction tx;
-	private final Document config;
-	private final Properties toOverrideProperties;
-	private final Properties extraProperties;
+	private HibernateFactory factory;
 
-	public Persistor()
+	public Persistor(HibernateFactory factory)
 	{
-		this(null, null, null, false);
-	}
-
-	public Persistor(final boolean force)
-	{
-		this(null, null, null, force);
-	}
-
-	public Persistor(final Properties toOverrideProperties)
-	{
-		this(null, toOverrideProperties, null, false);
-	}
-
-	public Persistor(final Properties toOverrideProperties, final boolean force)
-	{
-		this(null, toOverrideProperties, null, force);
-	}
-
-	public Persistor(final Document config, final Properties toOverrideProperties)
-	{
-		this(config, toOverrideProperties, null, false);
-	}
-
-	public Persistor(final Document config, final Properties toOverrideProperties, final boolean force)
-	{
-		this(config, toOverrideProperties, null, force);
-	}
-
-	public Persistor(final Properties toOverrideProperties, final Properties extraProperties)
-	{
-		this(null, toOverrideProperties, extraProperties, false);
-	}
-
-	public Persistor(final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
-	{
-		this(null, toOverrideProperties, extraProperties, force);
-	}
-
-	public Persistor(final Document config, final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
-	{
-		this.config = config;
-		this.toOverrideProperties = toOverrideProperties;
-		this.extraProperties = extraProperties;
-		HibernateFactory.buildIfNeeded(config, toOverrideProperties, extraProperties, force);
-	}
-
-	public Document getConfig()
-	{
-		return config;
-	}
-
-	public Properties getOverrideProperties()
-	{
-		return toOverrideProperties;
-	}
-
-	public Properties getExtraProperties()
-	{
-		return extraProperties;
+		this.factory = factory;
 	}
 
 	public void save(final E obj)
@@ -101,7 +40,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -119,7 +58,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -137,7 +76,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -164,7 +103,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -191,7 +130,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -218,7 +157,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -236,7 +175,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 	}
 
@@ -256,7 +195,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 		return obj;
 	}
@@ -268,7 +207,8 @@ public class Persistor<E>
 
 	public List<E> findByCriterion(final Class<E> clazz, final HibernateRestriction... restrictions)
 	{
-		return findByCriterion(clazz, new HashMap<String, String>(), restrictions);
+		Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> res = guessAliases(restrictions);
+		return findByCriterion(clazz, res.getValue(), res.getKey().toArray(new HibernateRestriction[] {}));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -297,7 +237,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 		return objs;
 	}
@@ -319,7 +259,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 		return objects;
 	}
@@ -341,7 +281,7 @@ public class Persistor<E>
 		}
 		finally
 		{
-			HibernateFactory.close(session);
+			factory.close(session);
 		}
 		return ret;
 	}
@@ -349,13 +289,58 @@ public class Persistor<E>
 	protected void handleException(final Throwable e) throws PersistorException
 	{
 		log.error(e, e);
-		HibernateFactory.rollback(tx);
+		factory.rollback(tx);
+		factory.close(session);
+		session = null;
 		throw new PersistorException(e);
 	}
 
 	protected void startOperation() throws HibernateException
 	{
-		session = HibernateFactory.openSession(getConfig(), getOverrideProperties(), getExtraProperties());
+		session = factory.openSession();
 		tx = session.beginTransaction();
+	}
+
+	public Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> guessAliases(HibernateRestriction... restrictions)
+	{
+		HashMap<String, String> aliases = new HashMap<String, String>();
+		ArrayList<HibernateRestriction> res = new ArrayList<HibernateRestriction>();
+		for (HibernateRestriction hr : restrictions)
+		{
+			Entry<String, Entry<String, String>> guess = guessAlias(hr.getField(), aliases);
+			if (guess.getValue() != null)
+			{
+				aliases.put(guess.getValue().getKey(), guess.getValue().getValue());
+				res.add(new HibernateRestriction(hr.getOperator(), guess.getKey(), hr.getValue()));
+			}
+			else res.add(hr);
+		}
+		return new Pair<ArrayList<HibernateRestriction>, HashMap<String, String>>(res, aliases);
+	}
+
+	private Entry<String, Entry<String, String>> guessAlias(String param, final HashMap<String, String> aliases)
+	{
+		Pair<String, String> alias = null;
+		final String field;
+		if (param.indexOf('.') >= 0)
+		{
+			final String[] split = param.split("\\.");
+			String aliasLetter = "";
+			if (!aliases.containsKey(split[0]))
+			{
+				/*
+				 * Lower case letters, ASCII standard is from 97(a) to 122(z)
+				 * When the ASCII standard will change this will stop to work
+				 * (even the rest of the world will stop to work)
+				 */
+				for (char c = 122; c > 96 && aliasLetter.isEmpty(); c--)
+					if (!aliases.containsValue(String.valueOf(c))) aliasLetter = String.valueOf(c);
+			}
+			else aliasLetter = aliases.get(split[0]);
+			alias = new Pair<String, String>(split[0], aliasLetter);
+			field = String.format("%s.%s", aliasLetter, split[1]);
+		}
+		else field = param;
+		return new Pair<String, Entry<String, String>>(field, alias);
 	}
 }

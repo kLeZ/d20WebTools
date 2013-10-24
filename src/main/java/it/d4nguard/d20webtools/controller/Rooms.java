@@ -10,8 +10,6 @@ import java.util.List;
 
 public class Rooms extends Session
 {
-	public static final String SESSION_ROOM_NAME = "room";
-	public static final String ROOM_ID = "roomId";
 	private static final long serialVersionUID = -2654452895755002089L;
 	private Room room;
 
@@ -26,7 +24,7 @@ public class Rooms extends Session
 		String ret = SUCCESS;
 		synchronized (_session)
 		{
-			Persistor<Room> db = new Persistor<Room>();
+			Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
 			try
 			{
 				getRoom().setMaster(getUser());
@@ -46,8 +44,8 @@ public class Rooms extends Session
 	public String joinRoom() throws Exception
 	{
 		String ret = SUCCESS;
-		Persistor<Room> db = new Persistor<Room>();
-		Persistor<Member> db_m = new Persistor<Member>();
+		Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
+		Persistor<Member> db_m = new Persistor<Member>(getHibernateFactory());
 		try
 		{
 			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
@@ -79,13 +77,8 @@ public class Rooms extends Session
 
 	public LinkedHashMap<Long, Room> getRooms()
 	{
-		return getRoomsImpl();
-	}
-
-	public static LinkedHashMap<Long, Room> getRoomsImpl()
-	{
 		LinkedHashMap<Long, Room> ret = new LinkedHashMap<Long, Room>();
-		Persistor<Room> db = new Persistor<Room>();
+		Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
 		List<Room> rooms = db.findAll(Room.class);
 		for (Room r : rooms)
 			ret.put(r.getId(), r);

@@ -16,15 +16,87 @@ public class HibernateFactory
 {
 	private static Logger log = Logger.getLogger(HibernateFactory.class);
 
-	private static SessionFactory sessionFactory;
-	private static Configuration configuration;
+	private Configuration configuration;
+	private SessionFactory sessionFactory;
 
-	public static SessionFactory getSessionFactory()
+	public SessionFactory getSessionFactory()
 	{
 		return sessionFactory;
 	}
 
-	public static Configuration getConfiguration()
+	public void setSessionFactory(SessionFactory sessionFactory)
+	{
+		this.sessionFactory = sessionFactory;
+	}
+
+	private final Document config;
+	private final Properties toOverrideProperties;
+	private final Properties extraProperties;
+
+	public HibernateFactory()
+	{
+		this(null, null, null, false);
+	}
+
+	public HibernateFactory(final boolean force)
+	{
+		this(null, null, null, force);
+	}
+
+	public HibernateFactory(final Properties toOverrideProperties)
+	{
+		this(null, toOverrideProperties, null, false);
+	}
+
+	public HibernateFactory(final Properties toOverrideProperties, final boolean force)
+	{
+		this(null, toOverrideProperties, null, force);
+	}
+
+	public HibernateFactory(final Document config, final Properties toOverrideProperties)
+	{
+		this(config, toOverrideProperties, null, false);
+	}
+
+	public HibernateFactory(final Document config, final Properties toOverrideProperties, final boolean force)
+	{
+		this(config, toOverrideProperties, null, force);
+	}
+
+	public HibernateFactory(final Properties toOverrideProperties, final Properties extraProperties)
+	{
+		this(null, toOverrideProperties, extraProperties, false);
+	}
+
+	public HibernateFactory(final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
+	{
+		this(null, toOverrideProperties, extraProperties, force);
+	}
+
+	public HibernateFactory(final Document config, final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
+	{
+		this.config = config;
+		this.toOverrideProperties = toOverrideProperties;
+		this.extraProperties = extraProperties;
+		buildIfNeeded(force);
+	}
+
+	public Document getConfig()
+	{
+		return config;
+	}
+
+	public Properties getOverrideProperties()
+	{
+		return toOverrideProperties;
+	}
+
+	public Properties getExtraProperties()
+	{
+		return extraProperties;
+	}
+
+	public Configuration getConfiguration()
 	{
 		if (configuration == null)
 		{
@@ -33,55 +105,32 @@ public class HibernateFactory
 		return configuration;
 	}
 
-	public static Session openSession() throws HibernateException
-	{
-		return openSession(null, null, null);
-	}
-
-	public static Session openSession(final Properties toOverrideProperties) throws HibernateException
-	{
-		return openSession(null, toOverrideProperties, null);
-	}
-
-	public static Session openSession(final Document config, final Properties toOverrideProperties) throws HibernateException
-	{
-		return openSession(config, toOverrideProperties, null);
-	}
-
-	public static Session openSession(final Properties toOverrideProperties, final Properties extraProperties) throws HibernateException
-	{
-		return openSession(null, toOverrideProperties, extraProperties);
-	}
-
-	public static Session openSession(final Document config, final Properties toOverrideProperties, final Properties extraProperties) throws HibernateException
+	public Session openSession() throws HibernateException
 	{
 		log.trace("Trying to open a session, CALLING { buildIfNeeded(config, toOverrideProperties, extraProperties) }");
-		configureSessionFactory(config, toOverrideProperties, extraProperties);
+		configureSessionFactory();
 		log.trace("Built, opening session");
-		return sessionFactory.openSession();
+		return getSessionFactory().openSession();
 	}
 
-	public static void closeFactory()
+	public void closeFactory()
 	{
-		if (sessionFactory != null)
+		if (getSessionFactory() != null)
 		{
 			try
 			{
 				log.trace("Closing sessionFactory session");
-				sessionFactory.close();
+				getSessionFactory().close();
 			}
 			catch (final HibernateException e)
 			{
 				log.error("Couldn't close SessionFactory", e);
 			}
-			finally
-			{
-				sessionFactory = null;
-			}
 		}
+		setSessionFactory(null);
 	}
 
-	public static void close(Session session)
+	public void close(Session session)
 	{
 		if (session != null)
 		{
@@ -101,7 +150,7 @@ public class HibernateFactory
 		}
 	}
 
-	public static void rollback(final Transaction tx)
+	public void rollback(final Transaction tx)
 	{
 		try
 		{
@@ -121,7 +170,7 @@ public class HibernateFactory
 	 * @return
 	 * @throws HibernateException
 	 */
-	private static SessionFactory configureSessionFactory(final Document config, final Properties toOverrideProperties, final Properties extraProperties) throws HibernateException
+	private SessionFactory configureSessionFactory() throws HibernateException
 	{
 		if (configuration == null)
 		{
@@ -174,31 +223,31 @@ public class HibernateFactory
 		log.trace("Building ServiceRegistry passing all the properties (configured and runtime added)");
 		final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).buildServiceRegistry();
 		log.trace("Setting sessionFactory var: CALLING { sessionFactory = configuration.buildSessionFactory(serviceRegistry) }");
-		sessionFactory = getConfiguration().buildSessionFactory(serviceRegistry);
+		setSessionFactory(getConfiguration().buildSessionFactory(serviceRegistry));
 		log.trace("Well done, SessionFactory configured!");
-		return sessionFactory;
+		return getSessionFactory();
 	}
 
 	/**
 	 * Builds a SessionFactory, if it hasn't been already.
 	 */
-	public static SessionFactory buildIfNeeded(final Document config, final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
+	public SessionFactory buildIfNeeded(final boolean force)
 	{
 		if (force)
 		{
 			log.trace("Forcing configure a new one");
 			configuration = null;
-			return configureSessionFactory(config, toOverrideProperties, extraProperties);
+			return configureSessionFactory();
 		}
-		if (sessionFactory != null)
+		if (getSessionFactory() != null)
 		{
 			log.trace("Cached sessionFactory, returning");
-			return sessionFactory;
+			return getSessionFactory();
 		}
 		try
 		{
 			log.trace("No sessionFactory, configuring a new one");
-			return configureSessionFactory(config, toOverrideProperties, extraProperties);
+			return configureSessionFactory();
 		}
 		catch (final HibernateException e)
 		{

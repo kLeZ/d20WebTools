@@ -19,7 +19,7 @@
 			<column name="TEXT" />
 		</property>
 		<many-to-one name="room" class="it.d4nguard.d20webtools.model.Room"
-			fetch="join">
+			fetch="join" >
 			<column name="ROOM" />
 		</many-to-one>
 	</class>

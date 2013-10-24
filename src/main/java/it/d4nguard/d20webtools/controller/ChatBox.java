@@ -2,10 +2,12 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
+import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -22,14 +24,17 @@ public class ChatBox extends Session
 	{
 		synchronized (_session)
 		{
-			setRoom(Rooms.getRoomsImpl().get(_session.get(Rooms.ROOM_ID)));
 			StringBuilder sb = new StringBuilder();
 			if (getRoom() != null)
 			{
-				if (!getRoom().getMessages().isEmpty())
+				Persistor<Message> db = new Persistor<Message>(getHibernateFactory());
+				Persistor<Room> db_r = new Persistor<Room>(getHibernateFactory());
+				setRoom(db_r.findById(Room.class, new Long((Integer) _session.get(ROOM_ID))));
+				List<Message> messages = db.findByEqField(Message.class, "room", _session.get(ROOM_ID));
+				if (!messages.isEmpty())
 				{
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-					for (Message msg : getRoom().getMessages())
+					for (Message msg : messages)
 					{
 						sb.append("<div>");
 						sb.append('[').append(sdf.format(msg.getTime())).append(']');
