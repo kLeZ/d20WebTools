@@ -1,6 +1,7 @@
 package it.d4nguard.d20webtools.common;
 
 import it.d4nguard.d20webtools.persistence.HibernateFactory;
+import it.d4nguard.d20webtools.persistence.Persistor;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,12 +12,11 @@ public class HibernateListener implements ServletContextListener, Constants
 {
 	public void contextInitialized(ServletContextEvent evt)
 	{
-		evt.getServletContext().setAttribute(ENTITY_MANAGER, new HibernateFactory());
+		evt.getServletContext().setAttribute(ENTITY_MANAGER, new Persistor(new HibernateFactory()));
 	}
 
 	public void contextDestroyed(ServletContextEvent evt)
 	{
-		HibernateFactory factory = (HibernateFactory) evt.getServletContext().getAttribute(ENTITY_MANAGER);
-		factory.closeFactory();
+		((Persistor) evt.getServletContext().getAttribute(ENTITY_MANAGER)).destroy();
 	}
 }

@@ -15,13 +15,13 @@
 			fetch="join">
 			<column name="MASTER" />
 		</many-to-one>
-		<set name="members" table="MEMBER" inverse="true" lazy="false">
+		<set name="members" table="MEMBER" inverse="true" lazy="true">
 			<key>
 				<column name="MEMBERID" />
 			</key>
 			<one-to-many class="it.d4nguard.d20webtools.model.Member" />
 		</set>
-		<set name="messages" table="MESSAGE" inverse="true" lazy="false">
+		<set name="messages" table="MESSAGE" inverse="true" lazy="true">
 			<key>
 				<column name="MESSAGEID" />
 			</key>

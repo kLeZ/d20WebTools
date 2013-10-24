@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.persistence;
+package it.d4nguard.d20webtools.common;
 
 import java.util.Map.Entry;
 
@@ -35,5 +35,13 @@ public class Pair<K, V> implements Entry<K, V>
 	{
 		this.value = value;
 		return this.value;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("Pair ['").append(key).append("'='").append(value).append("']");
+		return sb.toString();
 	}
 }

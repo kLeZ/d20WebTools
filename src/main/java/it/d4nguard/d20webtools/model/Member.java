@@ -1,12 +1,15 @@
 package it.d4nguard.d20webtools.model;
 
-
 public class Member
 {
 	private Long id;
 	private User user;
 	private Room room;
 
+	/**
+	 * Needed for struts2 to instantiate then populate, which is the default
+	 * behavior of the framework.
+	 */
 	public Member()
 	{
 	}
@@ -45,5 +48,19 @@ public class Member
 	public void setRoom(Room room)
 	{
 		this.room = room;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Member [id=");
+		builder.append(id);
+		builder.append(", user=");
+		builder.append(user);
+		builder.append(", room=");
+		builder.append(room);
+		builder.append("]");
+		return builder.toString();
 	}
 }

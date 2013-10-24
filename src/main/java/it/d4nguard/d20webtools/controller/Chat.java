@@ -5,12 +5,13 @@ import it.d4nguard.d20webtools.common.TimeSpan;
 import it.d4nguard.d20webtools.model.Member;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
-import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.util.Date;
 import java.util.List;
 
-public class Chat extends Session
+import com.opensymphony.xwork2.ModelDriven;
+
+public class Chat extends Session implements ModelDriven<Room>
 {
 	private static final long serialVersionUID = 7405836330868983108L;
 
@@ -24,26 +25,21 @@ public class Chat extends Session
 		synchronized (_session)
 		{
 			removeSleepingMembers();
-
-			Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
-			setRoom(db.findById(Room.class, (Long) _session.get(ROOM_ID)));
+			setRoom(getPersistor().findById(Room.class, (Long) _session.get(ROOM_ID)));
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
 				Message msg = new Message(TimeSpan.now(), getUser(), eval.eval(message), getRoom());
-				Persistor<Message> db_m = new Persistor<Message>(getHibernateFactory());
-				db_m.save(msg);
-				setRoom(db.findById(Room.class, getRoom().getId()));
+				getPersistor().save(msg);
+				setRoom(getPersistor().findById(Room.class, getRoom().getId()));
 			}
 		}
 		return ret;
 	}
 
-	private void removeSleepingMembers()
+	private synchronized void removeSleepingMembers()
 	{
-		Persistor<Message> db_m = new Persistor<Message>(getHibernateFactory());
-
-		List<Message> messages = db_m.findByEqField(Message.class, "user.email", getUser().getEmail());
+		List<Message> messages = getPersistor().findByEqField(Message.class, "user.email", getUser().getEmail());
 		Date d = null;
 		for (Message message : messages)
 		{
@@ -52,23 +48,26 @@ public class Chat extends Session
 		}
 		if (new TimeSpan(d).diff().getMinutes() > 30L)
 		{
-			Persistor<Member> db = new Persistor<Member>(getHibernateFactory());
 			Member m = new Member(getUser(), getRoom());
-			db.delete(m);
+			getPersistor().delete(m);
 		}
 	}
 
-	public Room getRoom()
+	public synchronized Room getRoom()
 	{
+		Long id;
 		if (room == null)
 		{
-			Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
-			setRoom(db.findById(Room.class, (Long) _session.get(ROOM_ID)));
+			if (_session.get(ROOM_ID) != null) id = (Long) _session.get(ROOM_ID);
+			else if (room != null && room.getId() != null) id = room.getId();
+			else id = 0L;
+			if (id > 0L) room = getPersistor().findById(Room.class, id);
+			else room = new Room();
 		}
 		return room;
 	}
 
-	public void setRoom(Room room)
+	public synchronized void setRoom(Room room)
 	{
 		this.room = room;
 	}
@@ -81,5 +80,11 @@ public class Chat extends Session
 	public void setMessage(String message)
 	{
 		this.message = message;
+	}
+
+	@Override
+	public Room getModel()
+	{
+		return getRoom();
 	}
 }

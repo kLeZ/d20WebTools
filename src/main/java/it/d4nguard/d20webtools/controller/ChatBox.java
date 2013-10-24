@@ -2,7 +2,6 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
-import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
@@ -25,12 +24,10 @@ public class ChatBox extends Session
 		synchronized (_session)
 		{
 			StringBuilder sb = new StringBuilder();
-			if (getRoom() != null)
+			if (_session.get(ROOM_ID) != null)
 			{
-				Persistor<Message> db = new Persistor<Message>(getHibernateFactory());
-				Persistor<Room> db_r = new Persistor<Room>(getHibernateFactory());
-				setRoom(db_r.findById(Room.class, new Long((Integer) _session.get(ROOM_ID))));
-				List<Message> messages = db.findByEqField(Message.class, "room", _session.get(ROOM_ID));
+				setRoom(getPersistor().findById(Room.class, (Long) _session.get(ROOM_ID)));
+				List<Message> messages = getPersistor().findByEqField(Message.class, "room.id", _session.get(ROOM_ID));
 				if (!messages.isEmpty())
 				{
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");

@@ -14,6 +14,10 @@ public class Room implements Serializable
 	private Set<Member> members = new LinkedHashSet<Member>();
 	private Set<Message> messages = new LinkedHashSet<Message>();
 
+	/**
+	 * Needed for struts2 to instantiate then populate, which is the default
+	 * behavior of the framework.
+	 */
 	public Room()
 	{
 	}
@@ -73,5 +77,23 @@ public class Room implements Serializable
 	public void setMessages(Set<Message> messages)
 	{
 		this.messages = messages;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Room [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", master=");
+		builder.append(master);
+		builder.append(", members=");
+		builder.append(members);
+		builder.append(", messages=");
+		builder.append(messages);
+		builder.append("]");
+		return builder.toString();
 	}
 }

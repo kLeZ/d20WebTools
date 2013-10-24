@@ -13,6 +13,14 @@ public class Message implements Serializable
 	private String text;
 	private Room room;
 
+	/**
+	 * Needed for struts2 to instantiate then populate, which is the default
+	 * behavior of the framework.
+	 */
+	public Message()
+	{
+	}
+
 	public Message(Date time, User user, String text, Room room)
 	{
 		super();
@@ -70,5 +78,23 @@ public class Message implements Serializable
 	public void setRoom(Room room)
 	{
 		this.room = room;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Message [id=");
+		builder.append(id);
+		builder.append(", time=");
+		builder.append(time);
+		builder.append(", user=");
+		builder.append(user);
+		builder.append(", text=");
+		builder.append(text);
+		builder.append(", room=");
+		builder.append(room);
+		builder.append("]");
+		return builder.toString();
 	}
 }

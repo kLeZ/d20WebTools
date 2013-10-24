@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.persistence;
+package it.d4nguard.d20webtools.common;
 
 public interface BOMapper<BO, BEAN>
 {

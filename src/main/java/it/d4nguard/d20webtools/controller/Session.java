@@ -1,9 +1,10 @@
 package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.common.Constants;
-import it.d4nguard.d20webtools.common.HibernateFactoryStore;
 import it.d4nguard.d20webtools.model.User;
 import it.d4nguard.d20webtools.persistence.HibernateFactory;
+import it.d4nguard.d20webtools.persistence.PersistenceStore;
+import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.util.Date;
 import java.util.Map;
@@ -13,7 +14,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class Session extends ActionSupport implements Constants, HibernateFactoryStore
+public class Session extends ActionSupport implements Constants, PersistenceStore
 {
 	private static final long serialVersionUID = 6686337047561791387L;
 
@@ -59,6 +60,12 @@ public class Session extends ActionSupport implements Constants, HibernateFactor
 	@Override
 	public HibernateFactory getHibernateFactory()
 	{
-		return (HibernateFactory) ServletActionContext.getServletContext().getAttribute(ENTITY_MANAGER);
+		return getPersistor().getFactory();
+	}
+
+	@Override
+	public Persistor getPersistor()
+	{
+		return (Persistor) ServletActionContext.getServletContext().getAttribute(ENTITY_MANAGER);
 	}
 }

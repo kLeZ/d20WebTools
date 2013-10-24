@@ -1,7 +1,6 @@
 package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.User;
-import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
 
 public class SignUp extends Session
@@ -14,10 +13,9 @@ public class SignUp extends Session
 	public String execute() throws Exception
 	{
 		String ret = SUCCESS;
-		Persistor<User> db = new Persistor<User>(getHibernateFactory());
 		try
 		{
-			db.save(getUser());
+			getPersistor().save(getUser());
 			addActionMessage("User registered successfully!");
 		}
 		catch (PersistorException e)

@@ -1,5 +1,7 @@
 package it.d4nguard.d20webtools.persistence;
 
+import it.d4nguard.d20webtools.common.Money;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

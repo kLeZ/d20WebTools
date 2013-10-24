@@ -1,5 +1,8 @@
 package it.d4nguard.d20webtools.persistence;
 
+import it.d4nguard.d20webtools.common.BooleanOperatorType;
+import it.d4nguard.d20webtools.common.Pair;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,7 +16,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class Persistor<E>
+public class Persistor
 {
 	private static Logger log = Logger.getLogger(Persistor.class);
 
@@ -26,7 +29,24 @@ public class Persistor<E>
 		this.factory = factory;
 	}
 
-	public void save(final E obj)
+	public void close()
+	{
+		factory.close(session);
+		session = null;
+	}
+
+	public void destroy()
+	{
+		close();
+		factory.closeFactory();
+	}
+
+	public boolean contains(Object object)
+	{
+		return session != null && session.contains(object);
+	}
+
+	public void save(final Object obj)
 	{
 		try
 		{
@@ -38,13 +58,9 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
-	public void update(final E obj)
+	public void update(final Object obj)
 	{
 		try
 		{
@@ -56,13 +72,9 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
-	public void saveOrUpdate(final E obj)
+	public void saveOrUpdate(final Object obj)
 	{
 		try
 		{
@@ -74,21 +86,17 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
-	public void saveAll(final Collection<E> list)
+	public void saveAll(final Collection<Object> list)
 	{
 		try
 		{
 			startOperation();
 			int i = 0;
-			for (final E e : list)
+			for (final Object obj : list)
 			{
-				session.save(e);
+				session.save(obj);
 				if ((i++ % 20) == 0)
 				{
 					session.flush();
@@ -101,21 +109,17 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
-	public void updateAll(final Collection<E> list)
+	public void updateAll(final Collection<Object> list)
 	{
 		try
 		{
 			startOperation();
 			int i = 0;
-			for (final E e : list)
+			for (final Object obj : list)
 			{
-				session.update(e);
+				session.update(obj);
 				if ((i++ % 20) == 0)
 				{
 					session.flush();
@@ -128,21 +132,17 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
-	public void saveOrUpdateAll(final Collection<E> list)
+	public void saveOrUpdateAll(final Collection<Object> list)
 	{
 		try
 		{
 			startOperation();
 			int i = 0;
-			for (final E e : list)
+			for (final Object obj : list)
 			{
-				session.saveOrUpdate(e);
+				session.saveOrUpdate(obj);
 				if ((i++ % 20) == 0)
 				{
 					session.flush();
@@ -155,13 +155,9 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
-	public void delete(final E obj)
+	public void delete(final Object obj)
 	{
 		try
 		{
@@ -173,14 +169,10 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public E findById(final Class<E> clazz, final Long id)
+	public <E> E findById(final Class<E> clazz, final Long id)
 	{
 		E obj = null;
 		try
@@ -193,26 +185,22 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 		return obj;
 	}
 
-	public List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
+	public <E> List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
 	{
 		return findByCriterion(clazz, new HibernateRestriction(BooleanOperatorType.eq, fieldName, fieldValue));
 	}
 
-	public List<E> findByCriterion(final Class<E> clazz, final HibernateRestriction... restrictions)
+	public <E> List<E> findByCriterion(final Class<E> clazz, final HibernateRestriction... restrictions)
 	{
 		Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> res = guessAliases(restrictions);
 		return findByCriterion(clazz, res.getValue(), res.getKey().toArray(new HibernateRestriction[] {}));
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<E> findByCriterion(final Class<E> clazz, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
+	public <E> List<E> findByCriterion(final Class<E> clazz, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
 	{
 		List<E> objs = null;
 		try
@@ -235,15 +223,11 @@ public class Persistor<E>
 		{
 			handleException(e);
 		}
-		finally
-		{
-			factory.close(session);
-		}
 		return objs;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<E> findAll(final Class<E> clazz)
+	public <E> List<E> findAll(final Class<E> clazz)
 	{
 		List<E> objects = null;
 		try
@@ -256,10 +240,6 @@ public class Persistor<E>
 		catch (final Throwable e)
 		{
 			handleException(e);
-		}
-		finally
-		{
-			factory.close(session);
 		}
 		return objects;
 	}
@@ -297,7 +277,7 @@ public class Persistor<E>
 
 	protected void startOperation() throws HibernateException
 	{
-		session = factory.openSession();
+		if (session == null || (!session.isConnected() || session.isDirty() || !session.isOpen())) session = factory.openSession();
 		tx = session.beginTransaction();
 	}
 
@@ -342,5 +322,15 @@ public class Persistor<E>
 		}
 		else field = param;
 		return new Pair<String, Entry<String, String>>(field, alias);
+	}
+
+	public Session getSession()
+	{
+		return session;
+	}
+
+	public HibernateFactory getFactory()
+	{
+		return factory;
 	}
 }

@@ -70,7 +70,6 @@
 			}
 
 			function ReloadPage() {
-				//window.location = location.href;
 				$('#chatbox').load('chatbox');
 			};
 			$(document).ready(function() {
@@ -103,7 +102,7 @@
 		<h4>Logged members</h4>
 		<table class="table table-striped table-condensed">
 		<s:iterator value="room.members" status="member">
-			<tr><td><s:property value="user.webEmail" /></td></tr>
+			<tr><td><s:property value="member.user.webEmail" /></td></tr>
 		</s:iterator>
 		</table>
 	</jsp:attribute>

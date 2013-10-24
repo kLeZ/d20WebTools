@@ -2,10 +2,9 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Member;
 import it.d4nguard.d20webtools.model.Room;
-import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
 
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.List;
 
 public class Rooms extends Session
@@ -24,12 +23,11 @@ public class Rooms extends Session
 		String ret = SUCCESS;
 		synchronized (_session)
 		{
-			Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
 			try
 			{
-				getRoom().setMaster(getUser());
-				setRoom(getRoom());
-				db.save(getRoom());
+				Room r = getRoom();
+				r.setMaster(getUser());
+				setRoom(r);
 			}
 			catch (PersistorException e)
 			{
@@ -44,15 +42,14 @@ public class Rooms extends Session
 	public String joinRoom() throws Exception
 	{
 		String ret = SUCCESS;
-		Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
-		Persistor<Member> db_m = new Persistor<Member>(getHibernateFactory());
 		try
 		{
-			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
-			Member m = new Member(getUser(), getRoom());
-			db_m.saveOrUpdate(m);
-			setRoom(db.findById(Room.class, new Long(getRoom().getId())));
-			_session.put(ROOM_ID, getRoom().getId());
+			Room r = getRoom();
+			List<Member> members = getPersistor().findByEqField(Member.class, "room.id", r.getId());
+			for (Member m : members)
+				if (m.getUser().getEmail().contentEquals(getUser().getEmail())) getPersistor().delete(m);
+			getPersistor().save(new Member(getUser(), r));
+			_session.put(ROOM_ID, r.getId());
 		}
 		catch (PersistorException e)
 		{
@@ -62,26 +59,28 @@ public class Rooms extends Session
 		return ret;
 	}
 
-	public Room getRoom()
+	public synchronized Room getRoom()
 	{
-		if (room == null) room = (Room) _session.get(SESSION_ROOM_NAME);
+		Long id;
+		if (room == null)
+		{
+			if (_session.get(ROOM_ID) != null) id = (Long) _session.get(ROOM_ID);
+			else if (room != null && room.getId() != null) id = room.getId();
+			else id = 0L;
+			if (id > 0L) room = getPersistor().findById(Room.class, id);
+			else room = new Room();
+		}
 		return room;
 	}
 
 	public void setRoom(Room room)
 	{
 		this.room = room;
-		if (room != null) _session.put(SESSION_ROOM_NAME, room);
-		else _session.remove(SESSION_ROOM_NAME);
+		if (room != null && !room.getName().isEmpty() && room.getMaster() != null) getPersistor().saveOrUpdate(room);
 	}
 
-	public LinkedHashMap<Long, Room> getRooms()
+	public Collection<Room> getRooms()
 	{
-		LinkedHashMap<Long, Room> ret = new LinkedHashMap<Long, Room>();
-		Persistor<Room> db = new Persistor<Room>(getHibernateFactory());
-		List<Room> rooms = db.findAll(Room.class);
-		for (Room r : rooms)
-			ret.put(r.getId(), r);
-		return ret;
+		return getPersistor().findAll(Room.class);
 	}
 }

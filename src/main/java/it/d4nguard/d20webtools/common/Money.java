@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.persistence;
+package it.d4nguard.d20webtools.common;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -1,5 +1,7 @@
 package it.d4nguard.d20webtools.persistence;
 
+import it.d4nguard.d20webtools.common.BooleanOperatorType;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.hibernate.criterion.Criterion;

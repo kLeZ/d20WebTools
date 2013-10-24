@@ -1,7 +1,6 @@
 package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.User;
-import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
 
 import java.util.List;
@@ -18,8 +17,7 @@ public class SignIn extends Session
 		{
 			try
 			{
-				Persistor<User> db = new Persistor<User>(getHibernateFactory());
-				List<User> users = db.findByEqField(User.class, "email", getUser().getEmail());
+				List<User> users = getPersistor().findByEqField(User.class, "email", getUser().getEmail());
 				if (users.size() == 1 && users.get(0).getPassword().contentEquals(getUser().getPassword()))
 				{
 					setUser(users.get(0));
