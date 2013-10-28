@@ -12,9 +12,9 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 import org.w3c.dom.Document;
 
-public class HibernateFactory
+public class HibernateSession
 {
-	private static Logger log = Logger.getLogger(HibernateFactory.class);
+	private static Logger log = Logger.getLogger(HibernateSession.class);
 
 	private Configuration configuration;
 	private SessionFactory sessionFactory;
@@ -33,47 +33,47 @@ public class HibernateFactory
 	private final Properties toOverrideProperties;
 	private final Properties extraProperties;
 
-	public HibernateFactory()
+	public HibernateSession()
 	{
 		this(null, null, null, false);
 	}
 
-	public HibernateFactory(final boolean force)
+	public HibernateSession(final boolean force)
 	{
 		this(null, null, null, force);
 	}
 
-	public HibernateFactory(final Properties toOverrideProperties)
+	public HibernateSession(final Properties toOverrideProperties)
 	{
 		this(null, toOverrideProperties, null, false);
 	}
 
-	public HibernateFactory(final Properties toOverrideProperties, final boolean force)
+	public HibernateSession(final Properties toOverrideProperties, final boolean force)
 	{
 		this(null, toOverrideProperties, null, force);
 	}
 
-	public HibernateFactory(final Document config, final Properties toOverrideProperties)
+	public HibernateSession(final Document config, final Properties toOverrideProperties)
 	{
 		this(config, toOverrideProperties, null, false);
 	}
 
-	public HibernateFactory(final Document config, final Properties toOverrideProperties, final boolean force)
+	public HibernateSession(final Document config, final Properties toOverrideProperties, final boolean force)
 	{
 		this(config, toOverrideProperties, null, force);
 	}
 
-	public HibernateFactory(final Properties toOverrideProperties, final Properties extraProperties)
+	public HibernateSession(final Properties toOverrideProperties, final Properties extraProperties)
 	{
 		this(null, toOverrideProperties, extraProperties, false);
 	}
 
-	public HibernateFactory(final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
+	public HibernateSession(final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
 	{
 		this(null, toOverrideProperties, extraProperties, force);
 	}
 
-	public HibernateFactory(final Document config, final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
+	public HibernateSession(final Document config, final Properties toOverrideProperties, final Properties extraProperties, final boolean force)
 	{
 		this.config = config;
 		this.toOverrideProperties = toOverrideProperties;

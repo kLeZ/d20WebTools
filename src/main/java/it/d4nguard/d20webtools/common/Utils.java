@@ -1,6 +1,7 @@
 package it.d4nguard.d20webtools.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Utils
 {
@@ -55,6 +56,16 @@ public class Utils
 			ret.add(contents);
 			contents = "";
 		}
+		return ret;
+	}
+
+	public static boolean containsAll(Collection<String> collection, String... strings)
+	{
+		if (collection == null) throw new IllegalArgumentException("collection");
+		if (strings == null) new IllegalArgumentException("strings");
+		boolean ret = !collection.isEmpty() && strings.length > 0;
+		for (String test : strings)
+			ret &= collection.contains(test);
 		return ret;
 	}
 }

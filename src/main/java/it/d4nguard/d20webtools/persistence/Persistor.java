@@ -22,9 +22,9 @@ public class Persistor
 
 	private Session session;
 	private Transaction tx;
-	private HibernateFactory factory;
+	private HibernateSession factory;
 
-	public Persistor(HibernateFactory factory)
+	public Persistor(HibernateSession factory)
 	{
 		this.factory = factory;
 	}
@@ -332,7 +332,7 @@ public class Persistor
 		return session;
 	}
 
-	public HibernateFactory getFactory()
+	public HibernateSession getFactory()
 	{
 		return factory;
 	}

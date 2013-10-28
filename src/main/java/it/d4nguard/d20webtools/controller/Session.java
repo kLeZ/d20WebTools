@@ -2,7 +2,7 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.common.Constants;
 import it.d4nguard.d20webtools.model.User;
-import it.d4nguard.d20webtools.persistence.HibernateFactory;
+import it.d4nguard.d20webtools.persistence.HibernateSession;
 import it.d4nguard.d20webtools.persistence.PersistenceStore;
 import it.d4nguard.d20webtools.persistence.Persistor;
 
@@ -58,7 +58,7 @@ public class Session extends ActionSupport implements Constants, PersistenceStor
 	}
 
 	@Override
-	public HibernateFactory getHibernateFactory()
+	public HibernateSession getHibernateFactory()
 	{
 		return getPersistor().getFactory();
 	}
