@@ -69,6 +69,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.16</version>
 						<configuration>
+							<testSourceDirectory>src/main/test</testSourceDirectory>
 							<parallel>methods</parallel>
 							<threadCount>10</threadCount>
 						</configuration>
@@ -77,6 +78,11 @@
 						<artifactId>maven-war-plugin</artifactId>
 						<version>2.1.1</version>
 						<configuration>
+							<webResources>
+								<resource>
+									<directory>src/main/mapping</directory>
+								</resource>
+							</webResources>
 							<outputDirectory>deployments</outputDirectory>
 							<warName>ROOT</warName>
 						</configuration>
