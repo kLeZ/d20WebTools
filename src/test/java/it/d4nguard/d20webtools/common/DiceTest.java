@@ -1,8 +1,8 @@
-package it.d4nguard.d20webtools.test.common;
+package it.d4nguard.d20webtools.common;
 
+import it.d4nguard.d20webtools.CollectionsAssert;
 import it.d4nguard.d20webtools.common.Dice;
 import it.d4nguard.d20webtools.common.OperatorType;
-import it.d4nguard.d20webtools.test.CollectionsAssert;
 
 import java.util.LinkedHashMap;
 

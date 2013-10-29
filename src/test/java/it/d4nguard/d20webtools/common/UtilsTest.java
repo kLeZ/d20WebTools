@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.test.common;
+package it.d4nguard.d20webtools.common;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

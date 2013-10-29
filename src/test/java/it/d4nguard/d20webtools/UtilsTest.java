@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.test;
+package it.d4nguard.d20webtools;
 
 import it.d4nguard.d20webtools.common.Utils;
 

@@ -1,4 +1,4 @@
-package it.d4nguard.d20webtools.test;
+package it.d4nguard.d20webtools;
 
 import java.util.Iterator;
 import java.util.Map;
