@@ -5,7 +5,7 @@
 <hibernate-mapping>
 	<class name="it.d4nguard.d20webtools.model.Message" table="MESSAGES">
 		<id name="id" type="java.lang.Long">
-			<column name="ID" />
+			<column name="ID" unique="true" />
 			<generator class="increment" />
 		</id>
 		<property name="time" type="java.util.Date">

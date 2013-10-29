@@ -1,5 +1,7 @@
 package it.d4nguard.d20webtools.model;
 
+import it.d4nguard.d20webtools.common.StringUtils;
+
 import java.io.Serializable;
 
 public class User implements Serializable
@@ -70,6 +72,30 @@ public class User implements Serializable
 		this.password = password;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) { return true; }
+		if (obj == null) { return false; }
+		if (!(obj instanceof User)) { return false; }
+		User other = (User) obj;
+		if (email == null)
+		{
+			if (other.email != null) { return false; }
+		}
+		else if (!email.equals(other.email)) { return false; }
+		return true;
+	}
+
 	public static String antiPhishing(String email)
 	{
 		String temp = email.replace("@", " [@] ");
@@ -87,7 +113,7 @@ public class User implements Serializable
 		builder.append(", email=");
 		builder.append(email);
 		builder.append(", password=");
-		builder.append(password);
+		builder.append(StringUtils.mask(password));
 		builder.append("]");
 		return builder.toString();
 	}

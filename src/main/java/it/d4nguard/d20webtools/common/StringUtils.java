@@ -6,8 +6,7 @@ import java.util.Map;
 
 public class StringUtils
 {
-	public static final char[] DIGIT_SYMBOLS =
-	{ '+', '-', '.', ',' };
+	public static final char[] DIGIT_SYMBOLS = { '+', '-', '.', ',' };
 	static
 	{
 		Arrays.sort(DIGIT_SYMBOLS);
@@ -176,5 +175,12 @@ public class StringUtils
 	public static boolean hasText(final String str)
 	{
 		return hasText((CharSequence) str);
+	}
+
+	public static String mask(String s)
+	{
+		char[] chars = new char[s.length()];
+		Arrays.fill(chars, '*');
+		return new String(chars);
 	}
 }
