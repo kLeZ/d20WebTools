@@ -3,36 +3,37 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 29-ott-2013 10.30.18 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="it.d4nguard.d20webtools.model.Suggestion" table="SUGGESTION">
-        <id name="id" type="java.lang.Long">
-            <column name="ID" />
-            <generator class="assigned" />
-        </id>
-        <property name="message" type="java.lang.String">
-            <column name="MESSAGE" />
-        </property>
-        <property name="status">
-            <column name="STATUS" />
-            <type name="org.hibernate.type.EnumType">
-                <param name="type">12</param>
-                <param name="enumClass">it.d4nguard.d20webtools.model.SuggestionStatus</param>
-            </type>
-        </property>
-        <property name="type">
-            <column name="TYPE" />
-            <type name="org.hibernate.type.EnumType">
-                <param name="type">12</param>
-                <param name="enumClass">it.d4nguard.d20webtools.model.SuggestionType</param>
-            </type>
-        </property>
-        <property name="votes" type="java.lang.Long">
-            <column name="VOTES" />
-        </property>
-        <many-to-one name="proposer" class="it.d4nguard.d20webtools.model.User" fetch="join">
-            <column name="PROPOSER" />
-        </many-to-one>
-        <property name="done" type="boolean">
-            <column name="DONE" />
-        </property>
-    </class>
+	<class name="it.d4nguard.d20webtools.model.Suggestion" table="SUGGESTIONS">
+		<id name="id" type="java.lang.Long">
+			<column name="ID" />
+			<generator class="increment" />
+		</id>
+		<property name="message" type="java.lang.String">
+			<column name="MESSAGE" />
+		</property>
+		<property name="status">
+			<column name="STATUS" />
+			<type name="org.hibernate.type.EnumType">
+				<param name="type">12</param>
+				<param name="enumClass">it.d4nguard.d20webtools.model.SuggestionStatus</param>
+			</type>
+		</property>
+		<property name="type">
+			<column name="TYPE" />
+			<type name="org.hibernate.type.EnumType">
+				<param name="type">12</param>
+				<param name="enumClass">it.d4nguard.d20webtools.model.SuggestionType</param>
+			</type>
+		</property>
+		<property name="votes" type="java.lang.Long">
+			<column name="VOTES" />
+		</property>
+		<many-to-one name="proposer" class="it.d4nguard.d20webtools.model.User"
+			fetch="join">
+			<column name="PROPOSER" />
+		</many-to-one>
+		<property name="done" type="boolean">
+			<column name="DONE" />
+		</property>
+	</class>
 </hibernate-mapping>

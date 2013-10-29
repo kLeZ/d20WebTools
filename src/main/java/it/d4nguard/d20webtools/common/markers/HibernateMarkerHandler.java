@@ -10,7 +10,7 @@ public class HibernateMarkerHandler implements IMarkerHandler
 
 	public HibernateMarkerHandler(Properties props)
 	{
-		this.props = props;
+		this.props = (Properties) props.clone();
 	}
 
 	@Override
@@ -19,6 +19,6 @@ public class HibernateMarkerHandler implements IMarkerHandler
 		String[] split = name.split("#");
 		props.put(split[0], split[1]);
 		new HibernateSession(props).buildIfNeeded(true).close();
-		return true;
+		return split[1].contentEquals(String.valueOf(props.remove(split[0])));
 	}
 }
