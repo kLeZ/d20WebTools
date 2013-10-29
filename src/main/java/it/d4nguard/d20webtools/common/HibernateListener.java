@@ -37,6 +37,7 @@ public class HibernateListener implements ServletContextListener, Constants
 
 	public void contextDestroyed(ServletContextEvent evt)
 	{
-		((Persistor) evt.getServletContext().getAttribute(ENTITY_MANAGER)).destroy();
+		Persistor p = (Persistor) evt.getServletContext().getAttribute(ENTITY_MANAGER);
+		if (p != null) p.destroy();
 	}
 }
