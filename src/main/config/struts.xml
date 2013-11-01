@@ -40,6 +40,9 @@
 			method="logout">
 			<result>/pages/index.jsp</result>
 		</action>
+		<action name="exit-room" class="it.d4nguard.d20webtools.controller.Rooms" method="exit">
+			<result>/pages/index.jsp</result>
+		</action>
 		<action name="join-room-init" class="it.d4nguard.d20webtools.controller.Rooms">
 			<result>/pages/join-room.jsp</result>
 		</action>

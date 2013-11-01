@@ -1,14 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@taglib prefix="s" uri="/struts-tags"%>
-
+<%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
 <t:layout>
 	<jsp:attribute name="head">
 		<link href="../css/tablecloth.css" rel="stylesheet" />
 		<link href="../css/prettify.css" rel="stylesheet" />
 		<script src="../js/jquery.metadata.js"></script>
 		<script src="../js/jquery.tablesorter.min.js"></script>
-		<script src="../js/jquery.tablecloth.js"></script>
+		<sj:head />
 	</jsp:attribute>
 	<jsp:attribute name="title">d20WebTools - Room <s:property value="room.name" />
 	</jsp:attribute>
@@ -16,16 +16,17 @@
 		<h1>
 			<s:property value="room.name" />
 		</h1>
+	</jsp:attribute>
+	<jsp:attribute name="header_description">
 		<p style="font-size: x-small;">by <s:property value="room.master.webEmail" />
 		</p>
 	</jsp:attribute>
-	<jsp:attribute name="header_description">&nbsp;</jsp:attribute>
 	<jsp:attribute name="body">
 		<style type="text/css">
 <!--
 #jumbo_header {
 	padding: 0;
-	margin: 15px;
+	margin: 0;
 }
 
 #row1 {
@@ -78,7 +79,7 @@
 			$(document).ready(function() {
 				scrollLog();
 				$('input[name="message"]').focus();
-				setInterval('ReloadPage()', 100);
+				setInterval('ReloadPage()', 1000);
 				$.ajaxSetup({
 					cache : true
 				});
@@ -100,13 +101,26 @@
 	</jsp:attribute>
 	<jsp:attribute name="row3">
 		<script type="text/javascript">
-			$("table").tablecloth();
+			$("#members").tablecloth({
+				theme : "dark"
+			});
 		</script>
-		<h4>Logged members</h4>
-		<table class="table table-striped table-condensed">
-		<s:iterator value="room.members" status="member">
-			<tr><td><s:property value="member.user.webEmail" /></td></tr>
+		<h4>Logged members (<s:property value="members.size" />)</h4>
+		<sj:div cssClass="table-responsive" href="/pages/chat" updateFreq="100">
+		<table id="members" class="table table-striped table-condensed table-hover">
+		<s:iterator value="members">
+			<s:if test="user.webEmail == #session.user.webEmail">
+				<tr>
+							<td class="success"><s:property value="user.webEmail" /></td>
+						</tr>
+			</s:if>
+			<s:else>
+				<tr>
+							<td><s:property value="user.webEmail" /></td>
+						</tr>
+			</s:else>
 		</s:iterator>
 		</table>
+		</sj:div>
 	</jsp:attribute>
 </t:layout>

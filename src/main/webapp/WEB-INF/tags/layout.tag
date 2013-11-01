@@ -42,6 +42,7 @@
 	<script src="../js/html5shiv.js"></script>
 	<script src="../js/respond.min.js"></script>
 <![endif]-->
+	<jsp:invoke fragment="head" />
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -66,7 +67,7 @@
 					<t:session>
 						<jsp:attribute name="logged">
 							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Rooms <b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 									<li>
@@ -74,6 +75,9 @@
 									</li>
 									<li>
 										<a href="join-room-init">Join existent room</a>
+									</li>
+									<li>
+										<a href="exit-room">Exit room</a>
 									</li>
 								</ul>
 							</li>

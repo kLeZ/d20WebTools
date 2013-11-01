@@ -46,11 +46,31 @@ public class Rooms extends Session
 		try
 		{
 			Room r = getRoom();
-			List<Member> members = getPersistor().findByEqField(Member.class, "room.id", r.getId());
+			Collection<Member> members = getPersistor().findByEqField(Member.class, "room.id", r.getId());
 			for (Member m : members)
 				if (m.getUser().getEmail().contentEquals(getUser().getEmail())) getPersistor().delete(m);
-			getPersistor().save(new Member(getUser(), r));
+			Member member = new Member(getUser(), getRoom());
+			r.getMembers().add(member);
+			getPersistor().save(member);
+			getRoom();
 			_session.put(ROOM_ID, r.getId());
+		}
+		catch (PersistorException e)
+		{
+			addActionError(e.getLocalizedMessage());
+			ret = EXCEPTION;
+		}
+		return ret;
+	}
+
+	public String exit() throws Exception
+	{
+		String ret = SUCCESS;
+		try
+		{
+			List<Member> members = getPersistor().findByEqField(Member.class, "user.id", getUser().getId());
+			for (Member m : members)
+				getPersistor().delete(m);
 		}
 		catch (PersistorException e)
 		{
@@ -62,14 +82,17 @@ public class Rooms extends Session
 
 	public synchronized Room getRoom()
 	{
-		Long id;
+		Long id = 0L;
 		if (room == null)
 		{
 			if (_session.get(ROOM_ID) != null) id = (Long) _session.get(ROOM_ID);
 			else if (room != null && room.getId() != null) id = room.getId();
-			else id = 0L;
 			if (id > 0L) room = getPersistor().findById(Room.class, id);
 			else room = new Room();
+		}
+		if (room.getMembers().size() <= 0 && id > 0L)
+		{
+			room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
 		}
 		return room;
 	}
@@ -77,7 +100,6 @@ public class Rooms extends Session
 	public void setRoom(Room room)
 	{
 		this.room = room;
-		if (room != null && !room.getName().isEmpty() && room.getMaster() != null) getPersistor().saveOrUpdate(room);
 	}
 
 	public Collection<Room> getRooms()

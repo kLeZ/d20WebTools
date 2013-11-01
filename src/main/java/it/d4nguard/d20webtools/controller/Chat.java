@@ -6,8 +6,8 @@ import it.d4nguard.d20webtools.model.Member;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -39,7 +39,7 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	private synchronized void removeSleepingMembers()
 	{
-		List<Message> messages = getPersistor().findByEqField(Message.class, "user.email", getUser().getEmail());
+		Collection<Message> messages = getPersistor().findByEqField(Message.class, "user.email", getUser().getEmail());
 		Date d = null;
 		for (Message message : messages)
 		{
@@ -55,14 +55,17 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	public synchronized Room getRoom()
 	{
-		Long id;
+		Long id = 0L;
 		if (room == null)
 		{
 			if (_session.get(ROOM_ID) != null) id = (Long) _session.get(ROOM_ID);
 			else if (room != null && room.getId() != null) id = room.getId();
-			else id = 0L;
 			if (id > 0L) room = getPersistor().findById(Room.class, id);
 			else room = new Room();
+		}
+		if (room.getMembers().size() <= 0 && id > 0L)
+		{
+			room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
 		}
 		return room;
 	}
@@ -80,6 +83,11 @@ public class Chat extends Session implements ModelDriven<Room>
 	public void setMessage(String message)
 	{
 		this.message = message;
+	}
+
+	public Collection<Member> getMembers()
+	{
+		return getPersistor().findByEqField(Member.class, "room.id", (Long) _session.get(ROOM_ID));
 	}
 
 	@Override

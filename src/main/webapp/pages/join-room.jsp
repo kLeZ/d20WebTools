@@ -20,7 +20,7 @@
 		<h4>Available rooms</h4>
 		<form action="join-room" method="post">
 			<table class="table table-striped table-condensed">
-			<s:iterator value="rooms" status="room">
+			<s:iterator value="rooms">
 				<tr>
 					<td><s:property value="name" /></td>
 					<td><button name="room.id" class="btn btn-primary" type="submit" value="<s:property value="id" />">Join</button></td>

@@ -1,5 +1,6 @@
 package it.d4nguard.d20webtools.common;
 
+
 public class DiceExpressionEvaluator extends AbstractEvaluator
 {
 	@Override
@@ -9,7 +10,7 @@ public class DiceExpressionEvaluator extends AbstractEvaluator
 	}
 
 	@Override
-	protected String manage(String message)
+	protected String manage(final String message)
 	{
 		return Dice.rollShowResults(message);
 	}

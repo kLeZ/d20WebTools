@@ -9,17 +9,17 @@ public abstract class AbstractEvaluator
 		return next;
 	}
 
-	public AbstractEvaluator setNext(AbstractEvaluator next)
+	public AbstractEvaluator setNext(final AbstractEvaluator next)
 	{
 		this.next = next;
 		return this;
 	}
 
-	public abstract boolean canManage(String message);
+	public abstract boolean canManage(final String message);
 
-	protected abstract String manage(String message);
+	protected abstract String manage(final String message);
 
-	public String eval(String message)
+	public String eval(final String message)
 	{
 		if (canManage(message)) return manage(message);
 		else if (getNext() != null) return getNext().eval(message);

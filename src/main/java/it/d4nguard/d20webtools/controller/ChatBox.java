@@ -6,7 +6,7 @@ import it.d4nguard.d20webtools.model.Room;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -27,10 +27,10 @@ public class ChatBox extends Session
 			if (_session.get(ROOM_ID) != null)
 			{
 				setRoom(getPersistor().findById(Room.class, (Long) _session.get(ROOM_ID)));
-				List<Message> messages = getPersistor().findByEqField(Message.class, "room.id", _session.get(ROOM_ID));
+				Collection<Message> messages = getPersistor().findByEqField(Message.class, "room.id", _session.get(ROOM_ID));
 				if (!messages.isEmpty())
 				{
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 					for (Message msg : messages)
 					{
 						sb.append("<div>");

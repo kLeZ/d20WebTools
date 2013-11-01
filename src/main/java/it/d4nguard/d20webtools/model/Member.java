@@ -89,7 +89,7 @@ public class Member
 		builder.append(", user=");
 		builder.append(user);
 		builder.append(", room=");
-		builder.append(room);
+		builder.append(room.getName());
 		builder.append("]");
 		return builder.toString();
 	}

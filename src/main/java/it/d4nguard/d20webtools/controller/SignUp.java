@@ -15,8 +15,15 @@ public class SignUp extends Session
 		String ret = SUCCESS;
 		try
 		{
-			getPersistor().save(getUser());
-			addActionMessage("User registered successfully!");
+			if (getPersistor().findByEqField(User.class, "email", getUser().getEmail()).size() == 0)
+			{
+				getPersistor().save(getUser());
+				addActionMessage("User registered successfully!");
+			}
+			else
+			{
+				addActionError("User already registered, please login");
+			}
 		}
 		catch (PersistorException e)
 		{

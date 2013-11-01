@@ -3,6 +3,7 @@ package it.d4nguard.d20webtools.common;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 public class StringUtils
 {
@@ -182,5 +183,17 @@ public class StringUtils
 		char[] chars = new char[s.length()];
 		Arrays.fill(chars, '*');
 		return new String(chars);
+	}
+
+	public static String replaceMatch(Matcher matcher, String original, String replacement)
+	{
+		String start = original.substring(0, matcher.start());
+		String end = original.substring(matcher.end());
+		return String.format("%s%s%s", addSpace(start, true), replacement, addSpace(end, false));
+	}
+
+	public static String addSpace(String s, boolean append)
+	{
+		return s.length() > 0 ? (append ? s.endsWith(" ") ? s : s.concat(" ") : s.startsWith(" ") ? s : " ".concat(s)) : s;
 	}
 }

@@ -6,13 +6,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Dice
 {
 	public static final Pattern pattern = Pattern.compile("(\\d)+[Dd](\\d){1,3}([+\\-*/](\\d)+)?");
-	private static final String DICE_TOKEN = "D";
+	public static final String DICE_TOKEN = "D";
 
 	private static final MersenneTwister random = new MersenneTwister(299792458);
 
@@ -176,33 +177,29 @@ public class Dice
 
 	public static String rollShowResults(String diceExpression)
 	{
-		StringBuilder sb = new StringBuilder();
+		String ret = diceExpression;
 		if (isManyDice(diceExpression))
 		{
-			LinkedHashMap<Dice, OperatorType> dice = parseMany(diceExpression);
-			Iterator<Map.Entry<Dice, OperatorType>> it = dice.entrySet().iterator();
-			OperatorType op = null;
-			Integer res = 0, roll = 0;
-			sb.append("{");
-			while (it.hasNext())
+			LinkedHashMap<Dice, OperatorType> dice = Dice.parseMany(diceExpression);
+			int res = 0;
+			OperatorType op = OperatorType.Addition;
+			for (Entry<Dice, OperatorType> e : dice.entrySet())
 			{
-				Map.Entry<Dice, OperatorType> current = it.next();
-				if (op != null)
+				Dice d = e.getKey();
+				String original = d.toString();
+				Matcher matcher = Pattern.compile(getDiceRegex(original, false)).matcher(ret);
+				res = op.doOperation(res, d.roll());
+				op = e.getValue();
+				if (matcher.find()) ret = StringUtils.replaceMatch(matcher, ret, d.toString());
+				else
 				{
-					roll = current.getKey().roll();
-					res = op.doOperation(res, roll);
-				}
-				else /* First roll */res = current.getKey().roll();
-				op = current.getValue();
-				sb.append(current.getKey());
-				if (op != null)
-				{
-					sb.append(op.toString());
+					matcher = Pattern.compile(getDiceRegex(original, true)).matcher(ret);
+					if (matcher.find()) ret = StringUtils.replaceMatch(matcher, ret, d.toString());
 				}
 			}
-			sb.append("} = ").append(res);
+			ret = String.format("{%s} = %d", ret, res);
 		}
-		return sb.toString();
+		return ret;
 	}
 
 	public static Integer rollSum(LinkedHashMap<Dice, OperatorType> dice)
@@ -252,6 +249,11 @@ public class Dice
 		}
 		if (hasModifier()) ret = getModifierOperator().doOperation(ret, getModifier());
 		return ret;
+	}
+
+	private static String getDiceRegex(String s, boolean hitEnd)
+	{
+		return String.format("(?i)\\b(%s)%s", Pattern.quote(s), hitEnd ? "" : "[^=]");
 	}
 
 	/* (non-Javadoc)

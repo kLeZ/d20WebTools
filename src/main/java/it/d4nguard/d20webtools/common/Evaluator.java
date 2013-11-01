@@ -8,13 +8,13 @@ public class Evaluator extends AbstractEvaluator
 	}
 
 	@Override
-	public boolean canManage(String message)
+	public boolean canManage(final String message)
 	{
 		return false;
 	}
 
 	@Override
-	protected String manage(String message)
+	protected String manage(final String message)
 	{
 		return message;
 	}
