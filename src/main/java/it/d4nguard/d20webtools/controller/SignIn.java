@@ -68,7 +68,9 @@ public class SignIn extends Session
 
 	public String logout() throws Exception
 	{
-		getPersistor().delete(getPersistor().findByEqField(Member.class, "user.id", getUser().getId()));
+		List<Member> members = getPersistor().findByEqField(Member.class, "user.id", getUser().getId());
+		for (Member m : members)
+			getPersistor().delete(m);
 		setLogged(false);
 		return SUCCESS;
 	}

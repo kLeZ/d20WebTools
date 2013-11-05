@@ -25,19 +25,28 @@ public class Markers implements IMarkerHandler, IMarkers
 		this.path = path;
 	}
 
+	public Markers(String path, Map<String, IMarkerHandler> handlers)
+	{
+		this(path);
+		putAll(handlers);
+	}
+
 	public String getPath()
 	{
 		return path;
 	}
 
+	@Override
 	public IMarkerHandler put(String markerName, IMarkerHandler handler)
 	{
 		return handlers.put(markerName, handler);
 	}
 
-	public void putAll(Map<String, IMarkerHandler> entries)
+	@Override
+	public IMarkers putAll(Map<String, IMarkerHandler> entries)
 	{
 		handlers.putAll(entries);
+		return this;
 	}
 
 	@Override
@@ -46,6 +55,7 @@ public class Markers implements IMarkerHandler, IMarkers
 		return Collections.unmodifiableMap(handlers);
 	}
 
+	@Override
 	public void handle()
 	{
 		handle(null);

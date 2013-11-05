@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
+
 <t:layout>
 	<jsp:attribute name="head">
 		<link href="../css/tablecloth.css" rel="stylesheet" />
 		<link href="../css/prettify.css" rel="stylesheet" />
 		<script src="../js/jquery.metadata.js"></script>
 		<script src="../js/jquery.tablesorter.min.js"></script>
-		<sj:head />
 	</jsp:attribute>
 	<jsp:attribute name="title">d20WebTools - Room <s:property value="room.name" />
 	</jsp:attribute>
@@ -60,7 +59,7 @@
 	</jsp:attribute>
 	<jsp:attribute name="row1">
 		<script type="text/javascript">
-			var animateScroll = true;
+			var animateScroll = false;
 
 			function scrollLog() {
 				if (animateScroll) {
@@ -77,9 +76,9 @@
 				scrollLog();
 			};
 			$(document).ready(function() {
-				scrollLog();
+				ReloadPage();
 				$('input[name="message"]').focus();
-				setInterval('ReloadPage()', 1000);
+				setInterval('ReloadPage()', 500);
 				$.ajaxSetup({
 					cache : true
 				});
@@ -101,26 +100,20 @@
 	</jsp:attribute>
 	<jsp:attribute name="row3">
 		<script type="text/javascript">
-			$("#members").tablecloth({
-				theme : "dark"
-			});
+			$("#members").tablecloth({ theme : "dark" });
 		</script>
 		<h4>Logged members (<s:property value="members.size" />)</h4>
-		<sj:div cssClass="table-responsive" href="/pages/chat" updateFreq="100">
+		<div class="table-responsive">
 		<table id="members" class="table table-striped table-condensed table-hover">
 		<s:iterator value="members">
 			<s:if test="user.webEmail == #session.user.webEmail">
-				<tr>
-							<td class="success"><s:property value="user.webEmail" /></td>
-						</tr>
+				<tr><td class="success"><s:property value="user.webEmail" /></td></tr>
 			</s:if>
 			<s:else>
-				<tr>
-							<td><s:property value="user.webEmail" /></td>
-						</tr>
+				<tr><td><s:property value="user.webEmail" /></td></tr>
 			</s:else>
 		</s:iterator>
 		</table>
-		</sj:div>
+		</div>
 	</jsp:attribute>
 </t:layout>

@@ -48,7 +48,9 @@
 		</action>
 		<action name="new-room" class="it.d4nguard.d20webtools.controller.Rooms"
 			method="newRoom">
-			<result name="success">/pages/room.jsp</result>
+			<result type="redirectAction" name="success">
+				<param name="actionName">pages/chat</param>
+			</result>
 			<result name="error">/pages/index.jsp</result>
 		</action>
 		<action name="join-room" class="it.d4nguard.d20webtools.controller.Rooms"

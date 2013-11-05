@@ -27,8 +27,8 @@ public class Rooms extends Session
 			{
 				Room r = getRoom();
 				r.setMaster(getUser());
-				setRoom(r);
-				_session.put(ROOM_ID, r.getId());
+				getPersistor().save(r);
+				ret = joinRoom();
 			}
 			catch (PersistorException e)
 			{
