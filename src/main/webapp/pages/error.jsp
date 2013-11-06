@@ -15,10 +15,7 @@
 	<jsp:attribute name="body">
 		<s:actionmessage />
 		<s:actionerror />
-		<s:debug><s:property value="%{exception}" /></s:debug>
+		<s:property value="%{exception}" />
+		<s:debug />
 	</jsp:attribute>
-	<jsp:attribute name="row1">&nbsp;</jsp:attribute>
-	<jsp:attribute name="row2">&nbsp;</jsp:attribute>
-	<jsp:attribute name="row3">&nbsp;</jsp:attribute>
-	<jsp:attribute name="footer">&nbsp;</jsp:attribute>
 </t:layout>

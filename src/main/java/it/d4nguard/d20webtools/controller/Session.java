@@ -22,6 +22,12 @@ public class Session extends ActionSupport implements Constants, PersistenceStor
 	private User user;
 	protected Map<String, Object> _session = ActionContext.getContext().getSession();
 
+	@Override
+	public String execute() throws Exception
+	{
+		return super.execute();
+	}
+
 	public User getUser()
 	{
 		if (user == null) user = (User) _session.get("user");
