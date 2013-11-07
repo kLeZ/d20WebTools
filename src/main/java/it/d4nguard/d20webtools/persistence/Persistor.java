@@ -81,7 +81,7 @@ public class Persistor
 		});
 	}
 
-	public synchronized void saveAll(final Collection<Object> list)
+	public synchronized void saveAll(final Collection<?> list)
 	{
 		doOperation(new ManyWriteOperation<Object>(list)
 		{
@@ -93,7 +93,7 @@ public class Persistor
 		});
 	}
 
-	public synchronized void updateAll(final Collection<Object> list)
+	public synchronized void updateAll(final Collection<?> list)
 	{
 		doOperation(new ManyWriteOperation<Object>(list)
 		{
@@ -105,7 +105,7 @@ public class Persistor
 		});
 	}
 
-	public synchronized void saveOrUpdateAll(final Collection<Object> list)
+	public synchronized void saveOrUpdateAll(final Collection<?> list)
 	{
 		doOperation(new ManyWriteOperation<Object>(list)
 		{
