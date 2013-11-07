@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
@@ -128,42 +127,6 @@ public class HibernateSession
 			}
 		}
 		setSessionFactory(null);
-	}
-
-	public void close(Session session)
-	{
-		if (session != null)
-		{
-			try
-			{
-				log.trace("Trying to close session object");
-				session.close();
-			}
-			catch (final HibernateException ignored)
-			{
-				log.error("Couldn't close Session", ignored);
-			}
-			finally
-			{
-				session = null;
-			}
-		}
-	}
-
-	public void rollback(final Transaction tx)
-	{
-		try
-		{
-			if (tx != null)
-			{
-				log.trace("Transaction exists, trying to rollback");
-				tx.rollback();
-			}
-		}
-		catch (final HibernateException ignored)
-		{
-			log.error("Couldn't rollback Transaction", ignored);
-		}
 	}
 
 	/**

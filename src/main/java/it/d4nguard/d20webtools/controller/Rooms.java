@@ -45,10 +45,11 @@ public class Rooms extends Session
 		String ret = SUCCESS;
 		try
 		{
+			_session.remove(ROOM_ID);
 			Room r = getRoom();
-			Collection<Member> members = getPersistor().findByEqField(Member.class, "room.id", r.getId());
+			List<Member> members = getPersistor().findByEqField(Member.class, "user.id", getUser().getId());
 			for (Member m : members)
-				if (m.getUser().getEmail().contentEquals(getUser().getEmail())) getPersistor().delete(m);
+				getPersistor().delete(m);
 			Member member = new Member(getUser(), getRoom());
 			r.getMembers().add(member);
 			getPersistor().save(member);
@@ -68,6 +69,7 @@ public class Rooms extends Session
 		String ret = SUCCESS;
 		try
 		{
+			_session.remove(ROOM_ID);
 			List<Member> members = getPersistor().findByEqField(Member.class, "user.id", getUser().getId());
 			for (Member m : members)
 				getPersistor().delete(m);

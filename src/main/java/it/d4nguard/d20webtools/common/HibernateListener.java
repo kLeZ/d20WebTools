@@ -16,9 +16,20 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class HibernateListener implements ServletContextListener, Constants
 {
+	private final Properties props;
+
+	public HibernateListener()
+	{
+		props = new Properties();
+	}
+
+	public Properties getProps()
+	{
+		return props;
+	}
+
 	public void contextInitialized(ServletContextEvent evt)
 	{
-		final Properties props = new Properties();
 		Map<String, String> env = System.getenv();
 		if (Utils.containsAll(env.keySet(), DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD))
 		{

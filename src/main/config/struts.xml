@@ -31,8 +31,7 @@
 			<result name="error">/pages/index.jsp</result>
 			<result name="login">/pages/sign-up.jsp</result>
 		</action>
-		<action name="sign-up-*" class="it.d4nguard.d20webtools.controller.SignUp"
-			method="{1}">
+		<action name="sign-up" class="it.d4nguard.d20webtools.controller.SignUp">
 			<result name="input">/pages/sign-up.jsp</result>
 			<result name="success">/pages/index.jsp</result>
 		</action>

@@ -5,6 +5,9 @@
 	<welcome-file-list>
 		<welcome-file>/index.html</welcome-file>
 	</welcome-file-list>
+	<listener>
+		<listener-class>it.d4nguard.d20webtools.common.HibernateListener</listener-class>
+	</listener>
 	<filter>
 		<filter-name>struts2</filter-name>
 		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>

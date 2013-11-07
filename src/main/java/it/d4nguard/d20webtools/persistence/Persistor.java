@@ -18,10 +18,9 @@ import org.hibernate.Transaction;
 
 public class Persistor
 {
+	public static final int FLUSH_RATE = 20;
 	private static Logger log = Logger.getLogger(Persistor.class);
 
-	private Session session;
-	private Transaction tx;
 	private HibernateSession factory;
 
 	public Persistor(HibernateSession factory)
@@ -29,163 +28,98 @@ public class Persistor
 		this.factory = factory;
 	}
 
-	public synchronized void close()
+	public HibernateSession getFactory()
 	{
-		factory.close(session);
-		session = null;
-	}
-
-	public synchronized void destroy()
-	{
-		close();
-		factory.closeFactory();
-	}
-
-	public synchronized boolean contains(Object object)
-	{
-		return session != null && session.contains(object);
+		return factory;
 	}
 
 	public synchronized void save(final Object obj)
 	{
-		try
+		doOperation(new SingleWriteOperation<Object>(obj)
 		{
-			startOperation();
-			session.save(obj);
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
+			@Override
+			public void write(Session session, Object obj)
+			{
+				session.save(obj);
+			}
+		});
 	}
 
 	public synchronized void update(final Object obj)
 	{
-		try
+		doOperation(new SingleWriteOperation<Object>(obj)
 		{
-			startOperation();
-			session.update(obj);
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
+			@Override
+			public void write(Session session, Object obj)
+			{
+				session.update(obj);
+			}
+		});
 	}
 
 	public synchronized void saveOrUpdate(final Object obj)
 	{
-		try
+		doOperation(new SingleWriteOperation<Object>(obj)
 		{
-			startOperation();
-			session.saveOrUpdate(obj);
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
-	}
-
-	public synchronized void saveAll(final Collection<Object> list)
-	{
-		try
-		{
-			startOperation();
-			int i = 0;
-			for (final Object obj : list)
-			{
-				session.save(obj);
-				if ((i++ % 20) == 0)
-				{
-					session.flush();
-					session.clear();
-				}
-			}
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
-	}
-
-	public synchronized void updateAll(final Collection<Object> list)
-	{
-		try
-		{
-			startOperation();
-			int i = 0;
-			for (final Object obj : list)
-			{
-				session.update(obj);
-				if ((i++ % 20) == 0)
-				{
-					session.flush();
-					session.clear();
-				}
-			}
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
-	}
-
-	public synchronized void saveOrUpdateAll(final Collection<Object> list)
-	{
-		try
-		{
-			startOperation();
-			int i = 0;
-			for (final Object obj : list)
+			@Override
+			public void write(Session session, Object obj)
 			{
 				session.saveOrUpdate(obj);
-				if ((i++ % 20) == 0)
-				{
-					session.flush();
-					session.clear();
-				}
 			}
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
+		});
 	}
 
 	public synchronized void delete(final Object obj)
 	{
-		try
+		doOperation(new SingleWriteOperation<Object>(obj)
 		{
-			startOperation();
-			session.delete(obj);
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
+			@Override
+			public void write(Session session, Object obj)
+			{
+				session.delete(obj);
+			}
+		});
 	}
 
-	@SuppressWarnings("unchecked")
+	public synchronized void saveAll(final Collection<Object> list)
+	{
+		doOperation(new ManyWriteOperation<Object>(list)
+		{
+			@Override
+			void singleWrite(Session session, Object obj)
+			{
+				session.save(obj);
+			}
+		});
+	}
+
+	public synchronized void updateAll(final Collection<Object> list)
+	{
+		doOperation(new ManyWriteOperation<Object>(list)
+		{
+			@Override
+			void singleWrite(Session session, Object obj)
+			{
+				session.update(obj);
+			}
+		});
+	}
+
+	public synchronized void saveOrUpdateAll(final Collection<Object> list)
+	{
+		doOperation(new ManyWriteOperation<Object>(list)
+		{
+			@Override
+			void singleWrite(Session session, Object obj)
+			{
+				session.saveOrUpdate(obj);
+			}
+		});
+	}
+
 	public synchronized <E> E findById(final Class<E> clazz, final Long id)
 	{
-		E obj = null;
-		try
-		{
-			startOperation();
-			obj = (E) session.load(clazz, id);
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
-		return obj;
+		return doOperation(new ReadOperation<E>(clazz, id)).getSingle();
 	}
 
 	public synchronized <E> List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
@@ -202,86 +136,137 @@ public class Persistor
 	@SuppressWarnings("unchecked")
 	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
 	{
-		List<E> objs = null;
-		try
+		return doOperation(new ReadManyOperation<E>(clazz)
 		{
-			startOperation();
-			final Criteria c = session.createCriteria(clazz);
-			for (final Entry<String, String> entry : aliases.entrySet())
+			@Override
+			public List<E> readMany(Session session, IParameters<E> obj) throws Exception
 			{
-				c.createAlias(entry.getKey(), entry.getValue());
-			}
+				final Criteria c = session.createCriteria(getParameters().getClass());
+				for (final Entry<String, String> entry : aliases.entrySet())
+				{
+					c.createAlias(entry.getKey(), entry.getValue());
+				}
 
-			for (final HibernateRestriction restr : restrictions)
-			{
-				c.add(restr.toCriterion());
+				for (final HibernateRestriction restr : restrictions)
+				{
+					c.add(restr.toCriterion());
+				}
+				getReturnValues().setMany(c.list());
+				return getReturnValues().getMany();
 			}
-			objs = c.list();
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
-		return objs;
+		}).getMany();
 	}
 
 	@SuppressWarnings("unchecked")
 	public synchronized <E> List<E> findAll(final Class<E> clazz)
 	{
-		List<E> objects = null;
-		try
+		return doOperation(new ReadManyOperation<E>(clazz)
 		{
-			startOperation();
-			final Query query = session.createQuery("from " + clazz.getName());
-			objects = query.list();
-			tx.commit();
-		}
-		catch (final Throwable e)
-		{
-			handleException(e);
-		}
-		return objects;
+			@Override
+			public List<E> readMany(Session session, IParameters<E> obj) throws Exception
+			{
+				Query query = session.createQuery("from " + getParameters().getClass().getName());
+				getReturnValues().setMany(query.list());
+				return getReturnValues().getMany();
+			}
+		}).getMany();
 	}
 
 	public synchronized boolean execute(final String sql)
 	{
-		boolean ret = false;
+		return doOperation(new ExecuteOperation()
+		{
+			@Override
+			public boolean execute(Session session, String sql) throws Exception
+			{
+				StatefulWork work = new StatefulWork(sql);
+				session.doWork(work);
+				return work.isWorkDone();
+			}
+		}).isDone();
+	}
+
+	public synchronized void destroy()
+	{
+		factory.closeFactory();
+		factory = null;
+	}
+
+	public synchronized <T> IReturnValues<T> doOperation(PersistenceOperation<T> op)
+	{
+		IReturnValues<T> ret = op.getReturnValues();
+		Session session = null;
+		Transaction tx = null;
 		try
 		{
-			startOperation();
-			final StatefulWork work = new StatefulWork(sql);
-			session.doWork(work);
-			ret = work.isWorkDone();
+			session = factory.openSession();
+			tx = session.beginTransaction();
+			switch (op.getImplementedOperation())
+			{
+				case Read:
+					ret.setSingle(op.read(session, op.getParameters()));
+					break;
+				case ReadMany:
+					ret.setMany(op.readMany(session, op.getParameters()));
+					break;
+				case Write:
+					op.write(session, op.getParameters().getObject());
+					break;
+				case Execute:
+					ret.setDone(op.execute(session, op.getParameters().getString()));
+					break;
+			}
 			tx.commit();
 		}
 		catch (final Throwable e)
 		{
-			handleException(e);
+			handleException(tx, e);
 		}
 		finally
 		{
-			factory.close(session);
+			flushOperation(session, op, tx);
 		}
 		return ret;
 	}
 
-	protected synchronized void handleException(final Throwable e) throws PersistorException
+	private <T> void flushOperation(Session session, PersistenceOperation<T> op, Transaction tx)
 	{
-		log.error(e, e);
-		factory.rollback(tx);
-		factory.close(session);
-		session = null;
-		throw new PersistorException(e);
+		tx = null;
+		if (session != null)
+		{
+			try
+			{
+				log.trace("Trying to close session object");
+				session.close();
+			}
+			catch (final HibernateException ignored)
+			{
+				log.error("Couldn't close Session", ignored);
+			}
+			finally
+			{
+				session = null;
+			}
+		}
+		op = null;
 	}
 
-	protected synchronized void startOperation() throws HibernateException
+	private void handleException(Transaction tx, final Throwable e) throws PersistorException
 	{
-		if (session == null || (!session.isConnected() || session.isDirty() || !session.isOpen())) session = factory.openSession();
-		synchronized (session)
+		try
 		{
-			tx = session.beginTransaction();
+			if (tx != null)
+			{
+				log.trace("Transaction exists, trying to rollback");
+				tx.rollback();
+			}
 		}
+		catch (final HibernateException ignored)
+		{
+			log.error("Couldn't rollback Transaction", ignored);
+		}
+		log.error(e, e);
+		throw new PersistorException(e);
 	}
 
 	private static Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> guessAliases(HibernateRestriction... restrictions)
@@ -325,15 +310,5 @@ public class Persistor
 		}
 		else field = param;
 		return new Pair<String, Entry<String, String>>(field, alias);
-	}
-
-	public Session getSession()
-	{
-		return session;
-	}
-
-	public HibernateSession getFactory()
-	{
-		return factory;
 	}
 }
