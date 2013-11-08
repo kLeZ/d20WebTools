@@ -12,6 +12,7 @@
 		<property name="hibernate.connection.username">d20webtools</property>
 		<property name="hibernate.connection.password">d20WebTools001</property>
 
+		<property name="hibernate.connection.release_mode">on_close</property>
 		<property name="hibernate.connection.pool_size">5</property>
 
 		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>

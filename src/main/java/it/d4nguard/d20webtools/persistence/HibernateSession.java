@@ -7,8 +7,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider;
+import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 import org.w3c.dom.Document;
 
 public class HibernateSession
@@ -119,6 +122,15 @@ public class HibernateSession
 			try
 			{
 				log.trace("Closing sessionFactory session");
+				if (getSessionFactory() instanceof SessionFactoryImpl)
+				{
+					SessionFactoryImpl sf = (SessionFactoryImpl) getSessionFactory();
+					ConnectionProvider conn = sf.getConnectionProvider();
+					if (conn instanceof C3P0ConnectionProvider)
+					{
+						((C3P0ConnectionProvider) conn).close();
+					}
+				}
 				getSessionFactory().close();
 			}
 			catch (final HibernateException e)

@@ -263,9 +263,9 @@ public class Persistor
 				session.getTransaction().rollback();
 			}
 		}
-		catch (final HibernateException ignored)
+		catch (Throwable t)
 		{
-			log.error("Couldn't rollback Transaction", ignored);
+			log.error("Couldn't rollback Transaction", t);
 		}
 		log.error(e, e);
 		throw new PersistorException(e);
