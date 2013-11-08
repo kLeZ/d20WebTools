@@ -1,11 +1,13 @@
 package it.d4nguard.d20webtools.persistence;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import it.d4nguard.d20webtools.common.CharType;
+import it.d4nguard.d20webtools.common.Password;
 import it.d4nguard.d20webtools.model.User;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,7 +49,7 @@ public class PersistorTest
 	{
 		getPersistor().save(new User("kLeZ", "julius8774@gmail.com", "klez-hack87"));
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
-		assertEquals(users.size(), 1);
+		assertEquals(1, users.size());
 		try
 		{
 			getPersistor().save(new User("kLeZ", "julius8774@gmail.com", "klez-hack87"));
@@ -56,14 +58,14 @@ public class PersistorTest
 		catch (PersistorException e)
 		{
 		}
-		assertEquals(getPersistor().findAll(User.class).size(), 1);
+		assertEquals(1, getPersistor().findAll(User.class).size());
 	}
 
 	@Test
 	public final void a_02_testUpdate()
 	{
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
-		assertEquals(users.size(), 1);
+		assertEquals(1, users.size());
 
 		User u = users.get(0);
 		u.setPassword("klez-hack8774");
@@ -76,14 +78,14 @@ public class PersistorTest
 		catch (PersistorException e)
 		{
 		}
-		assertEquals(getPersistor().findAll(User.class).size(), 1);
+		assertEquals(1, getPersistor().findAll(User.class).size());
 	}
 
 	@Test
 	public final void a_03_testSaveOrUpdate()
 	{
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
-		assertEquals(users.size(), 1);
+		assertEquals(1, users.size());
 
 		User u = users.get(0);
 		u.setPassword("klez-hack8774");
@@ -91,36 +93,55 @@ public class PersistorTest
 
 		getPersistor().saveOrUpdate(new User("Admin", "admin@d20webtools.org", "Pippo13"));
 		getPersistor().saveOrUpdate(new User("Root", "root@d20webtools.org", "Password01"));
-		getPersistor().saveOrUpdate(new User("Admin", "admin@d20webtools.org", "Pippo13"));
+		/*
+		 * FIXME:I can't use saveOrUpdate this way because of the logic of this method
+		 * 
+		 * Semantics of saveOrUpdate() operation is the following (see 11.7. Automatic state detection):
+		 * 
+		 * if the object is already persistent in this session, do nothing
+		 * if another object associated with the session has the same identifier, throw an exception
+		 * if the object has no identifier property, save() it
+		 * if the object's identifier has the value assigned to a newly instantiated object, save() it
+		 * if the object is versioned by a or , and the version property value is the same value assigned to a newly instantiated object, save() it
+		 * otherwise update() the object
+		 */
+		//getPersistor().saveOrUpdate(new User("Admin", "admin@d20webtools.org", "Pippo131"));
 
 		users = getPersistor().findByEqField(User.class, "email", "root@d20webtools.org");
-		assertEquals(users.size(), 1);
+		assertEquals(1, users.size());
 
 		users = getPersistor().findByEqField(User.class, "email", "admin@d20webtools.org");
-		assertTrue(users.size() == 1);
+		assertEquals(1, users.size());
 
-		assertTrue(getPersistor().findAll(User.class).size() == 3);
+		assertEquals(3, getPersistor().findAll(User.class).size());
 	}
 
 	@Test
 	public final void a_04_testDelete()
 	{
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
-		assertTrue(users.size() == 1);
+		assertEquals(1, users.size());
 
 		User u = users.get(0);
-		assertTrue(getPersistor().findAll(User.class).size() == 3);
+		assertEquals(3, getPersistor().findAll(User.class).size());
 
 		getPersistor().delete(u);
-		assertTrue(getPersistor().findAll(User.class).size() == 2);
+		assertEquals(2, getPersistor().findAll(User.class).size());
 	}
 
 	@Test
 	public final void a_05_testSaveAll()
 	{
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
-		assertTrue(users.size() == 1);
+		assertEquals(0, users.size());
 
+		users.add(new User("Pippo", "pippo@disney.com", "Pippo001"));
+		users.add(new User("Pluto", "pluto@disney.com", "Pluto001"));
+		users.add(new User("Topolino", "mickey@disney.com", "Mickey001"));
+		users.add(new User("Clarabella", "beauclaire@disney.com", "BeauClaire001"));
+		getPersistor().saveAll(users);
+
+		users = new ArrayList<User>();
 		users.add(new User("Pippo", "pippo@disney.com", "Pippo001"));
 		users.add(new User("Pluto", "pluto@disney.com", "Pluto001"));
 		users.add(new User("Topolino", "mickey@disney.com", "Mickey001"));
@@ -135,14 +156,7 @@ public class PersistorTest
 		{
 		}
 
-		users = new ArrayList<User>();
-		users.add(new User("Pippo", "pippo@disney.com", "Pippo001"));
-		users.add(new User("Pluto", "pluto@disney.com", "Pluto001"));
-		users.add(new User("Topolino", "mickey@disney.com", "Mickey001"));
-		users.add(new User("Clarabella", "beauclaire@disney.com", "BeauClaire001"));
-		getPersistor().saveAll(users);
-
-		assertTrue(getPersistor().findAll(User.class).size() == 6);
+		assertEquals(6, getPersistor().findAll(User.class).size());
 	}
 
 	@Test
@@ -151,10 +165,10 @@ public class PersistorTest
 		List<User> users = getPersistor().findAll(User.class);
 		for (User u : users)
 		{
-			u.setEmail(u.getEmail().replace("@disney.com", "@walt-disney.com"));
+			u.setPassword(Password.generate(12, EnumSet.of(CharType.Upper, CharType.Lower, CharType.Number, CharType.Symbol)));
 		}
 		getPersistor().updateAll(users);
-		assertTrue(getPersistor().findAll(User.class).size() == 6);
+		assertEquals(6, getPersistor().findAll(User.class).size());
 
 		users.add(new User("Paperino", "dduck@disney.com", "DDuck001"));
 		users.add(new User("Zio Paperone", "nichelino@disney.com", "Nickel001"));
@@ -167,43 +181,28 @@ public class PersistorTest
 		catch (PersistorException e)
 		{
 		}
-		assertTrue(getPersistor().findAll(User.class).size() == 6);
+		assertEquals(6, getPersistor().findAll(User.class).size());
 	}
 
 	@Test
-	public final void a_07_testSaveOrUpdateAll()
-	{
-		List<User> users = getPersistor().findAll(User.class);
-		for (User u : users)
-		{
-			u.setEmail(u.getEmail().replace("@disney.com", "@walt-disney.com"));
-		}
-		users.add(new User("Paperino", "dduck@walt-disney.com", "DDuck001"));
-		users.add(new User("Zio Paperone", "nichelino@walt-disney.com", "Nickel001"));
-		getPersistor().updateAll(users);
-
-		assertTrue(getPersistor().findAll(User.class).size() == 8);
-	}
-
-	@Test
-	public final void a_08_testFindById()
+	public final void a_07_testFindById()
 	{
 		User kLeZ = getPersistor().findById(User.class, 1L);
-		assertEquals(kLeZ.getName(), "kLeZ");
-		assertEquals(kLeZ.getEmail(), "julius8774@gmail.com");
-		assertEquals(kLeZ.getPassword(), "klez-hack8774");
+		assertEquals("kLeZ", kLeZ.getName());
+		assertEquals("julius8774@gmail.com", kLeZ.getEmail());
+		assertEquals("klez-hack8774", kLeZ.getPassword());
 	}
 
 	@Test
-	public final void a_09_testFindByEqField()
+	public final void a_08_testFindByEqField()
 	{
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
-		assertTrue(users.size() == 1);
+		assertEquals(1, users.size());
 	}
 
 	@Test
-	public final void a_10_testFindAll()
+	public final void a_09_testFindAll()
 	{
-		assertTrue(getPersistor().findAll(User.class).size() == 8);
+		assertEquals(8, getPersistor().findAll(User.class).size());
 	}
 }

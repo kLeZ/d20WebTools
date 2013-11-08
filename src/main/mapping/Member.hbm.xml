@@ -8,13 +8,15 @@
 			<column name="ID" unique="true" />
 			<generator class="increment" />
 		</id>
-		<many-to-one name="user" class="it.d4nguard.d20webtools.model.User"
-			fetch="join">
-			<column name="USER" />
-		</many-to-one>
-		<many-to-one name="room" class="it.d4nguard.d20webtools.model.Room"
-			fetch="join">
-			<column name="ROOM" />
-		</many-to-one>
+		<natural-id>
+			<many-to-one name="user" class="it.d4nguard.d20webtools.model.User"
+				fetch="join">
+				<column name="USER" />
+			</many-to-one>
+			<many-to-one name="room" class="it.d4nguard.d20webtools.model.Room"
+				fetch="join">
+				<column name="ROOM" />
+			</many-to-one>
+		</natural-id>
 	</class>
 </hibernate-mapping>

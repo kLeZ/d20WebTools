@@ -178,13 +178,6 @@ public class StringUtils
 		return hasText((CharSequence) str);
 	}
 
-	public static String mask(String s)
-	{
-		char[] chars = new char[s.length()];
-		Arrays.fill(chars, '*');
-		return new String(chars);
-	}
-
 	public static String replaceMatch(Matcher matcher, String original, String replacement)
 	{
 		String start = original.substring(0, matcher.start());

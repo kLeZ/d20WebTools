@@ -8,19 +8,21 @@
 			<column name="ID" unique="true" />
 			<generator class="increment" />
 		</id>
-		<property name="time" type="java.util.Date">
-			<column name="TIME" />
-		</property>
-		<many-to-one name="user" class="it.d4nguard.d20webtools.model.User"
-			fetch="join">
-			<column name="USER" />
-		</many-to-one>
-		<property name="text" type="java.lang.String">
-			<column name="TEXT" />
-		</property>
-		<many-to-one name="room" class="it.d4nguard.d20webtools.model.Room"
-			fetch="join" >
-			<column name="ROOM" />
-		</many-to-one>
+		<natural-id>
+			<property name="time" type="java.util.Date">
+				<column name="TIME" />
+			</property>
+			<many-to-one name="user" class="it.d4nguard.d20webtools.model.User"
+				fetch="join">
+				<column name="USER" />
+			</many-to-one>
+			<property name="text" type="java.lang.String">
+				<column name="TEXT" />
+			</property>
+			<many-to-one name="room" class="it.d4nguard.d20webtools.model.Room"
+				fetch="join">
+				<column name="ROOM" />
+			</many-to-one>
+		</natural-id>
 	</class>
 </hibernate-mapping>

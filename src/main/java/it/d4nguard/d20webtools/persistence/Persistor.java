@@ -14,7 +14,6 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class Persistor
 {
@@ -141,7 +140,7 @@ public class Persistor
 			@Override
 			public List<E> readMany(Session session, IParameters<E> obj) throws Exception
 			{
-				final Criteria c = session.createCriteria(getParameters().getClass());
+				final Criteria c = session.createCriteria(getParameters().getTableClass());
 				for (final Entry<String, String> entry : aliases.entrySet())
 				{
 					c.createAlias(entry.getKey(), entry.getValue());
@@ -165,7 +164,7 @@ public class Persistor
 			@Override
 			public List<E> readMany(Session session, IParameters<E> obj) throws Exception
 			{
-				Query query = session.createQuery("from " + getParameters().getClass().getName());
+				Query query = session.createQuery("from " + getParameters().getTableClass().getName());
 				getReturnValues().setMany(query.list());
 				return getReturnValues().getMany();
 			}
@@ -196,11 +195,10 @@ public class Persistor
 	{
 		IReturnValues<T> ret = op.getReturnValues();
 		Session session = null;
-		Transaction tx = null;
 		try
 		{
 			session = factory.openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 			switch (op.getImplementedOperation())
 			{
 				case Read:
@@ -216,22 +214,21 @@ public class Persistor
 					ret.setDone(op.execute(session, op.getParameters().getString()));
 					break;
 			}
-			tx.commit();
+			session.getTransaction().commit();
 		}
 		catch (final Throwable e)
 		{
-			handleException(tx, e);
+			handleException(session, e);
 		}
 		finally
 		{
-			flushOperation(session, op, tx);
+			flushOperation(session, op);
 		}
 		return ret;
 	}
 
-	private <T> void flushOperation(Session session, PersistenceOperation<T> op, Transaction tx)
+	private <T> void flushOperation(Session session, PersistenceOperation<T> op)
 	{
-		tx = null;
 		if (session != null)
 		{
 			try
@@ -251,14 +248,14 @@ public class Persistor
 		op = null;
 	}
 
-	private void handleException(Transaction tx, final Throwable e) throws PersistorException
+	private void handleException(Session session, final Throwable e) throws PersistorException
 	{
 		try
 		{
-			if (tx != null)
+			if (session.getTransaction() != null)
 			{
 				log.trace("Transaction exists, trying to rollback");
-				tx.rollback();
+				session.getTransaction().rollback();
 			}
 		}
 		catch (final HibernateException ignored)

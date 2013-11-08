@@ -57,4 +57,10 @@ public class HibernateRestriction
 	{
 		return value;
 	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("{%s} <%s> '%s'", field, operator, value);
+	}
 }

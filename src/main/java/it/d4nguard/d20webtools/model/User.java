@@ -1,6 +1,6 @@
 package it.d4nguard.d20webtools.model;
 
-import it.d4nguard.d20webtools.common.StringUtils;
+import it.d4nguard.d20webtools.common.Password;
 
 import java.io.Serializable;
 
@@ -114,7 +114,7 @@ public class User implements Serializable
 		builder.append(", email=");
 		builder.append(email);
 		builder.append(", password=");
-		builder.append(StringUtils.mask(password));
+		builder.append(Password.mask(password));
 		builder.append("]");
 		return builder.toString();
 	}

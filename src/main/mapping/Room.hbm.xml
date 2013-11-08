@@ -8,9 +8,11 @@
 			<column name="ID" unique="true" />
 			<generator class="increment" />
 		</id>
-		<property name="name" type="java.lang.String">
-			<column name="NAME" />
-		</property>
+		<natural-id>
+			<property name="name" type="java.lang.String">
+				<column name="NAME" />
+			</property>
+		</natural-id>
 		<many-to-one name="master" class="it.d4nguard.d20webtools.model.User"
 			fetch="join">
 			<column name="MASTER" />
