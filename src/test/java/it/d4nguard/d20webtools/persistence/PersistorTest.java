@@ -187,22 +187,24 @@ public class PersistorTest
 	@Test
 	public final void a_07_testFindById()
 	{
-		User kLeZ = getPersistor().findById(User.class, 1L);
-		assertEquals("kLeZ", kLeZ.getName());
-		assertEquals("julius8774@gmail.com", kLeZ.getEmail());
-		assertEquals("klez-hack8774", kLeZ.getPassword());
+		User u = getPersistor().findById(User.class, 2L);
+		assertEquals("Admin", u.getName());
+		assertEquals("admin@d20webtools.org", u.getEmail());
 	}
 
 	@Test
 	public final void a_08_testFindByEqField()
 	{
 		List<User> users = getPersistor().findByEqField(User.class, "email", "julius8774@gmail.com");
+		assertEquals(0, users.size());
+
+		users = getPersistor().findByEqField(User.class, "email", "admin@d20webtools.org");
 		assertEquals(1, users.size());
 	}
 
 	@Test
 	public final void a_09_testFindAll()
 	{
-		assertEquals(8, getPersistor().findAll(User.class).size());
+		assertEquals(6, getPersistor().findAll(User.class).size());
 	}
 }

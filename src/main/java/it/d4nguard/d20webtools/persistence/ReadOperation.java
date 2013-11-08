@@ -9,19 +9,34 @@ public class ReadOperation<E> implements PersistenceOperation<E>
 {
 	private final Class<E> clazz;
 	private final Long id;
+	private final ReadMethod readMethod;
 	private E payload;
 
-	public ReadOperation(Class<E> clazz, Long id)
+	public ReadOperation(Class<E> clazz, Long id, ReadMethod readMethod)
 	{
 		this.clazz = clazz;
 		this.id = id;
+		this.readMethod = readMethod;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public E read(Session session, IParameters<E> obj)
 	{
-		return (E) session.load(clazz, obj.getId());
+		E ret = null;
+		switch (readMethod)
+		{
+			case Get:
+				ret = (E) session.get(clazz, obj.getId());
+				break;
+			case Load:
+				ret = (E) session.load(clazz, obj.getId());
+				break;
+			default:
+				break;
+
+		}
+		return ret;
 	}
 
 	@Override

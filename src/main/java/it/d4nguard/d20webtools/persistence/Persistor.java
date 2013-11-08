@@ -118,7 +118,12 @@ public class Persistor
 
 	public synchronized <E> E findById(final Class<E> clazz, final Long id)
 	{
-		return doOperation(new ReadOperation<E>(clazz, id)).getSingle();
+		return findById(clazz, id, ReadMethod.Get);
+	}
+
+	public synchronized <E> E findById(final Class<E> clazz, final Long id, ReadMethod readMethod)
+	{
+		return doOperation(new ReadOperation<E>(clazz, id, readMethod)).getSingle();
 	}
 
 	public synchronized <E> List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
