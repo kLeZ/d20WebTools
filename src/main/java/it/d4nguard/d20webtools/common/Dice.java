@@ -75,7 +75,7 @@ public class Dice
 	 */
 	private boolean hasModifier()
 	{
-		return (modifierOperator != null) && (modifier != Integer.MIN_VALUE);
+		return modifierOperator != null && modifier != Integer.MIN_VALUE;
 	}
 
 	public LinkedList<Integer> getDiceResults()
@@ -94,9 +94,7 @@ public class Dice
 		Matcher m = pattern.matcher(s);
 		ret = m.find();
 		if (ret) do
-		{
 			ret &= pattern.matcher(m.group()).matches();
-		}
 		while (m.find());
 		return ret;
 	}
@@ -117,7 +115,7 @@ public class Dice
 			OperatorType ot = null;
 			String grp = m.group();
 			end = m.start();
-			if (start >= 0 && (end > 0 && end < s.length()))
+			if (start >= 0 && end > 0 && end < s.length())
 			{
 				String op = s.substring(start, end);
 				if (OperatorType.containsOperator(op)) ot = OperatorType.getOperator(op);
@@ -156,7 +154,7 @@ public class Dice
 				if (opType != null)
 				{
 					String[] bonusParts = diceparts[1].split(opType.toEscapedString());
-					if ((bonusParts.length == 2) && Utils.isInteger(bonusParts[1])) modifier = Integer.valueOf(bonusParts[1]);
+					if (bonusParts.length == 2 && Utils.isInteger(bonusParts[1])) modifier = Integer.valueOf(bonusParts[1]);
 					ret = new Dice(nThrows, nFaces, opType, modifier);
 				}
 				else ret = new Dice(nThrows, nFaces);
@@ -256,7 +254,8 @@ public class Dice
 		return String.format("(?i)\\b(%s)%s", Pattern.quote(s), hitEnd ? "" : "[^=]");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -273,7 +272,8 @@ public class Dice
 		return ret;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -20,10 +20,7 @@ public class SignUp extends Session
 				getPersistor().save(getUser());
 				addActionMessage("User registered successfully!");
 			}
-			else
-			{
-				addActionError("User already registered, please login");
-			}
+			else addActionError("User already registered, please login");
 		}
 		catch (PersistorException e)
 		{
@@ -44,11 +41,13 @@ public class SignUp extends Session
 		this.confirmPassword = confirmPassword;
 	}
 
+	@Override
 	public User getUser()
 	{
 		return user;
 	}
 
+	@Override
 	public void setUser(User user)
 	{
 		this.user = user;

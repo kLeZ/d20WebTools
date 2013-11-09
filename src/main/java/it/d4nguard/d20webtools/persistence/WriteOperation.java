@@ -7,7 +7,7 @@ import org.hibernate.Session;
 
 public abstract class WriteOperation<T> implements PersistenceOperation<T>
 {
-	private T payload;
+	private final T payload;
 
 	public WriteOperation(T t)
 	{
@@ -17,12 +17,12 @@ public abstract class WriteOperation<T> implements PersistenceOperation<T>
 	public void writeAll(Session session)
 	{
 		@SuppressWarnings("unchecked")
-		List<Object> list = ((List<Object>) payload);
+		List<Object> list = (List<Object>) payload;
 		int i = 0;
 		for (final Object obj : list)
 		{
 			singleWrite(session, obj);
-			if ((i++ % Persistor.FLUSH_RATE) == 0)
+			if (i++ % Persistor.FLUSH_RATE == 0)
 			{
 				session.flush();
 				session.clear();

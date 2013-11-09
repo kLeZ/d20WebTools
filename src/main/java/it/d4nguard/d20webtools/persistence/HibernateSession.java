@@ -100,10 +100,7 @@ public class HibernateSession
 
 	public Configuration getConfiguration()
 	{
-		if (configuration == null)
-		{
-			configuration = new Configuration();
-		}
+		if (configuration == null) configuration = new Configuration();
 		return configuration;
 	}
 
@@ -117,26 +114,20 @@ public class HibernateSession
 
 	public void closeFactory()
 	{
-		if (getSessionFactory() != null)
+		if (getSessionFactory() != null) try
 		{
-			try
+			log.trace("Closing sessionFactory session");
+			if (getSessionFactory() instanceof SessionFactoryImpl)
 			{
-				log.trace("Closing sessionFactory session");
-				if (getSessionFactory() instanceof SessionFactoryImpl)
-				{
-					SessionFactoryImpl sf = (SessionFactoryImpl) getSessionFactory();
-					ConnectionProvider conn = sf.getConnectionProvider();
-					if (conn instanceof C3P0ConnectionProvider)
-					{
-						((C3P0ConnectionProvider) conn).close();
-					}
-				}
-				getSessionFactory().close();
+				SessionFactoryImpl sf = (SessionFactoryImpl) getSessionFactory();
+				ConnectionProvider conn = sf.getConnectionProvider();
+				if (conn instanceof C3P0ConnectionProvider) ((C3P0ConnectionProvider) conn).close();
 			}
-			catch (final HibernateException e)
-			{
-				log.error("Couldn't close SessionFactory", e);
-			}
+			getSessionFactory().close();
+		}
+		catch (final HibernateException e)
+		{
+			log.error("Couldn't close SessionFactory", e);
 		}
 		setSessionFactory(null);
 	}
@@ -147,21 +138,18 @@ public class HibernateSession
 	 */
 	private SessionFactory configureSessionFactory() throws HibernateException
 	{
-		if (configuration == null)
+		if (configuration == null) if (config == null)
 		{
-			if (config == null)
-			{
-				log.trace("Configuring Hibernate with default cfg file: CALLING { configuration.configure() }");
-				getConfiguration().configure();
-			}
-			else
-			{
-				log.trace("Configuring Hibernate with provided cfg file: CALLING { configuration.configure(config) }");
-				getConfiguration().configure(config);
-			}
+			log.trace("Configuring Hibernate with default cfg file: CALLING { configuration.configure() }");
+			getConfiguration().configure();
+		}
+		else
+		{
+			log.trace("Configuring Hibernate with provided cfg file: CALLING { configuration.configure(config) }");
+			getConfiguration().configure(config);
 		}
 
-		if ((toOverrideProperties != null) && !toOverrideProperties.isEmpty())
+		if (toOverrideProperties != null && !toOverrideProperties.isEmpty())
 		{
 			log.trace("Overriding properties: { " + toOverrideProperties.toString() + " }");
 			// Given the properties structure inside the configuration object,
@@ -175,21 +163,25 @@ public class HibernateSession
 			final Properties old = getConfiguration().getProperties();
 
 			/*
-			 * The setProperties(Properties) method overrides directly with a variable reset
+			 * The setProperties(Properties) method overrides directly with a
+			 * variable reset
 			 * So I can choose to override totally with my properties
 			 */
 			getConfiguration().setProperties(toOverrideProperties);
 
 			/*
-			 * The mergeProperties(Properties) method merges two Properties objects
-			 * Given its decision to not to replace existing properties I can choose
-			 * to pass the full old Properties object knowing that it will not replace my
+			 * The mergeProperties(Properties) method merges two Properties
+			 * objects
+			 * Given its decision to not to replace existing properties I can
+			 * choose
+			 * to pass the full old Properties object knowing that it will not
+			 * replace my
 			 * just set Properties.
 			 */
 			getConfiguration().mergeProperties(old);
 		}
 
-		if ((extraProperties != null) && !extraProperties.isEmpty())
+		if (extraProperties != null && !extraProperties.isEmpty())
 		{
 			log.trace("Adding extra properties: { " + extraProperties.toString() + " }");
 			getConfiguration().addProperties(extraProperties);

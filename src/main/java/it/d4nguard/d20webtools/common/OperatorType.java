@@ -6,8 +6,7 @@ public enum OperatorType
 
 	public static char[] getOperators()
 	{
-		return new char[]
-		{ '+', '-', '*', '/' };
+		return new char[] { '+', '-', '*', '/' };
 	}
 
 	public static OperatorType parseOperator(char op)
@@ -90,22 +89,10 @@ public enum OperatorType
 	 */
 	private void check(int op1, int op2)
 	{
-		if (op1 < 0)
-		{
-			op1 = 0;
-		}
-		if (op2 < 0)
-		{
-			op2 = 0;
-		}
-		if ((this == Division) && (op2 <= 0))
-		{
-			Utils.swap(op1, op2);
-		}
-		if ((this == Subtraction) && ((op1 - op2) < 0))
-		{
-			Utils.swap(op1, op2);
-		}
+		if (op1 < 0) op1 = 0;
+		if (op2 < 0) op2 = 0;
+		if (this == Division && op2 <= 0) Utils.swap(op1, op2);
+		if (this == Subtraction && op1 - op2 < 0) Utils.swap(op1, op2);
 	}
 
 	public static int indexOfOperator(String s)
@@ -113,13 +100,11 @@ public enum OperatorType
 		int ret = -1;
 		char[] chars = s.toCharArray();
 		for (char c : chars)
-		{
 			if (OperatorType.parseOperator(c) != null)
 			{
 				ret = s.indexOf(c);
 				break;
 			}
-		}
 		return ret;
 	}
 
@@ -130,7 +115,7 @@ public enum OperatorType
 
 	public static boolean isOperator(String s)
 	{
-		return (s.length() == 1) && (indexOfOperator(s) > -1);
+		return s.length() == 1 && indexOfOperator(s) > -1;
 	}
 
 	public static boolean isOperator(char c)
@@ -171,7 +156,8 @@ public enum OperatorType
 		return ret;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Enum#toString()
 	 */
 	@Override

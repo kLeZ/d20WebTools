@@ -49,7 +49,8 @@ public class StatefulWork implements Work
 		this.stopOnError = stopOnError;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.hibernate.jdbc.Work#execute(java.sql.Connection)
 	 */
 	@Override

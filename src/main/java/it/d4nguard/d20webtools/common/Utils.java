@@ -32,13 +32,9 @@ public class Utils
 		char[] chars = s.toCharArray();
 		String contents = "";
 		for (char c : chars)
-		{
 			if (c == open_tag)
 			{
-				if (!contents.isEmpty())
-				{
-					ret.add(contents);
-				}
+				if (!contents.isEmpty()) ret.add(contents);
 				contents = "";
 			}
 			else if (c == close_tag)
@@ -46,11 +42,7 @@ public class Utils
 				ret.add(contents);
 				contents = "";
 			}
-			else
-			{
-				contents += c;
-			}
-		}
+			else contents += c;
 		if (!contents.isEmpty())
 		{
 			ret.add(contents);

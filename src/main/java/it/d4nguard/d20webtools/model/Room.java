@@ -22,7 +22,7 @@ public class Room implements Serializable
 	{
 	}
 
-	public Room(Long id, String name, String master)
+	public Room(String name, String master)
 	{
 		setId(id);
 		setName(name);
@@ -84,22 +84,22 @@ public class Room implements Serializable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Room)) { return false; }
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof Room)) return false;
 		Room other = (Room) obj;
 		if (name == null)
 		{
-			if (other.name != null) { return false; }
+			if (other.name != null) return false;
 		}
-		else if (!name.equals(other.name)) { return false; }
+		else if (!name.equals(other.name)) return false;
 		return true;
 	}
 

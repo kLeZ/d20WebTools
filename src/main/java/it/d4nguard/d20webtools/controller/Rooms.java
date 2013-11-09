@@ -92,10 +92,7 @@ public class Rooms extends Session
 			if (id > 0L) room = getPersistor().findById(Room.class, id);
 			else room = new Room();
 		}
-		if (room.getMembers().size() <= 0 && id > 0L)
-		{
-			room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
-		}
+		if (room.getMembers().size() <= 0 && id > 0L) room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
 		return room;
 	}
 

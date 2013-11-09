@@ -55,28 +55,28 @@ public class Member
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((room == null) ? 0 : room.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + (room == null ? 0 : room.hashCode());
+		result = prime * result + (user == null ? 0 : user.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Member)) { return false; }
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof Member)) return false;
 		Member other = (Member) obj;
 		if (room == null)
 		{
-			if (other.room != null) { return false; }
+			if (other.room != null) return false;
 		}
-		else if (!room.equals(other.room)) { return false; }
+		else if (!room.equals(other.room)) return false;
 		if (user == null)
 		{
-			if (other.user != null) { return false; }
+			if (other.user != null) return false;
 		}
-		else if (!user.equals(other.user)) { return false; }
+		else if (!user.equals(other.user)) return false;
 		return true;
 	}
 

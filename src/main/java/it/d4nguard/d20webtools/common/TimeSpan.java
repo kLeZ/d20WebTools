@@ -19,9 +19,9 @@ public class TimeSpan
 		this(d, true);
 	}
 
-	public TimeSpan(Date d, boolean first)
+	public TimeSpan(Date d, boolean last)
 	{
-		this(first ? d : now(), first ? now() : d);
+		this(last ? now() : d, last ? d : now());
 	}
 
 	public TimeSpan(Date d1, Date d2)
@@ -32,7 +32,10 @@ public class TimeSpan
 
 	public TimeSpan diff()
 	{
-		if (d1 != null && d2 != null) milliseconds = d2.getTime() - d1.getTime();
+		if (d1 != null && d2 != null)
+		{
+			milliseconds = d1.getTime() - d2.getTime();
+		}
 
 		seconds = milliseconds / 1000 % 60;
 		minutes = milliseconds / (60 * 1000) % 60;

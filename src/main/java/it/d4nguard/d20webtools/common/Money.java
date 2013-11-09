@@ -115,7 +115,8 @@ public class Money implements Serializable
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -133,7 +134,8 @@ public class Money implements Serializable
 		for (final Locale loc : locs)
 			try
 			{
-				// Filters IllegalArgumentException given by passing Language Locales instead of Country ones.
+				// Filters IllegalArgumentException given by passing Language
+				// Locales instead of Country ones.
 				if (loc.getCountry().length() == 2)
 				{
 					entry = new Pair<Currency, Locale>(Currency.getInstance(loc), loc);

@@ -25,11 +25,11 @@ public enum CharType
 
 	public static char[] symbols()
 	{
-		//[33-47][58-64][91-96][123-126]
+		// [33-47][58-64][91-96][123-126]
 		char[] ret = new char[28];
 		int i, j;
 		for (i = 0, j = 0; i < 128 && j < 28; i++)
-			if ((i > 32 && i < 48) || (i > 57 && i < 65) || (i > 90 && i < 97) || (i > 122 && i < 127)) ret[j++] = (char) i;
+			if (i > 32 && i < 48 || i > 57 && i < 65 || i > 90 && i < 97 || i > 122 && i < 127) ret[j++] = (char) i;
 		return ret;
 	}
 

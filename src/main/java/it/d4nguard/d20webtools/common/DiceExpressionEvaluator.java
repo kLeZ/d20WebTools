@@ -1,6 +1,5 @@
 package it.d4nguard.d20webtools.common;
 
-
 public class DiceExpressionEvaluator extends AbstractEvaluator
 {
 	@Override

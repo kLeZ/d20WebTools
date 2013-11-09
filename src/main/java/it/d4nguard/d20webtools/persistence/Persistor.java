@@ -147,14 +147,10 @@ public class Persistor
 			{
 				final Criteria c = session.createCriteria(getParameters().getTableClass());
 				for (final Entry<String, String> entry : aliases.entrySet())
-				{
 					c.createAlias(entry.getKey(), entry.getValue());
-				}
 
 				for (final HibernateRestriction restr : restrictions)
-				{
 					c.add(restr.toCriterion());
-				}
 				getReturnValues().setMany(c.list());
 				return getReturnValues().getMany();
 			}
@@ -234,21 +230,18 @@ public class Persistor
 
 	private <T> void flushOperation(Session session, PersistenceOperation<T> op)
 	{
-		if (session != null)
+		if (session != null) try
 		{
-			try
-			{
-				log.trace("Trying to close session object");
-				session.close();
-			}
-			catch (final HibernateException ignored)
-			{
-				log.error("Couldn't close Session", ignored);
-			}
-			finally
-			{
-				session = null;
-			}
+			log.trace("Trying to close session object");
+			session.close();
+		}
+		catch (final HibernateException ignored)
+		{
+			log.error("Couldn't close Session", ignored);
+		}
+		finally
+		{
+			session = null;
 		}
 		op = null;
 	}

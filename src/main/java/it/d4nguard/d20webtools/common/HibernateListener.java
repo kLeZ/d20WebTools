@@ -28,6 +28,7 @@ public class HibernateListener implements ServletContextListener, Constants
 		return props;
 	}
 
+	@Override
 	public void contextInitialized(ServletContextEvent evt)
 	{
 		Map<String, String> env = System.getenv();
@@ -47,6 +48,7 @@ public class HibernateListener implements ServletContextListener, Constants
 		evt.getServletContext().setAttribute(ENTITY_MANAGER, new Persistor(new HibernateSession(props)));
 	}
 
+	@Override
 	public void contextDestroyed(ServletContextEvent evt)
 	{
 		Persistor p = (Persistor) evt.getServletContext().getAttribute(ENTITY_MANAGER);

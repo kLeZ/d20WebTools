@@ -16,8 +16,7 @@ public class MoneyType extends GenericHibernateBaseUserType<Money>
 	@Override
 	public int[] sqlTypes()
 	{
-		return new int[]
-		{ Types.VARCHAR };
+		return new int[] { Types.VARCHAR };
 	}
 
 	@Override

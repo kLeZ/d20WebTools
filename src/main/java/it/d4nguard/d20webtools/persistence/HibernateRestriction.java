@@ -32,14 +32,8 @@ public class HibernateRestriction
 	public Criterion toCriterion() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
 		Criterion crit = null;
-		if (operator.name().startsWith("is"))
-		{
-			crit = (Criterion) rsc.getMethod(operator.name(), str).invoke(null, field);
-		}
-		else
-		{
-			crit = (Criterion) rsc.getMethod(operator.name(), str, obj).invoke(null, field, value);
-		}
+		if (operator.name().startsWith("is")) crit = (Criterion) rsc.getMethod(operator.name(), str).invoke(null, field);
+		else crit = (Criterion) rsc.getMethod(operator.name(), str, obj).invoke(null, field, value);
 		return crit;
 	}
 

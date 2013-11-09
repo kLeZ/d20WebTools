@@ -1,7 +1,6 @@
 package it.d4nguard.d20webtools.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import it.d4nguard.d20webtools.common.CharType;
 import it.d4nguard.d20webtools.common.Password;
 import it.d4nguard.d20webtools.model.User;
@@ -94,18 +93,22 @@ public class PersistorTest
 		getPersistor().saveOrUpdate(new User("Admin", "admin@d20webtools.org", "Pippo13"));
 		getPersistor().saveOrUpdate(new User("Root", "root@d20webtools.org", "Password01"));
 		/*
-		 * FIXME:I can't use saveOrUpdate this way because of the logic of this method
-		 * 
-		 * Semantics of saveOrUpdate() operation is the following (see 11.7. Automatic state detection):
-		 * 
+		 * FIXME:I can't use saveOrUpdate this way because of the logic of this
+		 * method
+		 * Semantics of saveOrUpdate() operation is the following (see 11.7.
+		 * Automatic state detection):
 		 * if the object is already persistent in this session, do nothing
-		 * if another object associated with the session has the same identifier, throw an exception
+		 * if another object associated with the session has the same
+		 * identifier, throw an exception
 		 * if the object has no identifier property, save() it
-		 * if the object's identifier has the value assigned to a newly instantiated object, save() it
-		 * if the object is versioned by a or , and the version property value is the same value assigned to a newly instantiated object, save() it
+		 * if the object's identifier has the value assigned to a newly
+		 * instantiated object, save() it
+		 * if the object is versioned by a or , and the version property value
+		 * is the same value assigned to a newly instantiated object, save() it
 		 * otherwise update() the object
 		 */
-		//getPersistor().saveOrUpdate(new User("Admin", "admin@d20webtools.org", "Pippo131"));
+		// getPersistor().saveOrUpdate(new User("Admin",
+		// "admin@d20webtools.org", "Pippo131"));
 
 		users = getPersistor().findByEqField(User.class, "email", "root@d20webtools.org");
 		assertEquals(1, users.size());
@@ -164,9 +167,7 @@ public class PersistorTest
 	{
 		List<User> users = getPersistor().findAll(User.class);
 		for (User u : users)
-		{
 			u.setPassword(Password.generate(12, EnumSet.of(CharType.Upper, CharType.Lower, CharType.Number, CharType.Symbol)));
-		}
 		getPersistor().updateAll(users);
 		assertEquals(6, getPersistor().findAll(User.class).size());
 

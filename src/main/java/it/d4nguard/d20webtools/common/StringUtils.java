@@ -187,6 +187,6 @@ public class StringUtils
 
 	public static String addSpace(String s, boolean append)
 	{
-		return s.length() > 0 ? (append ? s.endsWith(" ") ? s : s.concat(" ") : s.startsWith(" ") ? s : " ".concat(s)) : s;
+		return s.length() > 0 ? append ? s.endsWith(" ") ? s : s.concat(" ") : s.startsWith(" ") ? s : " ".concat(s) : s;
 	}
 }

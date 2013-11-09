@@ -42,10 +42,8 @@ public class Chat extends Session implements ModelDriven<Room>
 		Collection<Message> messages = getPersistor().findByEqField(Message.class, "user.email", getUser().getEmail());
 		Date d = null;
 		for (Message message : messages)
-		{
 			if (d == null) d = message.getTime();
 			else if (d.after(message.getTime())) d = message.getTime();
-		}
 		if (new TimeSpan(d).diff().getMinutes() > 30L)
 		{
 			Member m = new Member(getUser(), getRoom());
@@ -63,10 +61,7 @@ public class Chat extends Session implements ModelDriven<Room>
 			if (id > 0L) room = getPersistor().findById(Room.class, id);
 			else room = new Room();
 		}
-		if (room.getMembers().size() <= 0 && id > 0L)
-		{
-			room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
-		}
+		if (room.getMembers().size() <= 0 && id > 0L) room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
 		return room;
 	}
 
@@ -87,7 +82,7 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	public Collection<Member> getMembers()
 	{
-		return getPersistor().findByEqField(Member.class, "room.id", (Long) _session.get(ROOM_ID));
+		return getPersistor().findByEqField(Member.class, "room.id", _session.get(ROOM_ID));
 	}
 
 	@Override

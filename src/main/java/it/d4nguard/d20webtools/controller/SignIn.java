@@ -14,32 +14,29 @@ public class SignIn extends Session
 	public String execute() throws Exception
 	{
 		String ret = SUCCESS;
-		if (!getUser().getEmail().trim().isEmpty())
+		if (!getUser().getEmail().trim().isEmpty()) try
 		{
-			try
+			List<User> users = getPersistor().findByEqField(User.class, "email", getUser().getEmail());
+			if (users.size() == 1) ret = isValid(users.get(0));
+			else if (users.size() > 1)
 			{
-				List<User> users = getPersistor().findByEqField(User.class, "email", getUser().getEmail());
-				if (users.size() == 1) ret = isValid(users.get(0));
-				else if (users.size() > 1)
-				{
-					User first = users.remove(0);
-					for (User u : users)
-						getPersistor().delete(u);
-					ret = isValid(first);
-				}
-				else
-				{
-					addActionError("User not registered, please sign up.");
-					setLogged(false);
-					ret = ERROR;
-				}
+				User first = users.remove(0);
+				for (User u : users)
+					getPersistor().delete(u);
+				ret = isValid(first);
 			}
-			catch (PersistorException e)
+			else
 			{
-				addActionError(e.getLocalizedMessage());
+				addActionError("User not registered, please sign up.");
 				setLogged(false);
-				ret = EXCEPTION;
+				ret = ERROR;
 			}
+		}
+		catch (PersistorException e)
+		{
+			addActionError(e.getLocalizedMessage());
+			setLogged(false);
+			ret = EXCEPTION;
 		}
 		else
 		{
