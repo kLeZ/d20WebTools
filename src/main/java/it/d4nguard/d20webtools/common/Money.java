@@ -144,7 +144,7 @@ public class Money implements Serializable
 			}
 			catch (final IllegalArgumentException e)
 			{
-				Logger.getLogger(Money.class.getName()).log(Level.FINER, e.getLocalizedMessage(), e);
+				Logger.getLogger(Money.class.getName()).log(Level.FINER, e.getMessage(), e);
 			}
 		return ret;
 	}

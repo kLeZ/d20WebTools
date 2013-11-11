@@ -20,7 +20,7 @@ public class WebSiteNavigator extends BaseStrutsTestCase<Action>
 		}
 		catch (Exception e)
 		{
-			fail(e.getLocalizedMessage());
+			fail(e.getMessage());
 			e.printStackTrace();
 		}
 	}

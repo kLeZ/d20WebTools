@@ -24,7 +24,7 @@ public class SignUp extends Session
 		}
 		catch (PersistorException e)
 		{
-			addActionError(e.getLocalizedMessage());
+			addActionError(e.getMessage());
 			addActionError(String.format("User %s is already registered!", getUser().getEmail()));
 			ret = EXCEPTION;
 		}

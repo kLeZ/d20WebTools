@@ -34,7 +34,7 @@ public class SignIn extends Session
 		}
 		catch (PersistorException e)
 		{
-			addActionError(e.getLocalizedMessage());
+			addActionError(e.getMessage());
 			setLogged(false);
 			ret = EXCEPTION;
 		}

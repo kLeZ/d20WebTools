@@ -32,7 +32,7 @@ public class Rooms extends Session
 			}
 			catch (PersistorException e)
 			{
-				addActionError(e.getLocalizedMessage());
+				addActionError(e.getMessage());
 				addActionError("Room is already present. Please join the room, instead.");
 				ret = EXCEPTION;
 			}
@@ -58,7 +58,7 @@ public class Rooms extends Session
 		}
 		catch (PersistorException e)
 		{
-			addActionError(e.getLocalizedMessage());
+			addActionError(e.getMessage());
 			ret = EXCEPTION;
 		}
 		return ret;
@@ -76,7 +76,7 @@ public class Rooms extends Session
 		}
 		catch (PersistorException e)
 		{
-			addActionError(e.getLocalizedMessage());
+			addActionError(e.getMessage());
 			ret = EXCEPTION;
 		}
 		return ret;

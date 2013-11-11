@@ -45,7 +45,7 @@ public class SignUpTest extends BaseStrutsTestCase<SignUp>
 		}
 		catch (Exception e)
 		{
-			fail(e.getLocalizedMessage());
+			fail(e.getMessage());
 			e.printStackTrace();
 		}
 	}

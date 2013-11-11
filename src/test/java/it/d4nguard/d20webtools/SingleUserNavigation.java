@@ -127,7 +127,7 @@ public class SingleUserNavigation
 	private Rooms joinRoom() throws Exception
 	{
 		HashMap<String, String> form = new HashMap<String, String>();
-		form.put("room.id", getRoom().getName());
+		form.put("room.id", getRoom().getId().toString());
 
 		return getTest().callAction(Rooms.class, "/pages/join-room", form);
 	}
