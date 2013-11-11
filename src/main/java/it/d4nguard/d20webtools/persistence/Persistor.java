@@ -224,6 +224,7 @@ public class Persistor
 		finally
 		{
 			flushOperation(session, op);
+			factory.getSessionFactory().getStatistics().logSummary();
 		}
 		return ret;
 	}

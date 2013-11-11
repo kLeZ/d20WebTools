@@ -6,6 +6,8 @@
 		<property name="hibernate.default_schema">d20webtools</property>
 		<property name="hibernate.format_sql">false</property>
 		<property name="hibernate.show_sql">false</property>
+		<property name="hibernate.generate_statistics">true</property>
+		<property name="hibernate.cache.use_structured_entries">true</property>
 
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="hibernate.connection.url">jdbc:mysql://localhost/d20webtools</property>
@@ -16,13 +18,19 @@
 		<property name="hibernate.connection.pool_size">5</property>
 
 		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
 
+		<property name="hibernate.c3p0.maxIdleTime">60</property>
+		<property name="hibernate.c3p0.minPoolSize">3</property>
+		<property name="hibernate.c3p0.maxPoolSize">10</property>
+		<property name="hibernate.c3p0.maxStatements">150</property>
 		<property name="hibernate.c3p0.acquire_increment">3</property>
-		<property name="hibernate.c3p0.max_statements">100</property>
-		<property name="hibernate.c3p0.min_size">1</property>
-		<property name="hibernate.c3p0.max_size">5</property>
 		<property name="hibernate.c3p0.timeout">5000</property>
-		<property name="hibernate.c3p0.idle_test_period">300</property>
+		<property name="hibernate.c3p0.idleConnectionTestPeriod">1800</property>
+		<property name="hibernate.c3p0.maxConnectionAge">1200</property>
+		<property name="hibernate.c3p0.maxIdleTimeExcessConnections">300</property>
+		<property name="hibernate.c3p0.testConnectionOnCheckin">true</property>
+		<property name="hibernate.c3p0.preferredTestQuery">select 1 from dual</property>
 
 		<mapping resource="Message.hbm.xml" />
 		<mapping resource="Room.hbm.xml" />
