@@ -14,6 +14,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.stat.Statistics;
 
 public class Persistor
 {
@@ -224,7 +225,8 @@ public class Persistor
 		finally
 		{
 			flushOperation(session, op);
-			factory.getSessionFactory().getStatistics().logSummary();
+			Statistics stats = factory.getSessionFactory().getStatistics();
+			if (stats.isStatisticsEnabled()) stats.logSummary();
 		}
 		return ret;
 	}

@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 
 public class StringUtils
 {
+	public static final String LS = System.getProperty("line.separator");
 	public static final char[] DIGIT_SYMBOLS = { '+', '-', '.', ',' };
 	static
 	{

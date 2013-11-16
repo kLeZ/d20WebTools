@@ -25,7 +25,7 @@ public class Chat extends Session implements ModelDriven<Room>
 		synchronized (_session)
 		{
 			removeSleepingMembers();
-			setRoom(getPersistor().findById(Room.class, (Long) _session.get(ROOM_ID)));
+			setRoom(getPersistor().findById(Room.class, (Long) _session.get(SESSION_ROOM_ID)));
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
@@ -56,7 +56,7 @@ public class Chat extends Session implements ModelDriven<Room>
 		Long id = 0L;
 		if (room == null)
 		{
-			if (_session.get(ROOM_ID) != null) id = (Long) _session.get(ROOM_ID);
+			if (_session.get(SESSION_ROOM_ID) != null) id = (Long) _session.get(SESSION_ROOM_ID);
 			else if (room != null && room.getId() != null) id = room.getId();
 			if (id > 0L) room = getPersistor().findById(Room.class, id);
 			else room = new Room();
@@ -82,7 +82,7 @@ public class Chat extends Session implements ModelDriven<Room>
 
 	public Collection<Member> getMembers()
 	{
-		return getPersistor().findByEqField(Member.class, "room.id", _session.get(ROOM_ID));
+		return getPersistor().findByEqField(Member.class, "room.id", _session.get(SESSION_ROOM_ID));
 	}
 
 	@Override

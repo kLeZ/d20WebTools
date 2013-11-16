@@ -33,7 +33,7 @@ public class SignUpTest extends BaseStrutsTestCase<SignUp>
 			SignUp signUp = (SignUp) proxy.getAction();
 
 			assertEquals(Action.SUCCESS, proxy.execute());
-			assertEquals(0, signUp.getFieldErrors().size());
+			assertEquals(0, signUp.getActionErrors().size());
 
 			// Test duplicated user
 			proxy = getActionProxy("/pages/sign-up");
@@ -48,5 +48,11 @@ public class SignUpTest extends BaseStrutsTestCase<SignUp>
 			fail(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public boolean needsCreate()
+	{
+		return true;
 	}
 }

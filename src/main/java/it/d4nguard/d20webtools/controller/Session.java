@@ -30,7 +30,7 @@ public class Session extends ActionSupport implements Constants, PersistenceStor
 
 	public User getUser()
 	{
-		if (user == null) user = (User) _session.get("user");
+		if (user == null) user = (User) _session.get(SESSION_USER);
 		return user;
 	}
 
@@ -41,8 +41,13 @@ public class Session extends ActionSupport implements Constants, PersistenceStor
 
 	public boolean isLogged()
 	{
-		if (!logged) logged = _session.containsKey("logged") && _session.get("logged") == "true";
+		if (!logged) logged = _session.containsKey(SESSION_LOGGED) && isSessionLogged();
 		return logged;
+	}
+
+	private boolean isSessionLogged()
+	{
+		return Boolean.parseBoolean(String.valueOf(_session.get(SESSION_LOGGED)));
 	}
 
 	public void setLogged(boolean logged)
@@ -50,15 +55,15 @@ public class Session extends ActionSupport implements Constants, PersistenceStor
 		this.logged = logged;
 		if (logged)
 		{
-			_session.put("logged", "true");
-			_session.put("context", new Date());
-			_session.put("user", user);
+			_session.put(SESSION_LOGGED, true);
+			_session.put(SESSION_CONTEXT, new Date());
+			_session.put(SESSION_USER, user);
 		}
 		else
 		{
-			_session.remove("logged");
-			_session.remove("context");
-			_session.remove("user");
+			_session.remove(SESSION_LOGGED);
+			_session.remove(SESSION_CONTEXT);
+			_session.remove(SESSION_USER);
 			setUser(null);
 		}
 	}

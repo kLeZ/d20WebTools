@@ -1,5 +1,6 @@
 package it.d4nguard.d20webtools;
 
+import static org.junit.Assert.*;
 import it.d4nguard.d20webtools.common.MersenneTwister;
 import it.d4nguard.d20webtools.common.StringUtils;
 import it.d4nguard.d20webtools.common.TimeSpan;
@@ -13,6 +14,7 @@ import it.d4nguard.d20webtools.model.User;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -24,13 +26,13 @@ public class SingleUserNavigation
 
 	private final BaseStrutsTestCase<Action> test;
 	private final User user;
-	private final Room room;
+	private Room room;
 	private final boolean newRoom;
 	private final long ttl;
 
 	public SingleUserNavigation(BaseStrutsTestCase<Action> test)
 	{
-		this(test, new User("kLeZ", "julius8774@gmail.com", "klez-hack87"), new Room("Nebula", "julius8774@gmail.com"), false, 20);
+		this(test, new User("kLeZ", "julius8774@gmail.com", "klez-hack87"), new Room("Nebula", "julius8774@gmail.com"), true, 20);
 	}
 
 	public SingleUserNavigation(BaseStrutsTestCase<Action> test, User user, Room room, boolean newRoom, long ttl)
@@ -126,6 +128,10 @@ public class SingleUserNavigation
 
 	private Rooms joinRoom() throws Exception
 	{
+		List<Room> rooms = getTest().getPersistor().findByEqField(Room.class, "name", getRoom().getName());
+		assertEquals(1, rooms.size());
+		room = rooms.get(0);
+
 		HashMap<String, String> form = new HashMap<String, String>();
 		form.put("room.id", getRoom().getId().toString());
 

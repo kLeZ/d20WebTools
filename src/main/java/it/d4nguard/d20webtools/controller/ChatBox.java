@@ -24,10 +24,10 @@ public class ChatBox extends Session
 		synchronized (_session)
 		{
 			StringBuilder sb = new StringBuilder();
-			if (_session.get(ROOM_ID) != null)
+			if (_session.get(SESSION_ROOM_ID) != null)
 			{
-				setRoom(getPersistor().findById(Room.class, (Long) _session.get(ROOM_ID)));
-				Collection<Message> messages = getPersistor().findByEqField(Message.class, "room.id", _session.get(ROOM_ID));
+				setRoom(getPersistor().findById(Room.class, (Long) _session.get(SESSION_ROOM_ID)));
+				Collection<Message> messages = getPersistor().findByEqField(Message.class, "room.id", _session.get(SESSION_ROOM_ID));
 				if (!messages.isEmpty())
 				{
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
