@@ -11,37 +11,28 @@ import org.junit.Test;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
 
-public class SignUpTest extends BaseStrutsTestCase<SignUp>
+public class SignInTest extends BaseStrutsTestCase<SignIn>
 {
 	@Test
-	public final void testExecute()
+	public final void execute()
 	{
 		Map<String, String> formUser1 = new HashMap<String, String>();
-		formUser1.put("user.name", "kLeZ");
 		formUser1.put("user.email", "root@d20webtools.org");
 		formUser1.put("user.password", "klez-hack87");
-		formUser1.put("confirmPassword", "klez-hack87");
 
 		try
 		{
 			request.setParameters(formUser1);
 
-			ActionProxy proxy = getActionProxy("/pages/sign-up");
+			ActionProxy proxy = getActionProxy("/pages/sign-in");
 
-			assertTrue(proxy.getAction() instanceof SignUp);
+			assertTrue(proxy.getAction() instanceof SignIn);
 
-			SignUp signUp = (SignUp) proxy.getAction();
-
-			assertEquals(Action.SUCCESS, proxy.execute());
-			assertEquals(0, signUp.getActionErrors().size());
-
-			// Test duplicated user
-			proxy = getActionProxy("/pages/sign-up");
-
-			signUp = (SignUp) proxy.getAction();
+			SignIn signIn = (SignIn) proxy.getAction();
 
 			assertEquals(Action.SUCCESS, proxy.execute());
-			assertEquals(1, signUp.getActionErrors().size());
+			assertEquals(0, signIn.getActionErrors().size());
+			assertTrue(signIn.isLogged());
 		}
 		catch (Exception e)
 		{
@@ -53,6 +44,6 @@ public class SignUpTest extends BaseStrutsTestCase<SignUp>
 	@Override
 	public boolean needsCreate()
 	{
-		return true;
+		return false;
 	}
 }

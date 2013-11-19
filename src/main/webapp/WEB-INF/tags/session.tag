@@ -4,7 +4,7 @@
 <%@ attribute name="logged" fragment="true" required="false"%>
 <%@ attribute name="notlogged" fragment="true" required="false"%>
 
-<s:if test="#session.logged == 'true'">
+<s:if test="#session.logged">
 	<jsp:invoke fragment="logged" />
 </s:if>
 <s:else>
