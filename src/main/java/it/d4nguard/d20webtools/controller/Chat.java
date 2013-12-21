@@ -21,7 +21,7 @@ public class Chat extends Session implements ModelDriven<Room>
 	@Override
 	public String execute() throws Exception
 	{
-		String ret = SUCCESS;
+		String ret = super.execute();
 		synchronized (_session)
 		{
 			removeSleepingMembers();

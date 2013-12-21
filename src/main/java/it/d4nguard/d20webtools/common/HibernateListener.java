@@ -13,9 +13,14 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+
 @WebListener
 public class HibernateListener implements ServletContextListener, Constants
 {
+	private static final Logger log = Logger.getLogger(HibernateListener.class);
+
 	private final Properties props;
 
 	public HibernateListener()
@@ -31,21 +36,37 @@ public class HibernateListener implements ServletContextListener, Constants
 	@Override
 	public void contextInitialized(ServletContextEvent evt)
 	{
-		Map<String, String> env = System.getenv();
-		if (Utils.containsAll(env.keySet(), DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD))
+		try
 		{
-			props.put(HIBERNATE_CONNECTION_URL, String.format(DB_URL, env.get(DB_HOST), env.get(DB_PORT)));
-			props.put(HIBERNATE_CONNECTION_USERNAME, env.get(DB_USERNAME));
-			props.put(HIBERNATE_CONNECTION_PASSWORD, env.get(DB_PASSWORD));
+			Map<String, String> env = System.getenv();
+			if (Utils.containsAll(env.keySet(), DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD))
+			{
+				props.put(HIBERNATE_CONNECTION_URL, String.format(DB_URL, env.get(DB_HOST), env.get(DB_PORT)));
+				props.put(HIBERNATE_CONNECTION_USERNAME, env.get(DB_USERNAME));
+				props.put(HIBERNATE_CONNECTION_PASSWORD, env.get(DB_PASSWORD));
+			}
+
+			if (env.containsKey(APP_DIR))
+			{
+				IMarkers markers = new Markers(env.get(APP_DIR));
+				markers.putAll(HibernateMarkerHandler.get(props)).handle();
+			}
+		}
+		catch (Exception e)
+		{
+			log.warn("Unhandled exception with markers not so much important.", e);
 		}
 
-		if (env.containsKey(APP_DIR))
+		Persistor persistor = null;
+		try
 		{
-			IMarkers markers = new Markers(env.get(APP_DIR));
-			markers.putAll(HibernateMarkerHandler.get(props)).handle();
+			persistor = new Persistor(new HibernateSession(props));
 		}
-
-		evt.getServletContext().setAttribute(ENTITY_MANAGER, new Persistor(new HibernateSession(props)));
+		catch (HibernateException e)
+		{
+			log.fatal("There are problems with the database, please check connection", e);
+		}
+		evt.getServletContext().setAttribute(ENTITY_MANAGER, persistor);
 	}
 
 	@Override

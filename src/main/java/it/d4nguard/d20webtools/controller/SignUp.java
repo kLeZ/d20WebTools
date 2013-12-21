@@ -12,7 +12,7 @@ public class SignUp extends Session
 	@Override
 	public String execute() throws Exception
 	{
-		String ret = SUCCESS;
+		String ret = super.execute();
 		try
 		{
 			if (getPersistor().findByEqField(User.class, "email", getUser().getEmail()).size() == 0)

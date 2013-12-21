@@ -13,7 +13,7 @@ public class SignIn extends Session
 	@Override
 	public String execute() throws Exception
 	{
-		String ret = SUCCESS;
+		String ret = super.execute();
 		if (!getUser().getEmail().trim().isEmpty()) try
 		{
 			List<User> users = getPersistor().findByEqField(User.class, "email", getUser().getEmail());

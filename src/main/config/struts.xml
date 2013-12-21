@@ -8,29 +8,26 @@
 
 	<package name="d20webtools" extends="struts-default">
 		<interceptors>
+			<interceptor name="exHandler" class="it.d4nguard.d20webtools.common.MainExceptionInterceptor">
+				<param name="exception.logEnabled">true</param>
+				<param name="exception.logLevel">ERROR</param>
+			</interceptor>
 			<interceptor-stack name="appDefaultStack">
 				<interceptor-ref name="defaultStack">
 					<param name="exception.logEnabled">true</param>
 					<param name="exception.logLevel">ERROR</param>
 				</interceptor-ref>
+				<interceptor-ref name="exHandler" />
 			</interceptor-stack>
 		</interceptors>
 		<default-interceptor-ref name="appDefaultStack" />
 
-		<!-- Exception Handling -->
 		<global-results>
-			<result name="errorHandler" type="chain">
-				<param name="actionName">error</param>
-			</result>
+			<result name="Exception">/pages/error.jsp</result>
 		</global-results>
 		<global-exception-mappings>
-			<exception-mapping exception="java.lang.Exception"
-				result="errorHandler" />
+			<exception-mapping exception="java.lang.Throwable" result="Exception" />
 		</global-exception-mappings>
-		<action name="error" class="it.d4nguard.d20webtools.controller.Error">
-			<result name="error">/pages/error.jsp</result>
-		</action>
-		<!-- Exception Handling -->
 
 		<action name="index">
 			<result>/pages/index.jsp</result>
@@ -49,7 +46,8 @@
 			<result name="error">/pages/index.jsp</result>
 			<result name="login">/pages/sign-up.jsp</result>
 		</action>
-		<action name="sign-up-*" class="it.d4nguard.d20webtools.controller.SignUp" method="{1}">
+		<action name="sign-up-*" class="it.d4nguard.d20webtools.controller.SignUp"
+			method="{1}">
 			<result name="input">/pages/sign-up.jsp</result>
 			<result name="success">/pages/index.jsp</result>
 		</action>

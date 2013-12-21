@@ -16,12 +16,12 @@ public class Rooms extends Session
 	@Override
 	public String execute() throws Exception
 	{
-		return SUCCESS;
+		return super.execute();
 	}
 
 	public String newRoom() throws Exception
 	{
-		String ret = SUCCESS;
+		String ret = super.execute();
 		synchronized (_session)
 		{
 			try
@@ -43,7 +43,7 @@ public class Rooms extends Session
 
 	public String joinRoom() throws Exception
 	{
-		String ret = SUCCESS;
+		String ret = super.execute();
 		try
 		{
 			_session.remove(SESSION_ROOM_ID);
@@ -67,7 +67,7 @@ public class Rooms extends Session
 
 	public String exit() throws Exception
 	{
-		String ret = SUCCESS;
+		String ret = super.execute();
 		try
 		{
 			_session.remove(SESSION_ROOM_ID);

@@ -21,6 +21,7 @@ public class ChatBox extends Session
 	@Override
 	public String execute() throws Exception
 	{
+		super.execute();
 		synchronized (_session)
 		{
 			StringBuilder sb = new StringBuilder();
