@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"/dtd/struts-2.3.dtd">
 <struts>
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.action.extension" value="" />
 
 	<package name="d20webtools" extends="struts-default">
 		<interceptors>
-			<interceptor name="exHandler" class="it.d4nguard.d20webtools.common.MainExceptionInterceptor">
+			<interceptor name="Exception" class="it.d4nguard.d20webtools.common.MainExceptionInterceptor">
 				<param name="exception.logEnabled">true</param>
-				<param name="exception.logLevel">ERROR</param>
+				<param name="exception.logLevel">TRACE</param>
 			</interceptor>
 			<interceptor-stack name="appDefaultStack">
 				<interceptor-ref name="defaultStack">
 					<param name="exception.logEnabled">true</param>
 					<param name="exception.logLevel">ERROR</param>
 				</interceptor-ref>
-				<interceptor-ref name="exHandler" />
+				<interceptor-ref name="Exception" />
 			</interceptor-stack>
 		</interceptors>
 		<default-interceptor-ref name="appDefaultStack" />

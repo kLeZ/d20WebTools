@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+"dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 29-ott-2013 10.30.18 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
 	<class name="it.d4nguard.d20webtools.model.Suggestion" table="SUGGESTIONS">

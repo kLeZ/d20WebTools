@@ -26,7 +26,7 @@ public class Room implements Serializable
 	{
 		setId(id);
 		setName(name);
-		setMaster(new User(master, master, ""));
+		setMaster(new User(master, null, null));
 	}
 
 	public Long getId()

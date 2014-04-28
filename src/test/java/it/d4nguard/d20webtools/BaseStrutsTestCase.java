@@ -29,13 +29,11 @@ public abstract class BaseStrutsTestCase<T extends Action> extends StrutsJUnit4T
 	@Override
 	protected void setupBeforeInitDispatcher() throws Exception
 	{
-		super.setupBeforeInitDispatcher();
-
 		if (needsCreate())
 		{
 			Properties props = new Properties();
 			props.put("hibernate.hbm2ddl.auto", "create");
-			new HibernateSession(props).buildIfNeeded(true).close();
+			new HibernateSession(props, true).closeFactory();
 		}
 
 		HibernateListener hibernateListener = new HibernateListener();
@@ -55,17 +53,20 @@ public abstract class BaseStrutsTestCase<T extends Action> extends StrutsJUnit4T
 
 	public <A extends ActionSupport> A callAction(Class<A> clazz, String actionPath, Map<String, String> form) throws Exception
 	{
+		return callAction(clazz, actionPath, form, Action.SUCCESS);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <A extends ActionSupport> A callAction(Class<A> clazz, String actionPath, Map<String, String> form, String returnValue) throws Exception
+	{
 		request.removeAllParameters();
+		request.setParameters(form);
 
 		ActionProxy proxy = getActionProxy(actionPath);
-
-		request.setParameters(form);
 
 		assertTrue(clazz.isAssignableFrom(proxy.getAction().getClass()));
 
 		proxy.getInvocation().getInvocationContext().setSession(getSession());
-
-		@SuppressWarnings("unchecked")
 		A action = (A) proxy.getAction();
 		String ret = proxy.execute();
 		if (action.getActionErrors().size() > 0)
@@ -76,7 +77,7 @@ public abstract class BaseStrutsTestCase<T extends Action> extends StrutsJUnit4T
 		{
 			fail(StringUtils.join(StringUtils.LS, action.getActionErrors()));
 		}
-		assertEquals(Action.SUCCESS, ret);
+		assertEquals(returnValue, ret);
 		return action;
 	}
 

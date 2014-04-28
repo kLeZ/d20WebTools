@@ -8,6 +8,7 @@ public interface Constants
 	public static final String DB_PORT = "OPENSHIFT_MYSQL_DB_PORT";
 	public static final String DB_USERNAME = "OPENSHIFT_MYSQL_DB_USERNAME";
 	public static final String DB_PASSWORD = "OPENSHIFT_MYSQL_DB_PASSWORD";
+
 	public static final String DB_URL = "jdbc:mysql://%s:%s/d20webtools";
 
 	public static final String HIBERNATE_CONNECTION_PASSWORD = "hibernate.connection.password";

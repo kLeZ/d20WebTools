@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
 	<session-factory>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -17,15 +19,14 @@
 		<property name="hibernate.connection.release_mode">on_close</property>
 		<property name="hibernate.connection.pool_size">5</property>
 
-		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
-		<property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+		<property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.jbc2.JBossCacheRegionFactory</property>
 
-		<property name="hibernate.c3p0.maxIdleTime">60</property>
+		<property name="hibernate.c3p0.timeout">5000</property>
 		<property name="hibernate.c3p0.minPoolSize">3</property>
 		<property name="hibernate.c3p0.maxPoolSize">10</property>
 		<property name="hibernate.c3p0.maxStatements">150</property>
 		<property name="hibernate.c3p0.acquire_increment">3</property>
-		<property name="hibernate.c3p0.timeout">5000</property>
 		<property name="hibernate.c3p0.idleConnectionTestPeriod">1800</property>
 		<property name="hibernate.c3p0.maxConnectionAge">1200</property>
 		<property name="hibernate.c3p0.maxIdleTimeExcessConnections">300</property>

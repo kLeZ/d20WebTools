@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
+<!DOCTYPE log4j:configuration
+	PUBLIC "-//log4j/log4j Configuration//EN"
+	"https://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %-5p %c.%M:%L - %m%n" />
 		</layout>
 	</appender>
+	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="/var/log/d20webtools.log" />
+		<param name="MaxFileSize" value="2MB" />
+		<param name="MaxBackupIndex" value="2" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-5p %c.%M:%L - %m%n" />
+		</layout>
+	</appender>
 	<!-- specify the logging level for loggers from other libraries -->
-	<logger name="com.opensymphony">
-		<level value="DEBUG" />
+	<!-- <logger name="com.opensymphony"> -->
+	<!-- <level value="DEBUG" /> -->
+	<!-- </logger> -->
+	<!-- <logger name="org.apache.struts2"> -->
+	<!-- <level value="DEBUG" /> -->
+	<!-- </logger> -->
+	<!-- <logger name="it.d4nguard"> -->
+	<!-- <level value="TRACE" /> -->
+	<!-- </logger> -->
+	<logger name="org.hibernate">
+		<level value="WARN" />
 	</logger>
-	<logger name="org.apache.struts2">
-		<level value="DEBUG" />
+	<logger name="com.mchange">
+		<level value="WARN" />
 	</logger>
 	<!-- for all other loggers log only info and above log messages -->
 	<root>
 		<priority value="INFO" />
 		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="FILE" /> -->
 	</root>
 </log4j:configuration>
