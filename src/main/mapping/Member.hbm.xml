@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"dtd/hibernate-mapping-3.0.dtd">
+"http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 23-ott-2013 10.06.32 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
 	<class name="it.d4nguard.d20webtools.model.Member" table="MEMBERS">

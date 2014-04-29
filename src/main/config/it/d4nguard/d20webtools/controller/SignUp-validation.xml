@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE validators PUBLIC
 		"-//Apache Struts//XWork Validator 1.0.3//EN"
-		"/dtd/xwork-validator-1.0.3.dtd">
+		"http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
 <validators>
 	<field name="user.name">
 		<field-validator type="requiredstring">
