@@ -9,7 +9,7 @@
 		</layout>
 	</appender>
 	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="/var/log/d20webtools.log" />
+		<param name="File" value="${env.OPENSHIFT_LOG_DIR}/d20webtools.log" />
 		<param name="MaxFileSize" value="2MB" />
 		<param name="MaxBackupIndex" value="2" />
 		<layout class="org.apache.log4j.PatternLayout">
@@ -35,7 +35,7 @@
 	<!-- for all other loggers log only info and above log messages -->
 	<root>
 		<priority value="INFO" />
+		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
-		<!-- <appender-ref ref="FILE" /> -->
 	</root>
 </log4j:configuration>
