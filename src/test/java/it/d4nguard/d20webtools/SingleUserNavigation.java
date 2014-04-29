@@ -32,7 +32,7 @@ public class SingleUserNavigation
 
 	public SingleUserNavigation(BaseStrutsTestCase<Action> test)
 	{
-		this(test, new User("kLeZ", "julius8774@gmail.com", "klez-hack87"), new Room("Nebula", "kLeZ"), true, 20);
+		this(test, new User("master", "master@d20webtools.org", "Masterone1"), new Room("Nebula", "master"), true, 20);
 	}
 
 	public SingleUserNavigation(BaseStrutsTestCase<Action> test, User user, Room room, boolean newRoom, long ttl)
