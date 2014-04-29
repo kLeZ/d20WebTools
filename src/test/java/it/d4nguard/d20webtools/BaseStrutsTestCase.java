@@ -29,14 +29,24 @@ public abstract class BaseStrutsTestCase<T extends Action> extends StrutsJUnit4T
 	@Override
 	protected void setupBeforeInitDispatcher() throws Exception
 	{
+		HibernateSession session = null;
 		if (needsCreate())
 		{
 			Properties props = new Properties();
 			props.put("hibernate.hbm2ddl.auto", "create");
-			new HibernateSession(props, true).closeFactory();
+			session = new HibernateSession(props, true);
 		}
 
-		HibernateListener hibernateListener = new HibernateListener();
+		HibernateListener hibernateListener;
+		if (session != null)
+		{
+			hibernateListener = new HibernateListener(session);
+		}
+		else
+		{
+			hibernateListener = new HibernateListener();
+		}
+		
 		ServletContextEvent event = new ServletContextEvent(servletContext);
 		hibernateListener.contextInitialized(event);
 	}
