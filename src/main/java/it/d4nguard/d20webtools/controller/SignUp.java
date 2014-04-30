@@ -1,6 +1,7 @@
 package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.User;
+import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
 
 public class SignUp extends Session
@@ -13,11 +14,12 @@ public class SignUp extends Session
 	public String execute() throws Exception
 	{
 		String ret = super.execute();
+		Persistor persistor = getPersistor().manualFlush();
 		try
 		{
-			if (getPersistor().findByEqField(User.class, "email", getUser().getEmail()).size() == 0)
+			if (persistor.findByEqField(User.class, "email", getUser().getEmail()).size() == 0)
 			{
-				getPersistor().save(getUser());
+				persistor.save(getUser());
 				addActionMessage("User registered successfully!");
 			}
 			else addActionError("User already registered, please login");
@@ -27,6 +29,10 @@ public class SignUp extends Session
 			addActionError(e.getMessage());
 			addActionError(String.format("User %s is already registered!", getUser().getEmail()));
 			ret = EXCEPTION;
+		}
+		finally
+		{
+			persistor.automaticFlush().flush();
 		}
 		return ret;
 	}

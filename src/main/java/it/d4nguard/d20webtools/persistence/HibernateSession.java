@@ -26,7 +26,7 @@ public class HibernateSession
 		return sessionFactory;
 	}
 
-	public void setSessionFactory(SessionFactory sessionFactory)
+	private void setSessionFactory(SessionFactory sessionFactory)
 	{
 		this.sessionFactory = sessionFactory;
 	}
@@ -107,7 +107,7 @@ public class HibernateSession
 	public Session openSession() throws HibernateException
 	{
 		log.trace("Trying to open a session, CALLING { buildIfNeeded(config, toOverrideProperties, extraProperties) }");
-		configureSessionFactory();
+		configureSessionFactory(false);
 		log.trace("Built, opening session");
 		return getSessionFactory().openSession();
 	}
@@ -136,62 +136,65 @@ public class HibernateSession
 	 * @return
 	 * @throws HibernateException
 	 */
-	private SessionFactory configureSessionFactory() throws HibernateException
+	private SessionFactory configureSessionFactory(final boolean force) throws HibernateException
 	{
-		if (configuration == null) if (config == null)
+		if (force || sessionFactory == null)
 		{
-			log.trace("Configuring Hibernate with default cfg file: CALLING { configuration.configure() }");
-			getConfiguration().configure();
+			if (configuration == null) if (config == null)
+			{
+				log.trace("Configuring Hibernate with default cfg file: CALLING { configuration.configure() }");
+				getConfiguration().configure();
+			}
+			else
+			{
+				log.trace("Configuring Hibernate with provided cfg file: CALLING { configuration.configure(config) }");
+				getConfiguration().configure(config);
+			}
+
+			if (toOverrideProperties != null && !toOverrideProperties.isEmpty())
+			{
+				log.trace("Overriding properties: { " + toOverrideProperties.toString() + " }");
+				// Given the properties structure inside the configuration object,
+				// I will replace its properties with mine and then merge the old,
+				// taking only those extra properties not contained in my override
+
+				/*
+				 * The getProperties() method gives the integral properties object
+				 * So I can choose to back it up
+				 */
+				final Properties old = getConfiguration().getProperties();
+
+				/*
+				 * The setProperties(Properties) method overrides directly with a
+				 * variable reset
+				 * So I can choose to override totally with my properties
+				 */
+				getConfiguration().setProperties(toOverrideProperties);
+
+				/*
+				 * The mergeProperties(Properties) method merges two Properties
+				 * objects
+				 * Given its decision to not to replace existing properties I can
+				 * choose
+				 * to pass the full old Properties object knowing that it will not
+				 * replace my
+				 * just set Properties.
+				 */
+				getConfiguration().mergeProperties(old);
+			}
+
+			if (extraProperties != null && !extraProperties.isEmpty())
+			{
+				log.trace("Adding extra properties: { " + extraProperties.toString() + " }");
+				getConfiguration().addProperties(extraProperties);
+			}
+
+			log.trace("Building ServiceRegistry passing all the properties (configured and runtime added)");
+			final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).buildServiceRegistry();
+			log.trace("Setting sessionFactory var: CALLING { sessionFactory = configuration.buildSessionFactory(serviceRegistry) }");
+			setSessionFactory(getConfiguration().buildSessionFactory(serviceRegistry));
+			log.trace("Well done, SessionFactory configured!");
 		}
-		else
-		{
-			log.trace("Configuring Hibernate with provided cfg file: CALLING { configuration.configure(config) }");
-			getConfiguration().configure(config);
-		}
-
-		if (toOverrideProperties != null && !toOverrideProperties.isEmpty())
-		{
-			log.trace("Overriding properties: { " + toOverrideProperties.toString() + " }");
-			// Given the properties structure inside the configuration object,
-			// I will replace its properties with mine and then merge the old,
-			// taking only those extra properties not contained in my override
-
-			/*
-			 * The getProperties() method gives the integral properties object
-			 * So I can choose to back it up
-			 */
-			final Properties old = getConfiguration().getProperties();
-
-			/*
-			 * The setProperties(Properties) method overrides directly with a
-			 * variable reset
-			 * So I can choose to override totally with my properties
-			 */
-			getConfiguration().setProperties(toOverrideProperties);
-
-			/*
-			 * The mergeProperties(Properties) method merges two Properties
-			 * objects
-			 * Given its decision to not to replace existing properties I can
-			 * choose
-			 * to pass the full old Properties object knowing that it will not
-			 * replace my
-			 * just set Properties.
-			 */
-			getConfiguration().mergeProperties(old);
-		}
-
-		if (extraProperties != null && !extraProperties.isEmpty())
-		{
-			log.trace("Adding extra properties: { " + extraProperties.toString() + " }");
-			getConfiguration().addProperties(extraProperties);
-		}
-
-		log.trace("Building ServiceRegistry passing all the properties (configured and runtime added)");
-		final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).buildServiceRegistry();
-		log.trace("Setting sessionFactory var: CALLING { sessionFactory = configuration.buildSessionFactory(serviceRegistry) }");
-		setSessionFactory(getConfiguration().buildSessionFactory(serviceRegistry));
-		log.trace("Well done, SessionFactory configured!");
 		return getSessionFactory();
 	}
 
@@ -204,7 +207,7 @@ public class HibernateSession
 		{
 			log.trace("Forcing configure a new one");
 			configuration = null;
-			return configureSessionFactory();
+			return configureSessionFactory(force);
 		}
 		if (getSessionFactory() != null)
 		{
@@ -214,7 +217,7 @@ public class HibernateSession
 		try
 		{
 			log.trace("No sessionFactory, configuring a new one");
-			return configureSessionFactory();
+			return configureSessionFactory(force);
 		}
 		catch (final HibernateException e)
 		{

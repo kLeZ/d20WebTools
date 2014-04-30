@@ -29,19 +29,26 @@ public class SingleUserNavigation
 	private Room room;
 	private final boolean newRoom;
 	private final long ttl;
+	private final boolean enableThreadSleep;
 
 	public SingleUserNavigation(BaseStrutsTestCase<Action> test)
 	{
-		this(test, new User("master", "master@d20webtools.org", "Masterone1"), new Room("Nebula", "master"), true, 20);
+		this(test, true, 5, true);
 	}
 
-	public SingleUserNavigation(BaseStrutsTestCase<Action> test, User user, Room room, boolean newRoom, long ttl)
+	public SingleUserNavigation(BaseStrutsTestCase<Action> test, boolean newRoom, long ttl, boolean enableThreadSleep)
+	{
+		this(test, new User("master", "master@d20webtools.org", "Masterone1"), new Room("Nebula", "master"), newRoom, ttl, enableThreadSleep);
+	}
+
+	public SingleUserNavigation(BaseStrutsTestCase<Action> test, User user, Room room, boolean newRoom, long ttl, boolean enableThreadSleep)
 	{
 		this.test = test;
 		this.user = user;
 		this.room = room;
 		this.newRoom = newRoom;
 		this.ttl = ttl;
+		this.enableThreadSleep = enableThreadSleep;
 	}
 
 	/**
@@ -78,19 +85,23 @@ public class SingleUserNavigation
 		log.info("Every half-second update the chatbox where messages live and show up");
 		Date start = new Date();
 		Date lastMessage = null;
+		TimeSpan ttldiff = null;
 		MersenneTwister random = new MersenneTwister();
 		do
 		{
-			Thread.sleep(500);
 			chatBox();
 			int delay = random.next(20, 90);
-			if (new TimeSpan(lastMessage).diff().getSeconds() >= delay)
-			{
-				log.info(String.format("This message has been sent after waiting %d seconds...", delay));
-				chat(String.format("This message has been sent after waiting %d seconds...", delay));
-			}
+			TimeSpan diff = new TimeSpan(lastMessage).diff();
+			log.info(String.format("We have to wait a delay of %d with a diff from last message of %s", delay, diff));
+			if (enableThreadSleep) Thread.sleep(delay * 1000);
+			else log.info(String.format("Skipping Thread.sleep(%d);", delay * 1000));
+			log.info(String.format("This message has been sent after waiting %d seconds...", delay));
+			chat(String.format("This message has been sent after waiting %d seconds...", delay));
+			lastMessage = new Date();
+			ttldiff = new TimeSpan(start).diff();
+			log.info(String.format("Time to Live: %d ; Time just spent: %s", ttl, ttldiff));
 		}
-		while (new TimeSpan(start).diff().getMinutes() < getTtl());
+		while (ttldiff.getMinutes() < getTtl());
 		exitRoom();
 		logOut();
 	}

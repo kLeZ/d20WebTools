@@ -5,6 +5,7 @@ import it.d4nguard.d20webtools.common.TimeSpan;
 import it.d4nguard.d20webtools.model.Member;
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
+import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.util.Collection;
 import java.util.Date;
@@ -24,22 +25,24 @@ public class Chat extends Session implements ModelDriven<Room>
 		String ret = super.execute();
 		synchronized (_session)
 		{
-			removeSleepingMembers();
-			setRoom(getPersistor().findById(Room.class, (Long) _session.get(SESSION_ROOM_ID)));
+			Persistor persistor = getPersistor().manualFlush();
+			removeSleepingMembers(persistor);
+			setRoom(persistor.findById(Room.class, (Long) _session.get(SESSION_ROOM_ID)));
 			if (message != null && !message.trim().isEmpty())
 			{
 				Evaluator eval = new Evaluator();
 				Message msg = new Message(TimeSpan.now(), getUser(), eval.eval(message), getRoom());
-				getPersistor().save(msg);
-				setRoom(getPersistor().findById(Room.class, getRoom().getId()));
+				persistor.save(msg);
+				setRoom(persistor.findById(Room.class, getRoom().getId()));
 			}
+			persistor.automaticFlush().flush();
 		}
 		return ret;
 	}
 
-	private synchronized void removeSleepingMembers()
+	private synchronized void removeSleepingMembers(Persistor persistor)
 	{
-		Collection<Message> messages = getPersistor().findByEqField(Message.class, "user.email", getUser().getEmail());
+		Collection<Message> messages = persistor.findByEqField(Message.class, "user.email", getUser().getEmail());
 		Date d = null;
 		for (Message message : messages)
 			if (d == null) d = message.getTime();
@@ -47,21 +50,23 @@ public class Chat extends Session implements ModelDriven<Room>
 		if (new TimeSpan(d).diff().getMinutes() > 30L)
 		{
 			Member m = new Member(getUser(), getRoom());
-			getPersistor().delete(m);
+			persistor.delete(m);
 		}
 	}
 
 	public synchronized Room getRoom()
 	{
+		Persistor persistor = getPersistor().manualFlush();
 		Long id = 0L;
 		if (room == null)
 		{
 			if (_session.get(SESSION_ROOM_ID) != null) id = (Long) _session.get(SESSION_ROOM_ID);
 			else if (room != null && room.getId() != null) id = room.getId();
-			if (id > 0L) room = getPersistor().findById(Room.class, id);
+			if (id > 0L) room = persistor.findById(Room.class, id);
 			else room = new Room();
 		}
-		if (room.getMembers().size() <= 0 && id > 0L) room.getMembers().addAll(getPersistor().findByEqField(Member.class, "room.id", id));
+		if (room.getMembers().size() <= 0 && id > 0L) room.getMembers().addAll(persistor.findByEqField(Member.class, "room.id", id));
+		persistor.automaticFlush().flush();
 		return room;
 	}
 

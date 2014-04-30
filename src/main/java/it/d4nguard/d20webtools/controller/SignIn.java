@@ -2,6 +2,7 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Member;
 import it.d4nguard.d20webtools.model.User;
+import it.d4nguard.d20webtools.persistence.Persistor;
 import it.d4nguard.d20webtools.persistence.PersistorException;
 
 import java.util.List;
@@ -14,15 +15,16 @@ public class SignIn extends Session
 	public String execute() throws Exception
 	{
 		String ret = super.execute();
+		Persistor persistor = getPersistor().manualFlush();
 		if (!getUser().getEmail().trim().isEmpty()) try
 		{
-			List<User> users = getPersistor().findByEqField(User.class, "email", getUser().getEmail());
+			List<User> users = persistor.findByEqField(User.class, "email", getUser().getEmail());
 			if (users.size() == 1) ret = isValid(users.get(0));
 			else if (users.size() > 1)
 			{
 				User first = users.remove(0);
 				for (User u : users)
-					getPersistor().delete(u);
+					persistor.delete(u);
 				ret = isValid(first);
 			}
 			else
@@ -43,6 +45,7 @@ public class SignIn extends Session
 			setLogged(false);
 			ret = LOGIN;
 		}
+		persistor.automaticFlush().flush();
 		return ret;
 	}
 
@@ -65,10 +68,12 @@ public class SignIn extends Session
 
 	public String logout() throws Exception
 	{
-		List<Member> members = getPersistor().findByEqField(Member.class, "user.id", getUser().getId());
+		Persistor persistor = getPersistor().manualFlush();
+		List<Member> members = persistor.findByEqField(Member.class, "user.id", getUser().getId());
 		for (Member m : members)
-			getPersistor().delete(m);
+			persistor.delete(m);
 		setLogged(false);
+		persistor.automaticFlush().flush();
 		return SUCCESS;
 	}
 }

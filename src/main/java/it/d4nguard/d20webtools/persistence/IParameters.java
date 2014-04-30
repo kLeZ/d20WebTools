@@ -15,4 +15,6 @@ public interface IParameters<T>
 	HashMap<String, String> getAliases();
 
 	HibernateRestriction[] getRestrictions();
+
+	FetchStrategy getFetchStrategy();
 }

@@ -2,6 +2,7 @@ package it.d4nguard.d20webtools.controller;
 
 import it.d4nguard.d20webtools.model.Message;
 import it.d4nguard.d20webtools.model.Room;
+import it.d4nguard.d20webtools.persistence.Persistor;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
@@ -24,11 +25,12 @@ public class ChatBox extends Session
 		super.execute();
 		synchronized (_session)
 		{
+			Persistor persistor = getPersistor().manualFlush();
 			StringBuilder sb = new StringBuilder();
 			if (_session.get(SESSION_ROOM_ID) != null)
 			{
-				setRoom(getPersistor().findById(Room.class, (Long) _session.get(SESSION_ROOM_ID)));
-				Collection<Message> messages = getPersistor().findByEqField(Message.class, "room.id", _session.get(SESSION_ROOM_ID));
+				setRoom(persistor.findById(Room.class, (Long) _session.get(SESSION_ROOM_ID)));
+				Collection<Message> messages = persistor.findByEqField(Message.class, "room.id", _session.get(SESSION_ROOM_ID));
 				if (!messages.isEmpty())
 				{
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -43,6 +45,7 @@ public class ChatBox extends Session
 				}
 			}
 			inputStream = new StringBufferInputStream(sb.toString());
+			persistor.automaticFlush().flush();
 		}
 		return SUCCESS;
 	}

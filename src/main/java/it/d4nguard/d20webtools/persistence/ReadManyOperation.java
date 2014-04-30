@@ -8,11 +8,13 @@ import org.hibernate.Session;
 public abstract class ReadManyOperation<E> implements PersistenceOperation<E>
 {
 	private final Class<E> clazz;
+	private final FetchStrategy fetchStrategy;
 	private List<E> objs;
 
-	public ReadManyOperation(Class<E> clazz)
+	public ReadManyOperation(Class<E> clazz, FetchStrategy fetchStrategy)
 	{
 		this.clazz = clazz;
+		this.fetchStrategy = fetchStrategy;
 	}
 
 	@Override
@@ -60,6 +62,12 @@ public abstract class ReadManyOperation<E> implements PersistenceOperation<E>
 			public HibernateRestriction[] getRestrictions()
 			{
 				return null;
+			}
+
+			@Override
+			public FetchStrategy getFetchStrategy()
+			{
+				return fetchStrategy;
 			}
 		};
 	}

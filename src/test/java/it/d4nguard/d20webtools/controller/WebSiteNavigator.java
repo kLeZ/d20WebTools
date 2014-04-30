@@ -16,10 +16,9 @@ public class WebSiteNavigator extends BaseStrutsTestCase<Action>
 	@Test
 	public final void testRunSingleNavigation()
 	{
-		SingleUserNavigation nav = new SingleUserNavigation(this);
 		try
 		{
-			nav.runSingleNavigation();
+			new SingleUserNavigation(this, true, 0, false).runSingleNavigation();
 		}
 		catch (Exception e)
 		{

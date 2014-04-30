@@ -78,6 +78,12 @@ public abstract class WriteOperation<T> implements PersistenceOperation<T>
 			{
 				return null;
 			}
+
+			@Override
+			public FetchStrategy getFetchStrategy()
+			{
+				return null;
+			}
 		};
 	}
 

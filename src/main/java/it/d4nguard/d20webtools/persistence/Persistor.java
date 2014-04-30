@@ -22,6 +22,8 @@ public class Persistor
 	private static Logger log = Logger.getLogger(Persistor.class);
 
 	private HibernateSession factory;
+	private Session _session;
+	private boolean canFlush;
 
 	public Persistor(HibernateSession factory)
 	{
@@ -31,6 +33,33 @@ public class Persistor
 	public HibernateSession getFactory()
 	{
 		return factory;
+	}
+
+	public boolean isCanFlush()
+	{
+		return canFlush;
+	}
+
+	private void setCanFlush(boolean canFlush)
+	{
+		this.canFlush = canFlush;
+	}
+
+	public Persistor manualFlush()
+	{
+		setCanFlush(false);
+		return this;
+	}
+
+	public Persistor automaticFlush()
+	{
+		setCanFlush(true);
+		return this;
+	}
+
+	public void doSingleSessionOperations(ChainedPersistorAction a)
+	{
+		a.execute(manualFlush()).automaticFlush().flush();
 	}
 
 	public synchronized void save(final Object obj)
@@ -129,19 +158,29 @@ public class Persistor
 
 	public synchronized <E> List<E> findByEqField(final Class<E> clazz, final String fieldName, final Object fieldValue)
 	{
-		return findByCriterion(clazz, new HibernateRestriction(BooleanOperatorType.eq, fieldName, fieldValue));
+		return findByEqField(clazz, FetchStrategy.EMPTY, fieldName, fieldValue);
+	}
+
+	public synchronized <E> List<E> findByEqField(final Class<E> clazz, FetchStrategy fetchStrategy, final String fieldName, final Object fieldValue)
+	{
+		return findByCriterion(clazz, fetchStrategy, new HibernateRestriction(BooleanOperatorType.eq, fieldName, fieldValue));
 	}
 
 	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, final HibernateRestriction... restrictions)
 	{
+		return findByCriterion(clazz, FetchStrategy.EMPTY, restrictions);
+	}
+
+	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, FetchStrategy fetchStrategy, final HibernateRestriction... restrictions)
+	{
 		Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> res = guessAliases(restrictions);
-		return findByCriterion(clazz, res.getValue(), res.getKey().toArray(new HibernateRestriction[] {}));
+		return findByCriterion(clazz, fetchStrategy, res.getValue(), res.getKey().toArray(new HibernateRestriction[] {}));
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
+	public synchronized <E> List<E> findByCriterion(final Class<E> clazz, FetchStrategy fetchStrategy, final HashMap<String, String> aliases, final HibernateRestriction... restrictions)
 	{
-		return doOperation(new ReadManyOperation<E>(clazz)
+		return doOperation(new ReadManyOperation<E>(clazz, fetchStrategy)
 		{
 			@Override
 			public List<E> readMany(Session session, IParameters<E> obj) throws Exception
@@ -152,16 +191,27 @@ public class Persistor
 
 				for (final HibernateRestriction restr : restrictions)
 					c.add(restr.toCriterion());
+
+				if (obj.getFetchStrategy().isToBeUsed())
+				{
+					c.setFetchMode(obj.getFetchStrategy().getAssociationPath(), obj.getFetchStrategy().getMode());
+					c.setFetchSize(obj.getFetchStrategy().getSize());
+				}
 				getReturnValues().setMany(c.list());
 				return getReturnValues().getMany();
 			}
 		}).getMany();
 	}
 
-	@SuppressWarnings("unchecked")
 	public synchronized <E> List<E> findAll(final Class<E> clazz)
 	{
-		return doOperation(new ReadManyOperation<E>(clazz)
+		return findAll(clazz, FetchStrategy.EMPTY);
+	}
+
+	@SuppressWarnings("unchecked")
+	public synchronized <E> List<E> findAll(final Class<E> clazz, FetchStrategy fetchStrategy)
+	{
+		return doOperation(new ReadManyOperation<E>(clazz, fetchStrategy)
 		{
 			@Override
 			public List<E> readMany(Session session, IParameters<E> obj) throws Exception
@@ -196,57 +246,47 @@ public class Persistor
 	public synchronized <T> IReturnValues<T> doOperation(PersistenceOperation<T> op)
 	{
 		IReturnValues<T> ret = op.getReturnValues();
-		Session session = null;
 		try
 		{
-			session = factory.openSession();
-			session.beginTransaction();
+			if (canFlush || _session == null || !_session.isOpen())
+			{
+				_session = null;
+				_session = factory.openSession();
+			}
+
+			_session.beginTransaction();
 			switch (op.getImplementedOperation())
 			{
 				case Read:
-					ret.setSingle(op.read(session, op.getParameters()));
+					ret.setSingle(op.read(_session, op.getParameters()));
 					break;
 				case ReadMany:
-					ret.setMany(op.readMany(session, op.getParameters()));
+					ret.setMany(op.readMany(_session, op.getParameters()));
 					break;
 				case Write:
-					op.write(session, op.getParameters().getObject());
+					op.write(_session, op.getParameters().getObject());
 					break;
 				case Execute:
-					ret.setDone(op.execute(session, op.getParameters().getString()));
+					ret.setDone(op.execute(_session, op.getParameters().getString()));
 					break;
 			}
-			session.getTransaction().commit();
+			_session.getTransaction().commit();
 		}
 		catch (final Throwable e)
 		{
-			handleException(session, e);
+			handleException(_session, e);
 		}
 		finally
 		{
-			flushOperation(session, op);
-			Statistics stats = factory.getSessionFactory().getStatistics();
-			if (stats.isStatisticsEnabled()) stats.logSummary();
+			op = null;
+			flush(_session, factory, canFlush);
 		}
 		return ret;
 	}
 
-	private <T> void flushOperation(Session session, PersistenceOperation<T> op)
+	public void flush()
 	{
-		if (session != null) try
-		{
-			log.trace("Trying to close session object");
-			session.close();
-		}
-		catch (final HibernateException ignored)
-		{
-			log.error("Couldn't close Session", ignored);
-		}
-		finally
-		{
-			session = null;
-		}
-		op = null;
+		flush(_session, factory, canFlush);
 	}
 
 	private void handleException(Session session, final Throwable e) throws PersistorException
@@ -265,6 +305,30 @@ public class Persistor
 		}
 		log.error(e, e);
 		throw new PersistorException(e);
+	}
+
+	private static void flush(Session session, HibernateSession factory, boolean canFlush)
+	{
+		if (canFlush)
+		{
+			if (session != null && session.isOpen()) try
+			{
+				log.trace("Flushing remaining statements before closing");
+				session.flush();
+				log.trace("Trying to close session object");
+				session.close();
+			}
+			catch (final HibernateException ignored)
+			{
+				log.error("Couldn't close Session", ignored);
+			}
+			finally
+			{
+				session = null;
+			}
+			Statistics stats = factory.getSessionFactory().getStatistics();
+			if (stats.isStatisticsEnabled()) stats.logSummary();
+		}
 	}
 
 	private static Pair<ArrayList<HibernateRestriction>, HashMap<String, String>> guessAliases(HibernateRestriction... restrictions)

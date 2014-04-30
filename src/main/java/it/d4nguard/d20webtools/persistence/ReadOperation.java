@@ -85,6 +85,12 @@ public class ReadOperation<E> implements PersistenceOperation<E>
 			{
 				return null;
 			}
+
+			@Override
+			public FetchStrategy getFetchStrategy()
+			{
+				return null;
+			}
 		};
 	}
 

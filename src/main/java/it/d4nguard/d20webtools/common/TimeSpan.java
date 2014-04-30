@@ -83,4 +83,26 @@ public class TimeSpan
 	{
 		return Calendar.getInstance().getTime();
 	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("TimeSpan [d1=");
+		builder.append(d1);
+		builder.append(", d2=");
+		builder.append(d2);
+		builder.append(", milliseconds=");
+		builder.append(milliseconds);
+		builder.append(", seconds=");
+		builder.append(seconds);
+		builder.append(", minutes=");
+		builder.append(minutes);
+		builder.append(", hours=");
+		builder.append(hours);
+		builder.append(", days=");
+		builder.append(days);
+		builder.append("]");
+		return builder.toString();
+	}
 }
