@@ -16,21 +16,36 @@
 		<property name="hibernate.connection.username">d20webtools</property>
 		<property name="hibernate.connection.password">d20WebTools001</property>
 
-		<property name="hibernate.connection.release_mode">on_close</property>
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="hibernate.current_session_context_class">thread</property>
+		<property name="hibernate.connection.release_mode">auto</property>
+		<!-- <property name="hibernate.connection.release_mode">on_close</property> -->
+
 		<property name="hibernate.connection.pool_size">5</property>
 
 		<property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>
 		<property name="hibernate.cache.provider_class">org.hibernate.cache.jbc2.JBossCacheRegionFactory</property>
 
-		<property name="hibernate.c3p0.timeout">5000</property>
-		<property name="hibernate.c3p0.minPoolSize">3</property>
-		<property name="hibernate.c3p0.maxPoolSize">10</property>
-		<property name="hibernate.c3p0.maxStatements">150</property>
-		<property name="hibernate.c3p0.acquire_increment">3</property>
-		<property name="hibernate.c3p0.idleConnectionTestPeriod">1800</property>
 		<property name="hibernate.c3p0.maxConnectionAge">1200</property>
 		<property name="hibernate.c3p0.maxIdleTimeExcessConnections">300</property>
-		<property name="hibernate.c3p0.testConnectionOnCheckin">true</property>
+
+		<!-- <property name="hibernate.c3p0.acquire_increment">3</property> -->
+		<!-- <property name="hibernate.c3p0.idleConnectionTestPeriod">1800</property> -->
+		<!-- <property name="hibernate.c3p0.maxPoolSize">10</property> -->
+		<!-- <property name="hibernate.c3p0.maxStatements">150</property> -->
+		<!-- <property name="hibernate.c3p0.minPoolSize">3</property> -->
+		<!-- <property name="hibernate.c3p0.timeout">5000</property> -->
+
+		<property name="c3p0.acquire_increment">1</property>
+		<property name="c3p0.idle_test_period">600</property>
+		<property name="c3p0.max_size">75</property>
+		<property name="c3p0.max_statements">5</property>
+		<property name="c3p0.min_size">5</property>
+		<property name="c3p0.timeout">600</property>
+		<property name="c3p0.checkoutTimeout">6000000</property>
+
+		<property name="c3p0.testConnectionOnCheckout">false</property>
+		<property name="c3p0.testConnectionOnCheckin">true</property>
 		<property name="hibernate.c3p0.preferredTestQuery">select 1 from dual</property>
 
 		<mapping resource="Message.hbm.xml" />

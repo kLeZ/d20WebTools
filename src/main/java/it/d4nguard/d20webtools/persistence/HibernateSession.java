@@ -6,12 +6,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.c3p0.internal.C3P0ConnectionProvider;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
-import org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 import org.w3c.dom.Document;
 
 public class HibernateSession
@@ -121,7 +121,10 @@ public class HibernateSession
 			{
 				SessionFactoryImpl sf = (SessionFactoryImpl) getSessionFactory();
 				ConnectionProvider conn = sf.getConnectionProvider();
-				if (conn instanceof C3P0ConnectionProvider) ((C3P0ConnectionProvider) conn).close();
+				if (conn instanceof C3P0ConnectionProvider)
+				{
+					((C3P0ConnectionProvider) conn).stop();
+				}
 			}
 			getSessionFactory().close();
 		}
@@ -190,9 +193,9 @@ public class HibernateSession
 			}
 
 			log.trace("Building ServiceRegistry passing all the properties (configured and runtime added)");
-			final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).buildServiceRegistry();
+			final ServiceRegistry service = new StandardServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).build();
 			log.trace("Setting sessionFactory var: CALLING { sessionFactory = configuration.buildSessionFactory(serviceRegistry) }");
-			setSessionFactory(getConfiguration().buildSessionFactory(serviceRegistry));
+			setSessionFactory(getConfiguration().buildSessionFactory(service));
 			log.trace("Well done, SessionFactory configured!");
 		}
 		return getSessionFactory();
