@@ -23,7 +23,7 @@
 			</key>
 			<one-to-many class="it.d4nguard.d20webtools.model.Member" />
 		</set>
-		<set name="messages" table="MESSAGE" inverse="true" lazy="true">
+		<set name="messages" table="MESSAGE" inverse="true" lazy="true" order-by="time">
 			<key>
 				<column name="MESSAGEID" />
 			</key>
