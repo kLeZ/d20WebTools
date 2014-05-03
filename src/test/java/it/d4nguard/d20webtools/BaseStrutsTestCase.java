@@ -22,13 +22,14 @@ import com.opensymphony.xwork2.ActionSupport;
 
 public abstract class BaseStrutsTestCase<T extends Action> extends StrutsJUnit4TestCase<T> implements Constants
 {
-	private Map<String, Object> session = new HashMap<String, Object>();
+	private Map<String, Object> session;
 
 	public abstract boolean needsCreate();
 
 	@Override
 	protected void setupBeforeInitDispatcher() throws Exception
 	{
+		session = new HashMap<String, Object>();
 		HibernateSession session = null;
 		if (needsCreate())
 		{
@@ -46,7 +47,7 @@ public abstract class BaseStrutsTestCase<T extends Action> extends StrutsJUnit4T
 		{
 			hibernateListener = new HibernateListener();
 		}
-		
+
 		ServletContextEvent event = new ServletContextEvent(servletContext);
 		hibernateListener.contextInitialized(event);
 	}
